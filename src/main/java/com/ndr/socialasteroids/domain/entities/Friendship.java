@@ -1,0 +1,57 @@
+package com.ndr.socialasteroids.domain.entities;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.Data;
+
+@Data
+@Entity(name = "friendship")
+public class Friendship {
+
+    @JsonIgnore
+    @EmbeddedId
+    private Key key = new Key();
+
+    @ManyToOne
+    @MapsId("userId")
+    private AppUser user;
+
+    @ManyToOne
+    @MapsId("friendId")
+    private AppUser friend;
+
+    @Column(nullable = false)
+    private boolean accepted;
+
+    public Friendship(AppUser user, AppUser friend, boolean accepted){
+        this.user = user;
+        this.friend = friend;
+        this.accepted = accepted;
+    }
+
+    public Friendship(){}
+
+    @Data
+    @Embeddable
+    public static class Key implements Serializable{
+        private Long userId;
+        private Long friendId;
+
+        public Key(Long userId, Long friendId){
+            this.userId = userId;
+            this.friendId = friendId;
+        }
+
+        public Key(){}
+    }
+    
+}
