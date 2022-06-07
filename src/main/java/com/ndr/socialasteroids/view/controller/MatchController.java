@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,10 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ndr.socialasteroids.domain.entities.AppUserDetails;
 import com.ndr.socialasteroids.domain.entities.Match;
 import com.ndr.socialasteroids.service.MatchService;
-import com.ndr.socialasteroids.view.dto.AppUserDTO;
 import com.ndr.socialasteroids.view.dto.MatchDTO;
 import com.ndr.socialasteroids.view.viewobject.MatchVO;
 import com.ndr.socialasteroids.view.viewobject.ViewFactory;
@@ -34,12 +32,8 @@ public class MatchController {
     }
     
     @PostMapping(path = "/registerMatch")
-    public ResponseEntity<?> register(@RequestBody MatchDTO matchDTO, @AuthenticationPrincipal AppUserDetails principal){
-        
-        if(!checkCurrentUser(matchDTO.getPlayerId(), principal.getUser())){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
+    @PreAuthorize("#u.getPlayerId() == principal.getUser().getId()")
+    public ResponseEntity<?> register(@P("u") @RequestBody MatchDTO matchDTO){
         Match match = matchDTO.toDomainEntity();
         try{
             matchService.registerMatch(matchDTO.getPlayerId(), match);
@@ -62,14 +56,5 @@ public class MatchController {
         List<MatchVO> matchesVO = ViewFactory.buildMatchVOList(matches);
 
         return ResponseEntity.ok().body(matchesVO);
-    }
-
-    //TODO:: Inserir interceptor ou transferir para Utils, ou ainda anotação spring com P()
-    private boolean checkCurrentUser(Long userId, AppUserDTO principal){
-        if(userId == principal.getId()){
-            return true;
-        }
-
-        return false;
     }
 }

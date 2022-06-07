@@ -30,6 +30,12 @@ public class UserController {
 
     }
 
+    @GetMapping(path = "/login")
+    public ResponseEntity<?> login(){
+
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping(path = "/register")
     public ResponseEntity<?> register(@RequestBody UserDTO userDTO){
         AppUser user = userDTO.toDomainEntity();
