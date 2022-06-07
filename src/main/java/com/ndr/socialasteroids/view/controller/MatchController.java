@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ndr.socialasteroids.domain.entities.Match;
 import com.ndr.socialasteroids.service.MatchService;
 import com.ndr.socialasteroids.view.dto.MatchDTO;
-import com.ndr.socialasteroids.view.viewobject.MatchVO;
-import com.ndr.socialasteroids.view.viewobject.ViewFactory;
+import com.ndr.socialasteroids.view.responseobject.MatchRO;
+import com.ndr.socialasteroids.view.responseobject.ViewFactory;
 
 @RestController
 @RequestMapping("/match")
@@ -53,7 +53,7 @@ public class MatchController {
             return ResponseEntity.badRequest().build();
         }
 
-        List<MatchVO> matchesVO = ViewFactory.buildMatchVOList(matches);
+        List<MatchRO> matchesVO = ViewFactory.buildMatchVOList(matches);
 
         return ResponseEntity.ok().body(matchesVO);
     }

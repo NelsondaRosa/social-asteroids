@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ndr.socialasteroids.domain.entities.AppUser;
 import com.ndr.socialasteroids.service.UserService;
 import com.ndr.socialasteroids.view.dto.UserDTO;
-import com.ndr.socialasteroids.view.viewobject.UserVO;
+import com.ndr.socialasteroids.view.responseobject.UserRO;
 
 @RestController
 @RequestMapping("/user")
@@ -60,7 +60,7 @@ public class UserController {
             return ResponseEntity.badRequest().build();
         }
 
-        UserVO userVO = new UserVO(user);
+        UserRO userVO = new UserRO(user);
 
         return ResponseEntity.ok().body(userVO);
     }

@@ -23,8 +23,8 @@ import com.ndr.socialasteroids.service.FriendshipService;
 import com.ndr.socialasteroids.view.dto.BlindFriendshipDTO;
 import com.ndr.socialasteroids.view.dto.FriendAnswerDTO;
 import com.ndr.socialasteroids.view.dto.enums.UnfriendMode;
-import com.ndr.socialasteroids.view.viewobject.FriendshipVO;
-import com.ndr.socialasteroids.view.viewobject.ViewFactory;
+import com.ndr.socialasteroids.view.responseobject.FriendshipRO;
+import com.ndr.socialasteroids.view.responseobject.ViewFactory;
 @RestController
 @RequestMapping("/friend")
 public class FriendshipController {
@@ -104,7 +104,7 @@ public class FriendshipController {
             return ResponseEntity.badRequest().body(ex.getMessage());
         }
 
-        List<FriendshipVO> friendsVO = ViewFactory.buildFriendsVOList(friends);
+        List<FriendshipRO> friendsVO = ViewFactory.buildFriendsVOList(friends);
 
         return ResponseEntity.ok().body(friendsVO);
     }
@@ -120,7 +120,7 @@ public class FriendshipController {
             return ResponseEntity.badRequest().body(ex.getMessage());
         }
 
-        List<FriendshipVO> friendshipVO = ViewFactory.buildFriendshipVOList(friendRequests);
+        List<FriendshipRO> friendshipVO = ViewFactory.buildFriendshipVOList(friendRequests);
         
         return ResponseEntity.ok().body(friendshipVO);
     }

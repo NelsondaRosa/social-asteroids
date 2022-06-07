@@ -1,16 +1,16 @@
-package com.ndr.socialasteroids.view.viewobject;
+package com.ndr.socialasteroids.view.responseobject;
 
 import com.ndr.socialasteroids.domain.entities.AppUser;
 
 import lombok.Data;
 
 @Data
-public class UserVO {
+public class UserRO {
     
     private Long id;
     private String username;
 
-    public UserVO(AppUser user){
+    public UserRO(AppUser user){
         this.id = user.getId();
         this.username = user.getUsername();
     }
