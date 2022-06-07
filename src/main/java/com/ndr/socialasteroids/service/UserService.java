@@ -9,21 +9,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.ndr.socialasteroids.domain.entities.AppUser;
-import com.ndr.socialasteroids.domain.entities.Role;
+import com.ndr.socialasteroids.domain.entity.AppUser;
+import com.ndr.socialasteroids.domain.entity.Role;
 import com.ndr.socialasteroids.domain.enums.ERole;
-import com.ndr.socialasteroids.infra.data.interfaces.IRoleRepository;
-import com.ndr.socialasteroids.infra.data.interfaces.IUserRepository;
+import com.ndr.socialasteroids.infra.data.repository.RoleRepository;
+import com.ndr.socialasteroids.infra.data.repository.UserRepository;
 
 @Service
 public class UserService {
     
-    private final IUserRepository userRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final IRoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public UserService(IUserRepository userRepository, PasswordEncoder passwordEncoder, IRoleRepository roleRepository){
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository){
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;

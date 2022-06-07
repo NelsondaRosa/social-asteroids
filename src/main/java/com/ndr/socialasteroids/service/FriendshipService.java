@@ -8,61 +8,58 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ndr.socialasteroids.domain.entities.AppUser;
-import com.ndr.socialasteroids.domain.entities.Friendship;
-import com.ndr.socialasteroids.domain.entities.Friendship.Key;
-import com.ndr.socialasteroids.domain.exceptions.DataInconsistencyException;
-import com.ndr.socialasteroids.infra.data.interfaces.IFriendshipRepository;
-import com.ndr.socialasteroids.view.dto.enums.UnfriendMode;
+import com.ndr.socialasteroids.domain.entity.AppUser;
+import com.ndr.socialasteroids.domain.entity.Friendship;
+import com.ndr.socialasteroids.domain.entity.Friendship.Key;
+import com.ndr.socialasteroids.infra.data.repository.FriendshipRepository;
+import com.ndr.socialasteroids.infra.exception.DataInconsistencyException;
 
 @Service
 public class FriendshipService {
-    private final IFriendshipRepository friendRepository;
+    private final FriendshipRepository friendRepository;
     private final UserService userService;
 
     @Autowired
-    public FriendshipService(IFriendshipRepository friendshiRepository, UserService userService){
+    public FriendshipService(FriendshipRepository friendshiRepository, UserService userService){
         this.friendRepository = friendshiRepository;
         this.userService = userService;
     }
 
-    public void sendRequest(Long requesterId, Long requestedId) throws NoSuchElementException, EntityNotFoundException, DataInconsistencyException{
-        if(relationExists(requesterId, requestedId)){
-            throw new DataInconsistencyException();
-        
-        //Se a relação já existir do lado oposto,cria a relação do lado atual e ativa o status de amizade
-        } else if(relationExists(requestedId, requesterId)){
-            AppUser requester = userService.getById(requesterId);
-            AppUser requested = userService.getById(requestedId);
-            Friendship friendshipRequester = new Friendship(requester,requested, true);
-            Friendship friendshipRequested = friendRepository.getById(new Key(requestedId, requesterId));
-            friendshipRequested.setAccepted(true);
-
-            friendRepository.saveAndFlush(friendshipRequester);
-            friendRepository.saveAndFlush(friendshipRequested);
-            
-            return;
+    public void sendRequest(Long userId, Long friendId) throws NoSuchElementException, EntityNotFoundException, DataInconsistencyException{
+        if(relationExists(userId, friendId)){
+            throw new DataInconsistencyException("Invite already exists");
         }
-        
-        AppUser requester = userService.getById(requesterId);
-        AppUser requested = userService.getById(requestedId);
 
-        Friendship friendship = new Friendship(requester,requested, false);
+        AppUser user = userService.getById(userId);
+        AppUser friend = userService.getById(friendId);
 
-        friendRepository.saveAndFlush(friendship);
+        //Se a relação já existir do lado oposto,cria a relação do lado atual e ativa o status de amizade
+        if(relationExists(friendId, userId)){
+            Friendship userSide = new Friendship(user,friend, true);
+            Friendship friendSide = friendRepository.getById(new Key(friendId, userId));
+
+            friendSide.setAccepted(true);
+
+            friendRepository.saveAndFlush(userSide);
+            friendRepository.saveAndFlush(friendSide);
+        } else {
+
+            Friendship friendship = new Friendship(user,friend, false);
+
+            friendRepository.saveAndFlush(friendship);
+        }
     }
 
     public List<Friendship> getRequests(Long userId){
         List<Friendship> requests = friendRepository.findRequestsById(userId);
 
         return requests;
-
     }
 
     public void answerFriendshipRequest(Friendship friendshipRequest, boolean accepted) throws DataInconsistencyException, EntityNotFoundException{
         //Evita deleção de dados parciais
         if(relationExists(friendshipRequest.getFriend().getId(), friendshipRequest.getUser().getId()))
-            throw new DataInconsistencyException();
+            throw new DataInconsistencyException("Friendship already requested by the other part");
 
         if(accepted){
             friendshipRequest.setAccepted(true);
@@ -87,22 +84,27 @@ public class FriendshipService {
         return friendship;
     }
 
-    public void unfriend(Long userId, Long friendId, UnfriendMode unfriendMode) throws EntityNotFoundException{
-        if(unfriendMode == UnfriendMode.UNFRIEND && friendRepository.existsById(new Key(friendId, userId))){
+    public void unrequest(Long userId, Long friendId){
+        if(relationExists(userId, friendId) && !relationExists(friendId, userId)){
+            friendRepository.deleteById(new Key(userId, friendId));
+        } else {
+            throw new DataInconsistencyException("The friendship request already exists");
+        }
+    }
+
+    public void unfriend(Long userId, Long friendId) throws EntityNotFoundException{
+        if(relationExists(userId, friendId) && relationExists(friendId, userId)){
             friendRepository.deleteById(new Key(userId, friendId));
             friendRepository.deleteById(new Key(friendId, userId));
-        } else if(unfriendMode == UnfriendMode.UNREQUEST){
-            friendRepository.deleteById(new Key(userId, friendId));
+        } else {
+            throw new DataInconsistencyException("Friendship doesnt exists");
         }
+
     }
 
     //Verifica se relação já existe no BD para não criar inconsistência de dados
     private boolean relationExists(Long userId, Long friendId){
-        if(friendRepository.existsById(new Key(userId, friendId))){
-            return true;
-        }
-
-        return false;
+        return friendRepository.existsById(new Key(userId, friendId));
     }  
 
 }

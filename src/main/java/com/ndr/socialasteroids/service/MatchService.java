@@ -8,18 +8,18 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ndr.socialasteroids.domain.entities.AppUser;
-import com.ndr.socialasteroids.domain.entities.Match;
-import com.ndr.socialasteroids.infra.data.interfaces.IMatchRepository;
+import com.ndr.socialasteroids.domain.entity.AppUser;
+import com.ndr.socialasteroids.domain.entity.Match;
+import com.ndr.socialasteroids.infra.data.repository.MatchRepository;
 
 @Service
 public class MatchService {
     
-    private final IMatchRepository matchRepository;
+    private final MatchRepository matchRepository;
     private final UserService userService;
 
     @Autowired  
-    public MatchService(IMatchRepository matchRepository, UserService userService){
+    public MatchService(MatchRepository matchRepository, UserService userService){
         this.matchRepository = matchRepository;
         this.userService = userService;
     }
