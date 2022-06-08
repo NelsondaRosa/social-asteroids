@@ -5,12 +5,13 @@ import com.ndr.socialasteroids.domain.entity.AppUser;
 import lombok.Data;
 
 @Data
-public class AppUserRes {
-    
+public class AppUserRes
+{
     private Long id;
     private String username;
 
-    public AppUserRes(AppUser user){
+    public AppUserRes(AppUser user)
+    {
         this.id = user.getId();
         this.username = user.getUsername();
     }

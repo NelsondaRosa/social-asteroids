@@ -13,6 +13,7 @@ import com.ndr.socialasteroids.domain.entity.Friendship;
 import com.ndr.socialasteroids.domain.entity.Friendship.Key;
 import com.ndr.socialasteroids.infra.data.repository.FriendshipRepository;
 import com.ndr.socialasteroids.infra.error.exception.DataInconsistencyException;
+import com.ndr.socialasteroids.infra.error.exception.DataNotFoundException;
 
 @Service
 public class FriendshipService {
@@ -20,13 +21,17 @@ public class FriendshipService {
     private final UserService userService;
 
     @Autowired
-    public FriendshipService(FriendshipRepository friendshiRepository, UserService userService){
+    public FriendshipService(FriendshipRepository friendshiRepository, UserService userService)
+    {
         this.friendRepository = friendshiRepository;
         this.userService = userService;
     }
 
-    public void sendInvite(Long userId, Long friendId) throws NoSuchElementException, EntityNotFoundException, DataInconsistencyException{
-        if(relationExists(userId, friendId)){
+    public void sendInvite(Long userId, Long friendId) 
+        throws NoSuchElementException, EntityNotFoundException, DataInconsistencyException, IllegalArgumentException
+    {
+        if(relationExists(userId, friendId))
+        {
             throw new DataInconsistencyException("Invite already exists");
         }
 
@@ -34,7 +39,8 @@ public class FriendshipService {
         AppUser friend = userService.getById(friendId);
 
         //Se a relação já existir do lado oposto,cria a relação do lado atual e ativa o status de amizade
-        if(relationExists(friendId, userId)){
+        if(relationExists(friendId, userId))
+        {
             Friendship userSide = new Friendship(user,friend, true);
             Friendship friendSide = friendRepository.getById(new Key(friendId, userId));
 
@@ -43,25 +49,30 @@ public class FriendshipService {
             friendRepository.saveAndFlush(userSide);
             friendRepository.saveAndFlush(friendSide);
         } else {
-
             Friendship friendship = new Friendship(user,friend, false);
 
             friendRepository.saveAndFlush(friendship);
         }
     }
 
-    public List<Friendship> getRequests(Long userId){
-        List<Friendship> requests = friendRepository.findRequestsById(userId);
+    public List<Friendship> getRequests(Long userId)
+        throws DataNotFoundException
+    {
+        List<Friendship> requests = friendRepository.findRequestsById(userId)
+                                        .orElseThrow(() -> new DataNotFoundException("message"));
 
         return requests;
     }
 
-    public void answerFriendshipRequest(Friendship friendshipRequest, boolean accepted) throws DataInconsistencyException, EntityNotFoundException{
+    public void answerFriendshipRequest(Friendship friendshipRequest, boolean accepted) 
+        throws DataInconsistencyException, EntityNotFoundException, IllegalArgumentException
+    {
         //Evita deleção de dados parciais
         if(relationExists(friendshipRequest.getFriend().getId(), friendshipRequest.getUser().getId()))
             throw new DataInconsistencyException("Friendship already requested by the other part");
 
-        if(accepted){
+        if(accepted)
+        {
             friendshipRequest.setAccepted(true);
             Friendship friendship = new Friendship(friendshipRequest.getFriend(), friendshipRequest.getUser(), true);
 
@@ -72,38 +83,50 @@ public class FriendshipService {
         }
     }
 
-    public List<Friendship> getFriends(Long userId) throws EntityNotFoundException{
+    public List<Friendship> getFriends(Long userId)
+        throws DataNotFoundException
+    {
         AppUser user = userService.getById(userId);
-        List<Friendship> friends = friendRepository.findAllByUser(user);
+        List<Friendship> friends = friendRepository.findAllByUser(user)
+                                        .orElseThrow(() -> new DataNotFoundException("User doesn't exists"));
 
         return friends;
     }
 
-    public Friendship getByIds(Long userId, Long friendId) throws EntityNotFoundException{
+    public Friendship getByIds(Long userId, Long friendId)
+        throws EntityNotFoundException
+    {
         Friendship friendship = friendRepository.getById(new Key(userId, friendId));
         return friendship;
     }
 
-    public void unrequest(Long userId, Long friendId){
-        if(relationExists(userId, friendId) && !relationExists(friendId, userId)){
+    public void unrequest(Long userId, Long friendId)
+        throws IllegalArgumentException
+    {
+        if(relationExists(userId, friendId) && !relationExists(friendId, userId))
+        {
             friendRepository.deleteById(new Key(userId, friendId));
         } else {
-            throw new DataInconsistencyException("The friendship request already exists");
+            throw new DataInconsistencyException("The friendship invte doesn't exists");
         }
     }
 
-    public void unfriend(Long userId, Long friendId) throws EntityNotFoundException{
-        if(relationExists(userId, friendId) && relationExists(friendId, userId)){
+    public void unfriend(Long userId, Long friendId)
+        throws EntityNotFoundException, IllegalArgumentException, DataNotFoundException
+    {
+        if(relationExists(userId, friendId) && relationExists(friendId, userId))
+        {
             friendRepository.deleteById(new Key(userId, friendId));
             friendRepository.deleteById(new Key(friendId, userId));
         } else {
-            throw new DataInconsistencyException("Friendship doesnt exists");
+            throw new DataNotFoundException("Friendship doesn't exists");
         }
 
     }
 
     //Verifica se relação já existe no BD para não criar inconsistência de dados
-    private boolean relationExists(Long userId, Long friendId){
+    private boolean relationExists(Long userId, Long friendId)
+    {
         return friendRepository.existsById(new Key(userId, friendId));
     }  
 

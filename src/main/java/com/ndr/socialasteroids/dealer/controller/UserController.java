@@ -22,25 +22,25 @@ import com.ndr.socialasteroids.service.UserService;
 
 @RestController
 @RequestMapping("/user")
-//TODO:: Login endpoint
-public class UserController {
-    
+public class UserController 
+{
     private final UserService userService;
     
     @Autowired
-    public UserController(UserService userService){
+    public UserController(UserService userService)
+    {
         this.userService = userService;
-
     }
 
     @GetMapping(path = "/login")
-    public ResponseEntity<?> login(){
-
+    public ResponseEntity<?> login()
+    { //TODO
         return ResponseEntity.ok().build();
     }
 
     @PostMapping(path = "/register")
-    public ResponseEntity<?> register(@RequestBody UserReq userReq) throws URISyntaxException{
+    public ResponseEntity<?> register(@RequestBody UserReq userReq) throws URISyntaxException
+    {
         AppUser user = userReq.toDomainEntity();
         AppUser userCreated = userService.register(user);
 
@@ -49,7 +49,8 @@ public class UserController {
     }
 
     @GetMapping(path = "get/{userId}")
-    public ResponseEntity<?> getUser(@PathVariable String userId){
+    public ResponseEntity<?> getUser(@PathVariable String userId)
+    {
         AppUser user;
         try{
             user = userService.getById(Long.valueOf(userId));
@@ -63,6 +64,4 @@ public class UserController {
 
         return ResponseEntity.ok().body(userRes);
     }
-
-
 }

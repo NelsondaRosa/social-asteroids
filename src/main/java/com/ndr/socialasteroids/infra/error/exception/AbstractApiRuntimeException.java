@@ -7,10 +7,12 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
-public abstract class AbstractApiRuntimeException extends RuntimeException{
+public abstract class AbstractApiRuntimeException extends RuntimeException
+{
     private HttpStatus status;
 
-    public AbstractApiRuntimeException(HttpStatus status, String message){
+    public AbstractApiRuntimeException(HttpStatus status, String message)
+    {
         super(message);
         this.status = status;
     }

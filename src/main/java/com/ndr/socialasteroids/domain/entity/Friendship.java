@@ -15,8 +15,8 @@ import lombok.Data;
 
 @Data
 @Entity(name = "friendship")
-public class Friendship {
-
+public class Friendship
+{
     @JsonIgnore
     @EmbeddedId
     private Key key = new Key();
@@ -32,7 +32,8 @@ public class Friendship {
     @Column(nullable = false)
     private boolean accepted;
 
-    public Friendship(AppUser user, AppUser friend, boolean accepted){
+    public Friendship(AppUser user, AppUser friend, boolean accepted)
+    {
         this.user = user;
         this.friend = friend;
         this.accepted = accepted;
@@ -42,11 +43,13 @@ public class Friendship {
 
     @Data
     @Embeddable
-    public static class Key implements Serializable{
+    public static class Key implements Serializable
+    {
         private Long userId;
         private Long friendId;
 
-        public Key(Long userId, Long friendId){
+        public Key(Long userId, Long friendId)
+        {
             this.userId = userId;
             this.friendId = friendId;
         }

@@ -8,16 +8,18 @@ import org.springframework.security.core.userdetails.UserDetails;
 import lombok.Data;
 
 @Data
-public class UserPrincipal implements UserDetails{
-
+public class UserPrincipal implements UserDetails
+{
     private AppUserDTO user;
 
-    public UserPrincipal(AppUserDTO user){
+    public UserPrincipal(AppUserDTO user)
+    {
         this.user = user;
     }
 
     @Override
-    public String getUsername(){
+    public String getUsername()
+    {
         return user.getUsername();
     }
 
@@ -27,31 +29,36 @@ public class UserPrincipal implements UserDetails{
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public Collection<? extends GrantedAuthority> getAuthorities()
+    {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public boolean isAccountNonExpired() {
+    public boolean isAccountNonExpired()
+    {
         // TODO Auto-generated method stub
         return true;
     }
 
     @Override
-    public boolean isAccountNonLocked() {
+    public boolean isAccountNonLocked()
+    {
         // TODO Auto-generated method stub
         return true;
     }
 
     @Override
-    public boolean isCredentialsNonExpired() {
+    public boolean isCredentialsNonExpired()
+    {
         // TODO Auto-generated method stub
         return true;
     }
 
     @Override
-    public boolean isEnabled() {
+    public boolean isEnabled()
+    {
         // TODO Auto-generated method stub
         return true;
     }

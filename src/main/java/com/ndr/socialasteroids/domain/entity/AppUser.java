@@ -37,8 +37,8 @@ import lombok.Data;
 @JsonIdentityInfo(
     generator = ObjectIdGenerators.PropertyGenerator.class, 
     property = "id")
-public class AppUser{
-
+public class AppUser
+{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -69,22 +69,26 @@ public class AppUser{
     private Set<Role> roles = new HashSet<Role>();
 
     public AppUser(){}
-    public AppUser(String username, String email, String password){
+    public AppUser(String username, String email, String password)
+    {
         this.username = username;
         this.email = email;
         this.password = password;
     }
     
-    public void addMatch(Match match){
+    public void addMatch(Match match)
+    {
         matches.add(match);
         match.setPlayer(this);
     }
 
-    public void addRole(Role role){
+    public void addRole(Role role)
+    {
         roles.add(role);
     }
 
-    public void removeRole(ERole name){
+    public void removeRole(ERole name)
+    {
         roles.removeIf(role -> role.getName() == name);
     }
 

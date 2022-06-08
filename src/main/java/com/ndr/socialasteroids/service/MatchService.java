@@ -19,17 +19,20 @@ public class MatchService {
     private final UserService userService;
 
     @Autowired  
-    public MatchService(MatchRepository matchRepository, UserService userService){
+    public MatchService(MatchRepository matchRepository, UserService userService)
+    {
         this.matchRepository = matchRepository;
         this.userService = userService;
     }
 
-    public Match save(Match match){
+    public Match save(Match match)
+    {
         Match newMatch = matchRepository.saveAndFlush(match);
         return newMatch;
     }
 
-    public Match registerMatch(Long userId, Match match) throws NoSuchElementException, EntityNotFoundException{
+    public Match registerMatch(Long userId, Match match) throws NoSuchElementException, EntityNotFoundException
+    {
         AppUser user = userService.getById(userId);
         user.addMatch(match);
 
@@ -38,7 +41,8 @@ public class MatchService {
         return registeredMatch;
     }
 
-    public List<Match> getMatches(Long userId) throws EntityNotFoundException{
+    public List<Match> getMatches(Long userId) throws EntityNotFoundException
+    {
         AppUser player = userService.getById(userId);
         return matchRepository.findByPlayer(player);
     }

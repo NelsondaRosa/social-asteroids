@@ -22,57 +22,56 @@ import com.ndr.socialasteroids.domain.entity.Friendship;
 import com.ndr.socialasteroids.service.FriendshipService;
 @RestController
 @RequestMapping("/friend")
-public class FriendshipController {
-    
+public class FriendshipController
+{
     private final FriendshipService friendshipService;
 
     @Autowired
-    public FriendshipController(FriendshipService friendshipService){
+    public FriendshipController(FriendshipService friendshipService)
+    {
         this.friendshipService = friendshipService;
     }
 
     @PostMapping(path = "/sendinvite")
     @PreAuthorize("#u.getUserId() == principal.getUser().getId()")
-    public ResponseEntity<?> sendInvite(@P("u") @RequestBody BlindFriendshipReq friendshipReq){
-
+    public ResponseEntity<?> sendInvite(@P("u") @RequestBody BlindFriendshipReq friendshipReq)
+    {
         friendshipService.sendInvite(friendshipReq.getUserId(), friendshipReq.getFriendId());
         return ResponseEntity.ok().build();
     }
 
     @PostMapping(path = "/answer-request")
     @PreAuthorize("#u.getRequestedId() == principal.getUser().getId()")
-    public ResponseEntity<?> answerRequest(@P("u") @RequestBody FriendInviteAnswerReq friendAnswerReq){
-
-        //Tem que estar no serviço
+    public ResponseEntity<?> answerRequest(@P("u") @RequestBody FriendInviteAnswerReq friendAnswerReq)
+    {
         Friendship friendshipRequest = 
             friendshipService.getByIds(friendAnswerReq.getRequesterId(), friendAnswerReq.getRequestedId());
             
         friendshipService.answerFriendshipRequest(friendshipRequest, friendAnswerReq.isAccepted());
-
 
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping(path = "/unfriend")
     @PreAuthorize("#u.getUserId() == principal.getUser().getId()")
-    public ResponseEntity<?> unfriend(@P("u") @RequestBody BlindFriendshipReq friendshipReq){
-
+    public ResponseEntity<?> unfriend(@P("u") @RequestBody BlindFriendshipReq friendshipReq)
+    {
         friendshipService.unfriend(friendshipReq.getUserId(), friendshipReq.getFriendId());
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping(path = "/unrequest")
     @PreAuthorize("#u.getUserId() == principal.getUser().getId()")
-    public ResponseEntity<?> unrequest( @P("u") @RequestBody BlindFriendshipReq friendshipReq){
-
+    public ResponseEntity<?> unrequest( @P("u") @RequestBody BlindFriendshipReq friendshipReq)
+    {
         friendshipService.unrequest(friendshipReq.getUserId(), friendshipReq.getFriendId());
         return ResponseEntity.ok().build();
     }
 
     @GetMapping(path = "/get/{userId}")
     @PreAuthorize("#u == principal.getUser().getId()")
-    public ResponseEntity<?> getFriends(@P("u") @PathVariable Long userId){
-
+    public ResponseEntity<?> getFriends(@P("u") @PathVariable Long userId)
+    {
         List<Friendship> friends;
 
         friends = friendshipService.getFriends(userId);
@@ -83,8 +82,8 @@ public class FriendshipController {
 
     @GetMapping(path = "/invites/{userId}")
     @PreAuthorize("#u == principal.getUser().getId()")
-    public ResponseEntity<?> getFriendInvites(@P("u") @PathVariable Long userId){
-
+    public ResponseEntity<?> getFriendInvites(@P("u") @PathVariable Long userId)
+    {
         List<Friendship> friendInvites;
 
         friendInvites = friendshipService.getRequests(userId);

@@ -7,11 +7,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.ndr.socialasteroids.infra.interceptor.LogProcessTimeInterceptor;
 
 @Configuration
-public class AppConfig implements WebMvcConfigurer {
-
+public class AppConfig implements WebMvcConfigurer
+{
     @Override
-    public void addInterceptors(InterceptorRegistry registry) {
+    public void addInterceptors(InterceptorRegistry registry)
+    {
         registry.addInterceptor(new LogProcessTimeInterceptor());
     }
-    
 }

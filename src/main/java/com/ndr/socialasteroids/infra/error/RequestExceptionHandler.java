@@ -13,23 +13,23 @@ import com.ndr.socialasteroids.infra.error.exception.DataNotFoundException;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
-public class RequestExceptionHandler extends ResponseEntityExceptionHandler{
-
+public class RequestExceptionHandler extends ResponseEntityExceptionHandler
+{
     @ExceptionHandler(DataNotFoundException.class)
-    protected ResponseEntity<ErrorDetails> handleEntityNotFound(DataNotFoundException exception){
+    protected ResponseEntity<ErrorDetails> handleEntityNotFound(DataNotFoundException exception)
+    {
         ErrorDetails error = new ErrorDetails(HttpStatus.NOT_FOUND, exception.getMessage());
         return buildResponse(error);
     }
 
     @ExceptionHandler(DataInconsistencyException.class)
-    protected ResponseEntity<ErrorDetails> handleDataInconsistency(DataInconsistencyException exception){
+    protected ResponseEntity<ErrorDetails> handleDataInconsistency(DataInconsistencyException exception)
+    {
         return null;
     }
 
-    private ResponseEntity<ErrorDetails> buildResponse(ErrorDetails error){
+    private ResponseEntity<ErrorDetails> buildResponse(ErrorDetails error)
+    {
         return ResponseEntity.status(error.getStatus()).body(error);
-
     }
-
-    
 }

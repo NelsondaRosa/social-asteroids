@@ -15,7 +15,8 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "roles")
-public class Role {
+public class Role
+{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +25,8 @@ public class Role {
     @Enumerated(EnumType.STRING)
     private ERole name;
 
-    public Role(ERole name){
+    public Role(ERole name)
+    {
         this.name = name;
     }
 

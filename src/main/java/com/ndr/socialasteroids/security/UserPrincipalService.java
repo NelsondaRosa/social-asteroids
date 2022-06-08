@@ -12,18 +12,21 @@ import com.ndr.socialasteroids.domain.entity.AppUser;
 import com.ndr.socialasteroids.infra.data.repository.UserRepository;
 
 @Service
-public class UserPrincipalService implements UserDetailsService {
+public class UserPrincipalService implements UserDetailsService
+{
 
     private final UserRepository userRepository;
 
     @Autowired
-    public UserPrincipalService(UserRepository userRepository){
+    public UserPrincipalService(UserRepository userRepository)
+    {
         this.userRepository = userRepository;
     }
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
+    {
         AppUser user = userRepository.findByUsername(username);
         if(user == null){
             throw new UsernameNotFoundException("Cannot find user " + username);

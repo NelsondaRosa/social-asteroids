@@ -5,8 +5,8 @@ import com.ndr.socialasteroids.domain.entity.Match;
 import lombok.Data;
 
 @Data
-public class MatchReq {
-
+public class MatchReq
+{
     private Long durationInMilis;
 
     private Long score;
@@ -17,7 +17,8 @@ public class MatchReq {
 
     private Long playerId;
 
-    public Match toDomainEntity(){
+    public Match toDomainEntity()
+    {
         Match match = new Match(this.getDurationInMilis(), this.getScore(),
                                     this.getAmmoSpent(), this.getDestroyedTargets());
         match.setTimeNow();

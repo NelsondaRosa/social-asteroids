@@ -1,9 +1,12 @@
 package com.ndr.socialasteroids.infra.error.exception;
 
-public class DataNotFoundException extends Exception {
+import org.springframework.http.HttpStatus;
 
-    public DataNotFoundException(){
-        super("Data not found. operation can't go on.");
+public class DataNotFoundException extends AbstractApiRuntimeException
+{
+    public DataNotFoundException(String message)
+    {
+        super(HttpStatus.NOT_FOUND, message);
     }
     
 }

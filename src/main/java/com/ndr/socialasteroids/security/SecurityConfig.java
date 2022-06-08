@@ -2,8 +2,6 @@ package com.ndr.socialasteroids.security;
 
 import java.util.concurrent.TimeUnit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -21,8 +19,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserPrincipalService userAuthService;
     private final PasswordEncoder passwordEncoder;
-    private final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
-    
 
     @Autowired
     public SecurityConfig(PasswordEncoder passwordEncoder, UserPrincipalService userAuthService){

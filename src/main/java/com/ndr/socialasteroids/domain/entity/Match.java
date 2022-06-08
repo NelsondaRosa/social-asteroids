@@ -26,8 +26,8 @@ import lombok.Data;
 @JsonIdentityInfo(
     generator = ObjectIdGenerators.PropertyGenerator.class, 
     property = "id")
-public class Match {
-    
+public class Match
+{  
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -55,19 +55,22 @@ public class Match {
     @ManyToOne
     private AppUser player;
 
-    public Match(){
+    public Match()
+    {
         this.matchOn = LocalDateTime.now();
         this.zoneId = ZoneId.systemDefault();
     }
 
-    public Match(Long duration, Long score, Long ammoSpent, Long destroyedTargets){
+    public Match(Long duration, Long score, Long ammoSpent, Long destroyedTargets)
+    {
         this.duration = Duration.ofMillis(duration);
         this.score = score;
         this.ammoSpent = ammoSpent;
         this.destroyedTargets = destroyedTargets;
     }
 
-    public void setTimeNow(){
+    public void setTimeNow()
+    {
         this.matchOn = LocalDateTime.now();
         this.zoneId = ZoneId.systemDefault();
     }
