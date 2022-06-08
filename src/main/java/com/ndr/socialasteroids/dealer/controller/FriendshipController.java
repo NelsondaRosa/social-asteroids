@@ -1,7 +1,6 @@
 package com.ndr.socialasteroids.dealer.controller;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -32,12 +31,11 @@ public class FriendshipController {
         this.friendshipService = friendshipService;
     }
 
-    @PostMapping(path = "/send-request")
+    @PostMapping(path = "/sendinvite")
     @PreAuthorize("#u.getUserId() == principal.getUser().getId()")
-    public ResponseEntity<?> sendRequest(@P("u") @RequestBody BlindFriendshipReq friendshipReq){
+    public ResponseEntity<?> sendInvite(@P("u") @RequestBody BlindFriendshipReq friendshipReq){
 
-        friendshipService.sendRequest(friendshipReq.getUserId(), friendshipReq.getFriendId());
-        
+        friendshipService.sendInvite(friendshipReq.getUserId(), friendshipReq.getFriendId());
         return ResponseEntity.ok().build();
     }
 
@@ -59,12 +57,7 @@ public class FriendshipController {
     @PreAuthorize("#u.getUserId() == principal.getUser().getId()")
     public ResponseEntity<?> unfriend(@P("u") @RequestBody BlindFriendshipReq friendshipReq){
 
-        try{
-            friendshipService.unfriend(friendshipReq.getUserId(), friendshipReq.getFriendId());
-        } catch (Exception ex){
-            return ResponseEntity.badRequest().build();
-        }
-
+        friendshipService.unfriend(friendshipReq.getUserId(), friendshipReq.getFriendId());
         return ResponseEntity.ok().build();
     }
 
@@ -72,42 +65,29 @@ public class FriendshipController {
     @PreAuthorize("#u.getUserId() == principal.getUser().getId()")
     public ResponseEntity<?> unrequest( @P("u") @RequestBody BlindFriendshipReq friendshipReq){
 
-        try{
-            friendshipService.unrequest(friendshipReq.getUserId(), friendshipReq.getFriendId());
-        } catch (Exception ex) {
-            return ResponseEntity.badRequest().build();
-        }
-
+        friendshipService.unrequest(friendshipReq.getUserId(), friendshipReq.getFriendId());
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(path = "/friends/{userId}")
+    @GetMapping(path = "/get/{userId}")
     @PreAuthorize("#u == principal.getUser().getId()")
     public ResponseEntity<?> getFriends(@P("u") @PathVariable Long userId){
 
         List<Friendship> friends;
-        try{
-            friends = friendshipService.getFriends(userId);
-        } catch (NoSuchElementException ex){
-            return ResponseEntity.badRequest().body(ex.getMessage());
-        }
 
+        friends = friendshipService.getFriends(userId);
         List<FriendshipRes> friendsResponse = ResponseUtils.createFriendshipResList(friends);
 
         return ResponseEntity.ok().body(friendsResponse);
     }
 
-    @GetMapping(path = "/friend-invites/{userId}")
+    @GetMapping(path = "/invites/{userId}")
     @PreAuthorize("#u == principal.getUser().getId()")
     public ResponseEntity<?> getFriendInvites(@P("u") @PathVariable Long userId){
 
         List<Friendship> friendInvites;
-        try{
-            friendInvites = friendshipService.getRequests(userId);
-        } catch (NoSuchElementException ex){
-            return ResponseEntity.badRequest().body(ex.getMessage());
-        }
 
+        friendInvites = friendshipService.getRequests(userId);
         List<FriendshipRes> friendInviteRes = ResponseUtils.createFriendshipResList(friendInvites);
         
         return ResponseEntity.ok().body(friendInviteRes);

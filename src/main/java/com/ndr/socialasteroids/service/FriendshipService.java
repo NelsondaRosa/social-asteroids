@@ -12,7 +12,7 @@ import com.ndr.socialasteroids.domain.entity.AppUser;
 import com.ndr.socialasteroids.domain.entity.Friendship;
 import com.ndr.socialasteroids.domain.entity.Friendship.Key;
 import com.ndr.socialasteroids.infra.data.repository.FriendshipRepository;
-import com.ndr.socialasteroids.infra.exception.DataInconsistencyException;
+import com.ndr.socialasteroids.infra.error.exception.DataInconsistencyException;
 
 @Service
 public class FriendshipService {
@@ -25,7 +25,7 @@ public class FriendshipService {
         this.userService = userService;
     }
 
-    public void sendRequest(Long userId, Long friendId) throws NoSuchElementException, EntityNotFoundException, DataInconsistencyException{
+    public void sendInvite(Long userId, Long friendId) throws NoSuchElementException, EntityNotFoundException, DataInconsistencyException{
         if(relationExists(userId, friendId)){
             throw new DataInconsistencyException("Invite already exists");
         }

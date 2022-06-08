@@ -19,13 +19,13 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserAuthService userAuthService;
+    private final UserPrincipalService userAuthService;
     private final PasswordEncoder passwordEncoder;
     private final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
     
 
     @Autowired
-    public SecurityConfig(PasswordEncoder passwordEncoder, UserAuthService userAuthService){
+    public SecurityConfig(PasswordEncoder passwordEncoder, UserPrincipalService userAuthService){
         this.userAuthService = userAuthService;
         this.passwordEncoder = passwordEncoder;
     }

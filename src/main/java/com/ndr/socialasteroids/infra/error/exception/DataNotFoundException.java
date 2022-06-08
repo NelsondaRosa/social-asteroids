@@ -1,4 +1,4 @@
-package com.ndr.socialasteroids.infra.exception;
+package com.ndr.socialasteroids.infra.error.exception;
 
 public class DataNotFoundException extends Exception {
 

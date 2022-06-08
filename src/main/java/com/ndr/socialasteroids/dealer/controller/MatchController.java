@@ -31,7 +31,7 @@ public class MatchController {
         this.matchService = matchService;
     }
     
-    @PostMapping(path = "/registerMatch")
+    @PostMapping(path = "/register")
     @PreAuthorize("#u.getPlayerId() == principal.getUser().getId()")
     public ResponseEntity<?> register(@P("u") @RequestBody MatchReq matchReq){
         Match match = matchReq.toDomainEntity();
@@ -44,7 +44,7 @@ public class MatchController {
         return ResponseEntity.ok().build();  
     }
 
-    @GetMapping(path = "/getMatches/{userId}")
+    @GetMapping(path = "/get/{userId}")
     public ResponseEntity<?> getMatches(@PathVariable Long userId){
         List<Match> matches;
         try{

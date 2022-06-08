@@ -1,5 +1,8 @@
 package com.ndr.socialasteroids.dealer.controller;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,16 +40,12 @@ public class UserController {
     }
 
     @PostMapping(path = "/register")
-    public ResponseEntity<?> register(@RequestBody UserReq userReq){
+    public ResponseEntity<?> register(@RequestBody UserReq userReq) throws URISyntaxException{
         AppUser user = userReq.toDomainEntity();
-        try{
-            userService.register(user);
-            
-        } catch (Exception ex) {
-            return ResponseEntity.badRequest().body(ex.getMessage());
-        }
+        AppUser userCreated = userService.register(user);
 
-        return ResponseEntity.ok().build();
+        //TODO: passar a lógica da hypermedia para o service
+        return ResponseEntity.created(new URI("localhost:8080/user/get/" + userCreated.getId())).build();
     }
 
     @GetMapping(path = "get/{userId}")

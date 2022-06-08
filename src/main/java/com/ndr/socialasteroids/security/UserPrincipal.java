@@ -5,16 +5,14 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.ndr.socialasteroids.dealer.payload.request.AppUserReq;
-
 import lombok.Data;
 
 @Data
 public class UserPrincipal implements UserDetails{
 
-    private AppUserReq user;
+    private AppUserDTO user;
 
-    public UserPrincipal(AppUserReq user){
+    public UserPrincipal(AppUserDTO user){
         this.user = user;
     }
 

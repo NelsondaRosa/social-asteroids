@@ -29,11 +29,11 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void register(AppUser user){
+    public AppUser register(AppUser user){
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         Role role = roleRepository.findByName(ERole.ROLE_USER).get();
         user.addRole(role);
-        userRepository.saveAndFlush(user);
+        return userRepository.saveAndFlush(user);
     }
 
     public AppUser getById(Long userId) throws EntityNotFoundException{
