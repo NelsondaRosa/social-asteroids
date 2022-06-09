@@ -1,4 +1,4 @@
-package com.ndr.socialasteroids.dealer.controller;
+package com.ndr.socialasteroids.merchant.controller;
 
 import java.util.List;
 
@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ndr.socialasteroids.dealer.payload.request.MatchReq;
-import com.ndr.socialasteroids.dealer.payload.response.MatchRes;
-import com.ndr.socialasteroids.dealer.payload.response.ResponseUtils;
+import com.ndr.socialasteroids.business.service.MatchService;
 import com.ndr.socialasteroids.domain.entity.Match;
-import com.ndr.socialasteroids.service.MatchService;
+import com.ndr.socialasteroids.merchant.payload.request.MatchReq;
+import com.ndr.socialasteroids.merchant.payload.response.MatchRes;
+import com.ndr.socialasteroids.merchant.payload.response.ResponseUtils;
 
 @RestController @RequestMapping("/match")
 public class MatchController

@@ -1,4 +1,4 @@
-package com.ndr.socialasteroids.dealer.controller;
+package com.ndr.socialasteroids.merchant.controller;
 
 import java.util.List;
 
@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ndr.socialasteroids.dealer.payload.request.BlindFriendshipReq;
-import com.ndr.socialasteroids.dealer.payload.request.FriendInviteAnswerReq;
-import com.ndr.socialasteroids.dealer.payload.response.FriendshipRes;
-import com.ndr.socialasteroids.dealer.payload.response.ResponseUtils;
+import com.ndr.socialasteroids.business.service.FriendshipService;
 import com.ndr.socialasteroids.domain.entity.Friendship;
-import com.ndr.socialasteroids.service.FriendshipService;
+import com.ndr.socialasteroids.merchant.payload.request.BlindFriendshipReq;
+import com.ndr.socialasteroids.merchant.payload.request.FriendInviteAnswerReq;
+import com.ndr.socialasteroids.merchant.payload.response.FriendshipRes;
+import com.ndr.socialasteroids.merchant.payload.response.ResponseUtils;
 @RestController
 @RequestMapping("/friend")
 public class FriendshipController

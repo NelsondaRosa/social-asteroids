@@ -1,4 +1,4 @@
-package com.ndr.socialasteroids.dealer.payload.request;
+package com.ndr.socialasteroids.merchant.payload.request;
 
 import com.ndr.socialasteroids.domain.entity.Match;
 

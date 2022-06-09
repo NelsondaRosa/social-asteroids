@@ -1,4 +1,4 @@
-package com.ndr.socialasteroids.service;
+package com.ndr.socialasteroids.business.service;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;

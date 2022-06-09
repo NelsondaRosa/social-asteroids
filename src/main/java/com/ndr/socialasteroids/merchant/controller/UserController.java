@@ -1,4 +1,4 @@
-package com.ndr.socialasteroids.dealer.controller;
+package com.ndr.socialasteroids.merchant.controller;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ndr.socialasteroids.dealer.payload.request.UserReq;
-import com.ndr.socialasteroids.dealer.payload.response.AppUserRes;
+import com.ndr.socialasteroids.business.service.UserService;
 import com.ndr.socialasteroids.domain.entity.AppUser;
-import com.ndr.socialasteroids.service.UserService;
+import com.ndr.socialasteroids.merchant.payload.request.UserReq;
+import com.ndr.socialasteroids.merchant.payload.response.AppUserRes;
 
 @RestController
 @RequestMapping("/user")

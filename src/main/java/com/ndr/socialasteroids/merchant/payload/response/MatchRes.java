@@ -1,4 +1,4 @@
-package com.ndr.socialasteroids.dealer.payload.response;
+package com.ndr.socialasteroids.merchant.payload.response;
 
 import java.time.Duration;
 
