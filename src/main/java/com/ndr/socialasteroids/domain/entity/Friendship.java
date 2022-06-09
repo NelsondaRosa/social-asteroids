@@ -10,6 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ndr.socialasteroids.infra.error.exception.DataInconsistencyException;
 
 import lombok.Data;
 
@@ -48,8 +49,11 @@ public class Friendship
         private Long userId;
         private Long friendId;
 
-        public Key(Long userId, Long friendId)
+        public Key(Long userId, Long friendId) throws DataInconsistencyException
         {
+            if (userId.equals(friendId))
+                throw new DataInconsistencyException("You cant invite yourself");
+            
             this.userId = userId;
             this.friendId = friendId;
         }

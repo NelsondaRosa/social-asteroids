@@ -32,7 +32,7 @@ public class FriendshipController
         this.friendshipService = friendshipService;
     }
 
-    @PostMapping(path = "/sendinvite")
+    @PostMapping(path = "/send-invite")
     @PreAuthorize("#u.getUserId() == principal.getUser().getId()")
     public ResponseEntity<?> sendInvite(@P("u") @RequestBody BlindFriendshipReq friendshipReq)
     {
@@ -40,14 +40,14 @@ public class FriendshipController
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping(path = "/answer-request")
+    @PostMapping(path = "/answer-invite")
     @PreAuthorize("#u.getRequestedId() == principal.getUser().getId()")
-    public ResponseEntity<?> answerRequest(@P("u") @RequestBody FriendInviteAnswerReq friendAnswerReq)
+    public ResponseEntity<?> answerInvite(@P("u") @RequestBody FriendInviteAnswerReq friendAnswerReq)
     {
         Friendship friendshipRequest = 
             friendshipService.getByIds(friendAnswerReq.getRequesterId(), friendAnswerReq.getRequestedId());
             
-        friendshipService.answerFriendshipRequest(friendshipRequest, friendAnswerReq.isAccepted());
+        friendshipService.answerFriendshipInvite(friendshipRequest, friendAnswerReq.isAccepted());
 
         return ResponseEntity.ok().build();
     }
@@ -72,11 +72,12 @@ public class FriendshipController
     @PreAuthorize("#u == principal.getUser().getId()")
     public ResponseEntity<?> getFriends(@P("u") @PathVariable Long userId)
     {
-        List<Friendship> friends;
+        List<Friendship> friends = friendshipService.getFriends(userId);
 
-        friends = friendshipService.getFriends(userId);
-        List<FriendshipRes> friendsResponse = ResponseUtils.createFriendshipResList(friends);
+        if(friends.size() <= 0)
+            return ResponseEntity.noContent().build();
 
+        List<FriendshipRes> friendsResponse = ResponseUtils.createFriendshipResponseList(friends);
         return ResponseEntity.ok().body(friendsResponse);
     }
 
@@ -84,11 +85,12 @@ public class FriendshipController
     @PreAuthorize("#u == principal.getUser().getId()")
     public ResponseEntity<?> getFriendInvites(@P("u") @PathVariable Long userId)
     {
-        List<Friendship> friendInvites;
+        List<Friendship> friendInvites = friendshipService.getInvites(userId);
 
-        friendInvites = friendshipService.getRequests(userId);
-        List<FriendshipRes> friendInviteRes = ResponseUtils.createFriendshipResList(friendInvites);
-        
+        if(friendInvites.size() <= 0)
+            return ResponseEntity.noContent().build();
+
+        List<FriendshipRes> friendInviteRes = ResponseUtils.createFriendshipResponseList(friendInvites);
         return ResponseEntity.ok().body(friendInviteRes);
     }
 }

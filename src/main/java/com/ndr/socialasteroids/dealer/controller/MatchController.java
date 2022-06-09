@@ -1,6 +1,7 @@
 package com.ndr.socialasteroids.dealer.controller;
 
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,8 +19,7 @@ import com.ndr.socialasteroids.dealer.payload.response.ResponseUtils;
 import com.ndr.socialasteroids.domain.entity.Match;
 import com.ndr.socialasteroids.service.MatchService;
 
-@RestController
-@RequestMapping("/match")
+@RestController @RequestMapping("/match")
 public class MatchController
 {
     private final MatchService matchService;
@@ -29,25 +29,25 @@ public class MatchController
     {
         this.matchService = matchService;
     }
-    
-    @PostMapping(path = "/register")
-    @PreAuthorize("#u.getPlayerId() == principal.getUser().getId()")
+
+    @PostMapping(path = "/register") @PreAuthorize("#u.getPlayerId() == principal.getUser().getId()")
     public ResponseEntity<?> register(@P("u") @RequestBody MatchReq matchReq)
     {
         Match match = matchReq.toDomainEntity();
-        matchService.registerMatch(matchReq.getPlayerId(), match);
+        matchService.register(matchReq.getPlayerId(), match);
 
-        return ResponseEntity.ok().build();  
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping(path = "/get/{userId}")
     public ResponseEntity<?> getMatches(@PathVariable Long userId)
     {
-        List<Match> matches;
-        matches = matchService.getMatches(userId);
+        List<Match> matches = matchService.getMatches(userId);
 
-        List<MatchRes> matchesRes = ResponseUtils.createMatchResList(matches);
+        if(matches.size() <= 0)
+            return ResponseEntity.noContent().build();
 
+        List<MatchRes> matchesRes = ResponseUtils.createMatchResponseList(matches);
         return ResponseEntity.ok().body(matchesRes);
     }
 }

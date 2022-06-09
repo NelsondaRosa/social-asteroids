@@ -2,11 +2,10 @@ package com.ndr.socialasteroids.infra.error.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class DataNotFoundException extends AbstractApiRuntimeException
+public class InexistentResourceException extends AbstractApiRuntimeException
 {
-    public DataNotFoundException(String message)
+    public InexistentResourceException(String message)
     {
         super(HttpStatus.NOT_FOUND, message);
     }
-    
 }

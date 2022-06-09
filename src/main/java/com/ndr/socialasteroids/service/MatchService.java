@@ -13,12 +13,13 @@ import com.ndr.socialasteroids.domain.entity.Match;
 import com.ndr.socialasteroids.infra.data.repository.MatchRepository;
 
 @Service
-public class MatchService {
-    
+public class MatchService
+{
+
     private final MatchRepository matchRepository;
     private final UserService userService;
 
-    @Autowired  
+    @Autowired
     public MatchService(MatchRepository matchRepository, UserService userService)
     {
         this.matchRepository = matchRepository;
@@ -31,7 +32,7 @@ public class MatchService {
         return newMatch;
     }
 
-    public Match registerMatch(Long userId, Match match) throws NoSuchElementException, EntityNotFoundException
+    public Match register(Long userId, Match match) throws NoSuchElementException, EntityNotFoundException
     {
         AppUser user = userService.getById(userId);
         user.addMatch(match);

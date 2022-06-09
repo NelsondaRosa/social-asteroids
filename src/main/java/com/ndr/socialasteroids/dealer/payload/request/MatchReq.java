@@ -8,13 +8,9 @@ import lombok.Data;
 public class MatchReq
 {
     private Long durationInMilis;
-
     private Long score;
-
     private Long ammoSpent;
-
     private Long destroyedTargets;
-
     private Long playerId;
 
     public Match toDomainEntity()

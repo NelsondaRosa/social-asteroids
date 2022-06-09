@@ -5,15 +5,16 @@ import java.time.LocalDateTime;
 import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 
 @Data
 public class ErrorDetails
 {
-
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private LocalDateTime timestamp;
+    @JsonIgnore
     private HttpStatus status;
     private String message;
 
@@ -33,5 +34,4 @@ public class ErrorDetails
         this(status);
         this.message = message;
     }
-    
 }
