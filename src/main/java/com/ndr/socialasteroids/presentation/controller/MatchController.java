@@ -1,4 +1,4 @@
-package com.ndr.socialasteroids.merchant.controller;
+package com.ndr.socialasteroids.presentation.controller;
 
 import java.util.List;
 
@@ -13,11 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ndr.socialasteroids.business.DTOs.MatchDTO;
 import com.ndr.socialasteroids.business.service.MatchService;
-import com.ndr.socialasteroids.domain.entity.Match;
-import com.ndr.socialasteroids.merchant.payload.request.MatchReq;
-import com.ndr.socialasteroids.merchant.payload.response.MatchRes;
-import com.ndr.socialasteroids.merchant.payload.response.ResponseUtils;
+import com.ndr.socialasteroids.presentation.payload.request.MatchRequest;
+
 
 @RestController @RequestMapping("/match")
 public class MatchController
@@ -30,11 +29,17 @@ public class MatchController
         this.matchService = matchService;
     }
 
-    @PostMapping(path = "/register") @PreAuthorize("#u.getPlayerId() == principal.getUser().getId()")
-    public ResponseEntity<?> register(@P("u") @RequestBody MatchReq matchReq)
+    @PostMapping(path = "/register")
+    @PreAuthorize("#u.getPlayerId() == principal.getUser().getId()")
+    public ResponseEntity<?> register(@P("u") @RequestBody MatchRequest matchReq)
     {
-        Match match = matchReq.toDomainEntity();
-        matchService.register(matchReq.getPlayerId(), match);
+        matchService.register(
+            matchReq.getPlayerId(),
+            matchReq.getDurationInMilis(),
+            matchReq.getScore(),
+            matchReq.getAmmoSpent(),
+            matchReq.getDestroyedTargets()
+        );
 
         return ResponseEntity.ok().build();
     }
@@ -42,12 +47,11 @@ public class MatchController
     @GetMapping(path = "/get/{userId}")
     public ResponseEntity<?> getMatches(@PathVariable Long userId)
     {
-        List<Match> matches = matchService.getMatches(userId);
+        List<MatchDTO> matches = matchService.getMatches(userId);
 
-        if(matches.size() <= 0)
+        if(matches.isEmpty())
             return ResponseEntity.noContent().build();
 
-        List<MatchRes> matchesRes = ResponseUtils.createMatchResponseList(matches);
-        return ResponseEntity.ok().body(matchesRes);
+        return ResponseEntity.ok().body(matches);
     }
 }

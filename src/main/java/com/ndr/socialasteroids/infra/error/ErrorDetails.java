@@ -1,5 +1,6 @@
 package com.ndr.socialasteroids.infra.error;
 
+import java.net.URI;
 import java.time.LocalDateTime;
 
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,8 @@ public class ErrorDetails
     @JsonIgnore
     private HttpStatus status;
     private String message;
+    //TODO
+    private URI retryUri;
 
     private ErrorDetails()
     {

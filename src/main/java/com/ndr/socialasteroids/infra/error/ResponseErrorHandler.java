@@ -11,12 +11,14 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.ndr.socialasteroids.infra.error.exception.DataInconsistencyException;
-import com.ndr.socialasteroids.infra.error.exception.InexistentResourceException;
+import com.ndr.socialasteroids.infra.error.exception.DuplicateValueException;
+import com.ndr.socialasteroids.infra.error.exception.InexistentDataException;
 
 @Order(Ordered.HIGHEST_PRECEDENCE) @ControllerAdvice
 public class ResponseErrorHandler extends ResponseEntityExceptionHandler
@@ -24,20 +26,29 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
 
     Logger logger = LoggerFactory.getLogger(ResponseErrorHandler.class);
 
-    @ExceptionHandler(InexistentResourceException.class)
-    protected ResponseEntity<ErrorDetails> handleInexistentResource(InexistentResourceException exception)
+    // ------------------------- CUSTOM EXCEPTIONS ----------------------------
+    @ExceptionHandler(InexistentDataException.class)
+    protected ResponseEntity<ErrorDetails> handleInexistentResource(InexistentDataException exception)
     {
-        ErrorDetails error = new ErrorDetails(HttpStatus.NOT_FOUND, exception.getMessage());
+        ErrorDetails error = new ErrorDetails(exception.getStatus(), exception.getMessage());
         return buildResponse(error);
     }
 
     @ExceptionHandler(DataInconsistencyException.class)
     protected ResponseEntity<ErrorDetails> handleDataInconsistency(DataInconsistencyException exception)
     {
-        ErrorDetails error = new ErrorDetails(HttpStatus.CONFLICT, exception.getMessage());
+        ErrorDetails error = new ErrorDetails(exception.getStatus(), exception.getMessage());
         return buildResponse(error);
     }
 
+    @ExceptionHandler(DuplicateValueException.class)
+    protected ResponseEntity<ErrorDetails> handleDuplicateValueException(DuplicateValueException exception)
+    {
+        ErrorDetails error = new ErrorDetails(exception.getStatus(), exception.getMessage());
+        return buildResponse(error);
+    }
+
+    // ------------------------- IMPORTED EXCEPTIONS ----------------------------
     @ExceptionHandler(NoSuchElementException.class)
     protected ResponseEntity<ErrorDetails> handleNotSuchElement(NoSuchElementException exception)
     {
@@ -55,15 +66,23 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
     @ExceptionHandler(IllegalArgumentException.class)
     protected ResponseEntity<ErrorDetails> handleIllegalArgument(IllegalArgumentException exception)
     {
-        ErrorDetails error = new ErrorDetails(HttpStatus.BAD_REQUEST, "Sent data can't be handled");
+        ErrorDetails error = new ErrorDetails(HttpStatus.BAD_REQUEST, "Sent data is innapropriate, can't process");
         return buildResponse(error);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     protected ResponseEntity<ErrorDetails> handleAccessDenied(AccessDeniedException exception)
     {
-        ErrorDetails error = new ErrorDetails(HttpStatus.UNAUTHORIZED,
-                "Requesting user is not allowed to do this");
+        ErrorDetails error = new ErrorDetails(HttpStatus.UNAUTHORIZED, "Requesting user is not allowed to do this");
+
+        return buildResponse(error);
+    }
+    
+    @ExceptionHandler(UsernameNotFoundException.class)
+    protected ResponseEntity<ErrorDetails> handleUsernameNotFound(UsernameNotFoundException exception)
+    {
+        //TODO: Better response - handle also wrong password - the same way
+        ErrorDetails error = new ErrorDetails(HttpStatus.NOT_FOUND, "Wrong user data");
 
         return buildResponse(error);
     }

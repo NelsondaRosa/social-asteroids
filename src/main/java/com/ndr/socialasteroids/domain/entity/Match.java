@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -32,28 +33,34 @@ public class Match
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     @Column(name = "match_on", columnDefinition = "TIMESTAMP", nullable = false)
     private LocalDateTime matchOn;
 
+    @NotNull
     @Column(name = "time_zone_id", nullable = false)
     @Convert(converter = ZoneIdConverter.class)
     private ZoneId zoneId;
 
+    @NotNull
     @Column(name = "duration", nullable = false)
     @Convert(converter = DurationConverter.class)
     private Duration duration;
 
+    @NotNull
     @Column(name = "score", nullable = false)
     private Long score;
 
+    @NotNull
     @Column(name = "ammo_spent", nullable = false)
     private Long ammoSpent;
 
+    @NotNull
     @Column(name = "destroyed_targets", nullable = false)
     private Long destroyedTargets;
 
     @ManyToOne
-    private AppUser player;
+    private User player;
 
     public Match()
     {

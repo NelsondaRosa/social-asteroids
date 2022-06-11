@@ -8,6 +8,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ndr.socialasteroids.infra.error.exception.DataInconsistencyException;
@@ -22,18 +23,20 @@ public class Friendship
     @EmbeddedId
     private Key key = new Key();
 
+    @NotNull
     @ManyToOne
     @MapsId("userId")
-    private AppUser user;
+    private User user;
 
+    @NotNull
     @ManyToOne
     @MapsId("friendId")
-    private AppUser friend;
+    private User friend;
 
     @Column(nullable = false)
     private boolean accepted;
 
-    public Friendship(AppUser user, AppUser friend, boolean accepted)
+    public Friendship(User user, User friend, boolean accepted)
     {
         this.user = user;
         this.friend = friend;

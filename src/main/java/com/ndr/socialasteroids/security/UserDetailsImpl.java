@@ -1,20 +1,42 @@
 package com.ndr.socialasteroids.security;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.ndr.socialasteroids.domain.entity.User;
 
 import lombok.Data;
 
 @Data
-public class UserPrincipal implements UserDetails
+public class UserDetailsImpl implements UserDetails
 {
-    private AppUserDTO user;
+    private UserSecurityDTO user;
+    private Collection<? extends GrantedAuthority> authorities;
 
-    public UserPrincipal(AppUserDTO user)
+    public UserDetailsImpl(UserSecurityDTO user)
     {
         this.user = user;
+    }
+
+    public UserDetailsImpl(UserSecurityDTO user, Collection<? extends GrantedAuthority> authorities)
+    {
+        this.user = user;
+        this.authorities = authorities;
+    }
+
+    public static UserDetailsImpl build(User user)
+    {
+        List<GrantedAuthority> authorities =
+            user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName().name()))
+                .collect(Collectors.toList());
+            
+        return new UserDetailsImpl(new UserSecurityDTO(user), authorities);    
     }
 
     @Override
@@ -31,8 +53,7 @@ public class UserPrincipal implements UserDetails
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return authorities;
     }
 
     @Override

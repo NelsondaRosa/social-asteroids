@@ -8,17 +8,18 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ndr.socialasteroids.domain.entity.AppUser;
+import com.ndr.socialasteroids.business.DTOs.UserDTO;
+import com.ndr.socialasteroids.domain.entity.User;
 import com.ndr.socialasteroids.infra.data.repository.UserRepository;
 
 @Service
-public class UserPrincipalService implements UserDetailsService
+public class UserDetailsServiceImpl implements UserDetailsService
 {
 
     private final UserRepository userRepository;
 
     @Autowired
-    public UserPrincipalService(UserRepository userRepository)
+    public UserDetailsServiceImpl(UserRepository userRepository)
     {
         this.userRepository = userRepository;
     }
@@ -27,12 +28,13 @@ public class UserPrincipalService implements UserDetailsService
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
     {
-        AppUser user = userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(username).orElseThrow();
+        
         if(user == null){
             throw new UsernameNotFoundException("Cannot find user " + username);
         }
 
-        UserDetails userDetails = new UserPrincipal(new AppUserDTO(user));
+        UserDetails userDetails = new UserDetailsImpl(new UserSecurityDTO(user));
 
         return userDetails;
     }

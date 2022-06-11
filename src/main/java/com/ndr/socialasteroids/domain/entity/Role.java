@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import com.ndr.socialasteroids.domain.enums.ERole;
 
@@ -22,6 +23,7 @@ public class Role
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private ERole name;
 

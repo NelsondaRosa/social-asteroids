@@ -1,4 +1,4 @@
-package com.ndr.socialasteroids.merchant.payload.response;
+package com.ndr.socialasteroids.business.DTOs;
 
 import java.time.Duration;
 
@@ -7,20 +7,18 @@ import com.ndr.socialasteroids.domain.entity.Match;
 import lombok.Data;
 
 @Data
-public class MatchRes
+public class MatchDTO
 {
     private Duration duration;
     private Long score;
     private Long ammoSpent;
     private Long destroyedTargets;
-
-    public MatchRes(Match match)
+    
+    public MatchDTO(Match match)
     {
         this.duration = match.getDuration();
         this.score = match.getScore();
         this.ammoSpent = match.getAmmoSpent();
-        this.destroyedTargets = match.getDestroyedTargets();
+        this.destroyedTargets = match.getAmmoSpent();
     }
-
-    public MatchRes(){}
 }

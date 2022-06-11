@@ -1,4 +1,4 @@
-package com.ndr.socialasteroids.merchant.controller;
+package com.ndr.socialasteroids.presentation.controller;
 
 import java.util.List;
 
@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ndr.socialasteroids.business.service.FriendshipService;
 import com.ndr.socialasteroids.domain.entity.Friendship;
-import com.ndr.socialasteroids.merchant.payload.request.BlindFriendshipReq;
-import com.ndr.socialasteroids.merchant.payload.request.FriendInviteAnswerReq;
-import com.ndr.socialasteroids.merchant.payload.response.FriendshipRes;
-import com.ndr.socialasteroids.merchant.payload.response.ResponseUtils;
+import com.ndr.socialasteroids.presentation.payload.request.BlindFriendshipReq;
+import com.ndr.socialasteroids.presentation.payload.request.FriendInviteAnswerReq;
+import com.ndr.socialasteroids.presentation.payload.response.FriendshipRes;
+import com.ndr.socialasteroids.presentation.payload.response.ResponseUtils;
 @RestController
 @RequestMapping("/friend")
 public class FriendshipController
@@ -56,7 +56,7 @@ public class FriendshipController
     @PreAuthorize("#u.getUserId() == principal.getUser().getId()")
     public ResponseEntity<?> unfriend(@P("u") @RequestBody BlindFriendshipReq friendshipReq)
     {
-        friendshipService.unfriend(friendshipReq.getUserId(), friendshipReq.getFriendId());
+        //+++friendshipService.unfriend(friendshipReq.getUserId(), friendshipReq.getFriendId());
         return ResponseEntity.ok().build();
     }
 

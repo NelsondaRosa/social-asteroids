@@ -2,14 +2,16 @@ package com.ndr.socialasteroids.business.service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ndr.socialasteroids.domain.entity.AppUser;
+import com.ndr.socialasteroids.business.DTOs.MatchDTO;
 import com.ndr.socialasteroids.domain.entity.Match;
+import com.ndr.socialasteroids.domain.entity.User;
 import com.ndr.socialasteroids.infra.data.repository.MatchRepository;
 
 @Service
@@ -32,19 +34,26 @@ public class MatchService
         return newMatch;
     }
 
-    public Match register(Long userId, Match match) throws NoSuchElementException, EntityNotFoundException
+    public MatchDTO register(Long userId, Long duration, Long score, Long ammoSpent, Long destroyedTargets) throws NoSuchElementException, EntityNotFoundException
     {
-        AppUser user = userService.getById(userId);
-        user.addMatch(match);
+        User user = userService.getEntityById(userId);
+        Match match = new Match(duration, score, ammoSpent, destroyedTargets);
 
-        Match registeredMatch = save(match);
+        user.addMatch(match);
+        MatchDTO registeredMatch = new MatchDTO(save(match));
 
         return registeredMatch;
     }
 
-    public List<Match> getMatches(Long userId) throws EntityNotFoundException
+    public List<MatchDTO> getMatches(Long userId) throws EntityNotFoundException
     {
-        AppUser player = userService.getById(userId);
-        return matchRepository.findByPlayer(player);
+        User player = userService.getEntityById(userId);
+        List<MatchDTO> matches = 
+                matchRepository.findByPlayer(player).orElseThrow()
+                        .stream()
+                        .map((match) -> new MatchDTO(match))
+                        .collect(Collectors.toList());
+
+        return matches;
     }
 }

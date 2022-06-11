@@ -1,8 +1,6 @@
 package com.ndr.socialasteroids.domain.entity;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -18,6 +16,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -37,39 +36,42 @@ import lombok.Data;
 @JsonIdentityInfo(
     generator = ObjectIdGenerators.PropertyGenerator.class, 
     property = "id")
-public class AppUser
+public class User
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     @Column(name = "username", nullable = false)
     private String username;
 
+    @NotNull
     @Column(name = "email", nullable = false)
     private String email;
 
+    @NotNull
     @Column(name = "password", nullable = false)
     private String password;
 
-    //TODO: Testar remoção de JSON Ignore de todas entidades
+    //TODO: Testar remoção de JSON Ignore de todas entidades com ele
     @JsonIgnore
     @OneToMany(mappedBy = "player", orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Match> matches = new ArrayList<Match>();
+    private Set<Match> matches = new HashSet<Match>();
     
     @JsonIgnore
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Friendship> friends = new HashSet<Friendship>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "users_roles",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<Role>();
 
-    public AppUser(){}
-    public AppUser(String username, String email, String password)
+    public User(){}
+    public User(String username, String email, String password)
     {
         this.username = username;
         this.email = email;

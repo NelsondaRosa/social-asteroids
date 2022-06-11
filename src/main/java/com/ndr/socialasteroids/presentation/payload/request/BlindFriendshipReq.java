@@ -1,4 +1,4 @@
-package com.ndr.socialasteroids.merchant.payload.request;
+package com.ndr.socialasteroids.presentation.payload.request;
 
 import lombok.Data;
 

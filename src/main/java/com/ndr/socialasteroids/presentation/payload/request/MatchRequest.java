@@ -1,11 +1,11 @@
-package com.ndr.socialasteroids.merchant.payload.request;
+package com.ndr.socialasteroids.presentation.payload.request;
 
 import com.ndr.socialasteroids.domain.entity.Match;
 
 import lombok.Data;
 
 @Data
-public class MatchReq
+public class MatchRequest
 {
     private Long durationInMilis;
     private Long score;
@@ -22,6 +22,6 @@ public class MatchReq
         return match;
     }
 
-    public MatchReq(){};
+    public MatchRequest(){};
     
 }

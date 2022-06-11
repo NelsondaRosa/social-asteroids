@@ -8,12 +8,12 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ndr.socialasteroids.domain.entity.AppUser;
+import com.ndr.socialasteroids.domain.entity.User;
 import com.ndr.socialasteroids.domain.entity.Friendship;
 import com.ndr.socialasteroids.domain.entity.Friendship.Key;
 import com.ndr.socialasteroids.infra.data.repository.FriendshipRepository;
 import com.ndr.socialasteroids.infra.error.exception.DataInconsistencyException;
-import com.ndr.socialasteroids.infra.error.exception.InexistentResourceException;
+import com.ndr.socialasteroids.infra.error.exception.InexistentDataException;
 
 @Service
 public class FriendshipService
@@ -36,8 +36,8 @@ public class FriendshipService
             throw new DataInconsistencyException("Invite already exists");
         }
 
-        AppUser user = userService.getById(userId);
-        AppUser friend = userService.getById(friendId);
+        User user = userService.getEntityById(userId);
+        User friend = userService.getEntityById(friendId);
 
         // Se a relação já existir do lado oposto,cria a relação do lado atual e
         // ativa o status de amizade
@@ -58,10 +58,9 @@ public class FriendshipService
         }
     }
 
-    public List<Friendship> getInvites(Long userId) throws InexistentResourceException
+    public List<Friendship> getInvites(Long userId) throws NoSuchElementException
     {
-        List<Friendship> requests = friendRepository.findInvitesById(userId)
-                .orElseThrow(() -> new InexistentResourceException("User not found"));
+        List<Friendship> requests = friendRepository.findInvitesById(userId).orElseThrow();
 
         return requests;
     }
@@ -69,7 +68,6 @@ public class FriendshipService
     public void answerFriendshipInvite(Friendship friendshipRequest, boolean accepted)
             throws DataInconsistencyException, EntityNotFoundException, IllegalArgumentException
     {
-        // Evita deleção de dados parciais
         if (relationExists(friendshipRequest.getFriend().getId(), friendshipRequest.getUser().getId()))
             throw new DataInconsistencyException("Friendship already requested by the other part");
 
@@ -86,11 +84,10 @@ public class FriendshipService
         }
     }
 
-    public List<Friendship> getFriends(Long userId) throws InexistentResourceException
+    public List<Friendship> getFriends(Long userId) throws NoSuchElementException
     {
-        AppUser user = userService.getById(userId);
-        List<Friendship> friends = friendRepository.findAllByUser(user)
-                .orElseThrow(() -> new InexistentResourceException("User doesn't exists"));
+        User user = userService.getEntityById(userId);
+        List<Friendship> friends = friendRepository.findAllByUser(user).orElseThrow();
 
         return friends;
     }
@@ -103,26 +100,24 @@ public class FriendshipService
 
     public void unrequest(Long userId, Long friendId) throws IllegalArgumentException, DataInconsistencyException
     {
-        if (relationExists(userId, friendId) && !relationExists(friendId, userId))
-        {
-            friendRepository.deleteById(new Key(userId, friendId));
-        } else
+        if (!relationExists(userId, friendId) && !relationExists(friendId, userId))
         {
             throw new DataInconsistencyException("The friendship invte doesn't exists");
         }
+
+        friendRepository.deleteById(new Key(userId, friendId));
+        
     }
 
-    public void unfriend(Long userId, Long friendId) throws IllegalArgumentException, InexistentResourceException
+    public void unfriend(Long userId, Long friendId) throws IllegalArgumentException, InexistentDataException
     {
-        if (relationExists(userId, friendId) && relationExists(friendId, userId))
+        if (!relationExists(userId, friendId) && relationExists(friendId, userId))
         {
-            friendRepository.deleteById(new Key(userId, friendId));
-            friendRepository.deleteById(new Key(friendId, userId));
-        } else
-        {
-            throw new InexistentResourceException("Friendship doesn't exists");
+            throw new InexistentDataException("Friendship doesn't exists");   
         }
 
+        friendRepository.deleteById(new Key(userId, friendId));
+        friendRepository.deleteById(new Key(friendId, userId));
     }
 
     private boolean relationExists(Long userId, Long friendId)
