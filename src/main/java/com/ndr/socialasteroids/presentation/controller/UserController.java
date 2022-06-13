@@ -3,6 +3,7 @@ package com.ndr.socialasteroids.presentation.controller;
 import java.net.URISyntaxException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
@@ -15,10 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ndr.socialasteroids.business.DTOs.UserDTO;
 import com.ndr.socialasteroids.business.service.UserService;
-import com.ndr.socialasteroids.presentation.payload.request.RegisterUserRequest;
-import com.ndr.socialasteroids.presentation.payload.request.UpdateUserRequest;
-import com.ndr.socialasteroids.presentation.payload.response.Pair;
-import com.ndr.socialasteroids.presentation.payload.response.ResponseHandler;
+import com.ndr.socialasteroids.presentation.payload.request.user.RegisterUserRequest;
+import com.ndr.socialasteroids.presentation.payload.request.user.UpdatePasswordRequest;
+import com.ndr.socialasteroids.presentation.payload.request.user.UpdateUserRequest;
 
 @RestController
 @RequestMapping("/user")
@@ -39,33 +39,36 @@ public class UserController
     }
 
     @PostMapping(path = "/register")
-    public ResponseEntity<?> register(@RequestBody RegisterUserRequest userReq) throws URISyntaxException
+    public ResponseEntity<?> register(@RequestBody RegisterUserRequest request) throws URISyntaxException
     {
         UserDTO newUser = 
-            userService.register(userReq.getUsername(), userReq.getEmail(), userReq.getPassword());
-        
-        var responseBody = ResponseHandler.createResponseBody(
-          Pair.build("id",newUser.getId()),
-          Pair.build("username",newUser.getUsername()),
-          Pair.build("email",newUser.getEmail())  
-        );
+            userService.register(request.getUsername(), request.getEmail(), request.getPassword());
 
-        return ResponseEntity.ok().body(responseBody);
-        //TODO: passar a lógica da hypermedia para o service
-        //return ResponseEntity.created(new URI("localhost:8080/user/get/" + newUser.getId())).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
     @PostMapping(path = "/update")
-    @PreAuthorize("#u.id == principal.getUser().getId()")
-    public ResponseEntity<?> update(@P("u") @RequestBody UpdateUserRequest userReq)
+    @PreAuthorize("#user.id == principal.getUser().getId()")
+    public ResponseEntity<?> updateInfo(@P("user") @RequestBody UpdateUserRequest request)
     {
-        UserDTO updatedUser = userService.update(userReq.getId(), userReq.getUsername(), userReq.getEmail());
+        UserDTO updatedUser = userService.update(
+                                            request.getId(),
+                                            request.getUsername(),
+                                            request.getEmail());
 
-        var responseBody = ResponseHandler.createResponseBody(
-            Pair.build("username", updatedUser.getUsername()),
-            Pair.build("email", updatedUser.getEmail()));
+        return ResponseEntity.ok().body(updatedUser);
+    }
 
-        return ResponseEntity.ok().body(responseBody);
+    @PostMapping(path = "/update-password")
+    @PreAuthorize("#user.id == principal.getUser().getId()")
+    public ResponseEntity<?> updatePassword(@P("user") @RequestBody UpdatePasswordRequest request)
+    {
+        UserDTO updatedUser = userService.updatePassword(
+                                            request.getId(),
+                                            request.getActualPassword(),
+                                            request.getNewPassword());
+        
+        return ResponseEntity.ok().body(updatedUser);
     }
 
     @GetMapping(path = "get/{userId}")

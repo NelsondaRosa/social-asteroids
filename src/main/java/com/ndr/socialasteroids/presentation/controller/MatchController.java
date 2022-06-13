@@ -3,6 +3,7 @@ package com.ndr.socialasteroids.presentation.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ndr.socialasteroids.business.DTOs.MatchDTO;
 import com.ndr.socialasteroids.business.service.MatchService;
-import com.ndr.socialasteroids.presentation.payload.request.MatchRequest;
+import com.ndr.socialasteroids.presentation.payload.request.match.MatchRequest;
 
 
 @RestController @RequestMapping("/match")
@@ -30,18 +31,18 @@ public class MatchController
     }
 
     @PostMapping(path = "/register")
-    @PreAuthorize("#u.getPlayerId() == principal.getUser().getId()")
-    public ResponseEntity<?> register(@P("u") @RequestBody MatchRequest matchReq)
+    @PreAuthorize("#user.getPlayerId() == principal.getUser().getId()")
+    public ResponseEntity<?> register(@P("user") @RequestBody MatchRequest request)
     {
         matchService.register(
-            matchReq.getPlayerId(),
-            matchReq.getDurationInMilis(),
-            matchReq.getScore(),
-            matchReq.getAmmoSpent(),
-            matchReq.getDestroyedTargets()
+            request.getPlayerId(),
+            request.getDurationInMilis(),
+            request.getScore(),
+            request.getAmmoSpent(),
+            request.getDestroyedTargets()
         );
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping(path = "/get/{userId}")

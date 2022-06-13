@@ -8,7 +8,6 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
-import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ndr.socialasteroids.infra.error.exception.DataInconsistencyException;
@@ -23,12 +22,10 @@ public class Friendship
     @EmbeddedId
     private Key key = new Key();
 
-    @NotNull
     @ManyToOne
     @MapsId("userId")
     private User user;
 
-    @NotNull
     @ManyToOne
     @MapsId("friendId")
     private User friend;
@@ -55,7 +52,7 @@ public class Friendship
         public Key(Long userId, Long friendId) throws DataInconsistencyException
         {
             if (userId.equals(friendId))
-                throw new DataInconsistencyException("You cant invite yourself");
+                throw new DataInconsistencyException("You cant befriend yourself");
             
             this.userId = userId;
             this.friendId = friendId;

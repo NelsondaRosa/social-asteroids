@@ -3,6 +3,7 @@ package com.ndr.socialasteroids.presentation.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
@@ -14,12 +15,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ndr.socialasteroids.business.DTOs.FriendshipDTO;
+import com.ndr.socialasteroids.business.DTOs.UserDTO;
 import com.ndr.socialasteroids.business.service.FriendshipService;
-import com.ndr.socialasteroids.domain.entity.Friendship;
-import com.ndr.socialasteroids.presentation.payload.request.BlindFriendshipReq;
-import com.ndr.socialasteroids.presentation.payload.request.FriendInviteAnswerReq;
-import com.ndr.socialasteroids.presentation.payload.response.FriendshipRes;
-import com.ndr.socialasteroids.presentation.payload.response.ResponseUtils;
+import com.ndr.socialasteroids.presentation.payload.request.friendship.AnswerFriendshipRequest;
+import com.ndr.socialasteroids.presentation.payload.request.friendship.FriendshipRequest;
 @RestController
 @RequestMapping("/friend")
 public class FriendshipController
@@ -33,64 +33,60 @@ public class FriendshipController
     }
 
     @PostMapping(path = "/send-invite")
-    @PreAuthorize("#u.getUserId() == principal.getUser().getId()")
-    public ResponseEntity<?> sendInvite(@P("u") @RequestBody BlindFriendshipReq friendshipReq)
+    @PreAuthorize("#user.getUserId() == principal.getUser().getId()")
+    public ResponseEntity<?> sendInvite(@P("user") @RequestBody FriendshipRequest friendshipReq)
     {
         friendshipService.sendInvite(friendshipReq.getUserId(), friendshipReq.getFriendId());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping(path = "/answer-invite")
-    @PreAuthorize("#u.getRequestedId() == principal.getUser().getId()")
-    public ResponseEntity<?> answerInvite(@P("u") @RequestBody FriendInviteAnswerReq friendAnswerReq)
-    {
-        Friendship friendshipRequest = 
-            friendshipService.getByIds(friendAnswerReq.getRequesterId(), friendAnswerReq.getRequestedId());
-            
-        friendshipService.answerFriendshipInvite(friendshipRequest, friendAnswerReq.isAccepted());
-
-        return ResponseEntity.ok().build();
+    @PreAuthorize("#user.getUserId() == principal.getUser().getId()")
+    public ResponseEntity<?> answerInvite(@P("user") @RequestBody AnswerFriendshipRequest request)
+    {       
+        UserDTO inviter = 
+            friendshipService.answerFriendshipInvite(request.getUserId(), request.getInviterId(), request.isAccepted());
+    
+        return ResponseEntity.status(HttpStatus.CREATED).body(inviter);
     }
 
     @DeleteMapping(path = "/unfriend")
-    @PreAuthorize("#u.getUserId() == principal.getUser().getId()")
-    public ResponseEntity<?> unfriend(@P("u") @RequestBody BlindFriendshipReq friendshipReq)
+    @PreAuthorize("#user.getUserId() == principal.getUser().getId()")
+    public ResponseEntity<?> unfriend(@P("user") @RequestBody FriendshipRequest request)
     {
-        //+++friendshipService.unfriend(friendshipReq.getUserId(), friendshipReq.getFriendId());
-        return ResponseEntity.ok().build();
+        friendshipService.unfriend(request.getUserId(), request.getFriendId());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping(path = "/unrequest")
-    @PreAuthorize("#u.getUserId() == principal.getUser().getId()")
-    public ResponseEntity<?> unrequest( @P("u") @RequestBody BlindFriendshipReq friendshipReq)
+    @PreAuthorize("#user.getUserId() == principal.getUser().getId()")
+    public ResponseEntity<?> unrequest( @P("user") @RequestBody FriendshipRequest request)
     {
-        friendshipService.unrequest(friendshipReq.getUserId(), friendshipReq.getFriendId());
-        return ResponseEntity.ok().build();
+        friendshipService.unrequest(request.getUserId(), request.getFriendId());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @GetMapping(path = "/get/{userId}")
-    @PreAuthorize("#u == principal.getUser().getId()")
-    public ResponseEntity<?> getFriends(@P("u") @PathVariable Long userId)
+    @PreAuthorize("#user == principal.getUser().getId()")
+    public ResponseEntity<?> getFriends(@P("user") @PathVariable Long userId)
     {
-        List<Friendship> friends = friendshipService.getFriends(userId);
+        List<FriendshipDTO> friends = friendshipService.getFriends(userId);
 
         if(friends.size() <= 0)
             return ResponseEntity.noContent().build();
 
-        List<FriendshipRes> friendsResponse = ResponseUtils.createFriendshipResponseList(friends);
-        return ResponseEntity.ok().body(friendsResponse);
+        return ResponseEntity.ok().body(friends);
     }
 
     @GetMapping(path = "/invites/{userId}")
-    @PreAuthorize("#u == principal.getUser().getId()")
-    public ResponseEntity<?> getFriendInvites(@P("u") @PathVariable Long userId)
+    @PreAuthorize("#user == principal.getUser().getId()")
+    public ResponseEntity<?> getFriendInvites(@P("user") @PathVariable Long userId)
     {
-        List<Friendship> friendInvites = friendshipService.getInvites(userId);
+        List<FriendshipDTO> friendInvites = friendshipService.getInvites(userId);
 
         if(friendInvites.size() <= 0)
             return ResponseEntity.noContent().build();
 
-        List<FriendshipRes> friendInviteRes = ResponseUtils.createFriendshipResponseList(friendInvites);
-        return ResponseEntity.ok().body(friendInviteRes);
+        return ResponseEntity.ok().body(friendInvites);
     }
 }

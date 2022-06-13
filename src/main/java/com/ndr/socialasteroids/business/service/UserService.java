@@ -1,9 +1,9 @@
 package com.ndr.socialasteroids.business.service;
 
-import org.springframework.security.access.AccessDeniedException;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -57,9 +57,7 @@ public class UserService
         return userDTO;
     }
 
-    public UserDTO update(Long id,
-                          String username,
-                          String email)
+    public UserDTO update(Long id, String username, String email)
         throws NoSuchElementException
     {
         User userToUpdate = userRepository.findById(id).orElseThrow();

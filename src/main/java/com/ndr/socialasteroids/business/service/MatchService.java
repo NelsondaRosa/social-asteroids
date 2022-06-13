@@ -34,12 +34,18 @@ public class MatchService
         return newMatch;
     }
 
-    public MatchDTO register(Long userId, Long duration, Long score, Long ammoSpent, Long destroyedTargets) throws NoSuchElementException, EntityNotFoundException
+    public MatchDTO register(
+            Long userId,
+            Long duration,
+            Long score,
+            Long ammoSpent,
+            Long destroyedTargets)
+        throws NoSuchElementException, EntityNotFoundException
     {
         User user = userService.getEntityById(userId);
         Match match = new Match(duration, score, ammoSpent, destroyedTargets);
+        match.setPlayer(user);
 
-        user.addMatch(match);
         MatchDTO registeredMatch = new MatchDTO(save(match));
 
         return registeredMatch;

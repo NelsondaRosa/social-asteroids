@@ -1,4 +1,4 @@
-package com.ndr.socialasteroids.presentation.payload.request;
+package com.ndr.socialasteroids.presentation.payload.request.match;
 
 import com.ndr.socialasteroids.domain.entity.Match;
 

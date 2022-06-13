@@ -1,16 +1,20 @@
 package com.ndr.socialasteroids.business.service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ndr.socialasteroids.domain.entity.User;
+import com.ndr.socialasteroids.business.DTOs.FriendshipDTO;
+import com.ndr.socialasteroids.business.DTOs.UserDTO;
 import com.ndr.socialasteroids.domain.entity.Friendship;
 import com.ndr.socialasteroids.domain.entity.Friendship.Key;
+import com.ndr.socialasteroids.domain.entity.User;
 import com.ndr.socialasteroids.infra.data.repository.FriendshipRepository;
 import com.ndr.socialasteroids.infra.error.exception.DataInconsistencyException;
 import com.ndr.socialasteroids.infra.error.exception.InexistentDataException;
@@ -58,63 +62,63 @@ public class FriendshipService
         }
     }
 
-    public List<Friendship> getInvites(Long userId) throws NoSuchElementException
+    public List<FriendshipDTO> getInvites(Long userId) throws NoSuchElementException
     {
-        List<Friendship> requests = friendRepository.findInvitesById(userId).orElseThrow();
-
-        return requests;
+       var inviteList = friendRepository.findInvitesById(userId).orElseThrow();
+    
+       return entityListToDTOList(inviteList);
     }
 
-    public void answerFriendshipInvite(Friendship friendshipRequest, boolean accepted)
+    public UserDTO answerFriendshipInvite(Long userId, Long inviterId, Boolean accepted)
             throws DataInconsistencyException, EntityNotFoundException, IllegalArgumentException
     {
-        if (relationExists(friendshipRequest.getFriend().getId(), friendshipRequest.getUser().getId()))
-            throw new DataInconsistencyException("Friendship already requested by the other part");
+        if (relationExists(userId, inviterId))
+            throw new DataInconsistencyException("Invite or friendship already exist");
+
+        User user = userService.getEntityById(userId);
+        User friend = userService.getEntityById(inviterId);
+        Friendship invite = getByIds(inviterId, userId);
 
         if (accepted)
         {
-            friendshipRequest.setAccepted(true);
-            Friendship friendship = new Friendship(friendshipRequest.getFriend(), friendshipRequest.getUser(), true);
-
-            friendRepository.saveAndFlush(friendshipRequest);
-            friendRepository.saveAndFlush(friendship);
+            Friendship answer = new Friendship(user, friend, true);
+            invite.setAccepted(true);
+            
+            friendRepository.saveAndFlush(answer);
+            friendRepository.saveAndFlush(invite);
         } else
         {
-            friendRepository.delete(friendshipRequest);
+            invite = getByIds(inviterId, userId);
+            friendRepository.delete(invite);
         }
+
+        return new UserDTO(friend);
     }
 
-    public List<Friendship> getFriends(Long userId) throws NoSuchElementException
+    public List<FriendshipDTO> getFriends(Long userId) throws NoSuchElementException
     {
         User user = userService.getEntityById(userId);
-        List<Friendship> friends = friendRepository.findAllByUser(user).orElseThrow();
-
-        return friends;
-    }
-
-    public Friendship getByIds(Long userId, Long friendId) throws EntityNotFoundException
-    {
-        Friendship friendship = friendRepository.getById(new Key(userId, friendId));
-        return friendship;
+        var friendsList = friendRepository.findAllByUser(user).orElseThrow();
+                
+        return entityListToDTOList(friendsList);
     }
 
     public void unrequest(Long userId, Long friendId) throws IllegalArgumentException, DataInconsistencyException
     {
-        if (!relationExists(userId, friendId) && !relationExists(friendId, userId))
-        {
-            throw new DataInconsistencyException("The friendship invte doesn't exists");
-        }
+        if (!relationExists(friendId, userId))
+            throw new DataInconsistencyException("The invite doesn't exist");
 
-        friendRepository.deleteById(new Key(userId, friendId));
-        
+        Friendship inverseFriendship = getByIds(friendId, userId);
+        if (inverseFriendship.isAccepted())
+            throw new DataInconsistencyException("Cant unrequest a friendship that is accepted");
+
+        friendRepository.deleteById(new Key(friendId, userId));
     }
 
     public void unfriend(Long userId, Long friendId) throws IllegalArgumentException, InexistentDataException
     {
-        if (!relationExists(userId, friendId) && relationExists(friendId, userId))
-        {
+        if (!relationExists(userId, friendId))
             throw new InexistentDataException("Friendship doesn't exists");   
-        }
 
         friendRepository.deleteById(new Key(userId, friendId));
         friendRepository.deleteById(new Key(friendId, userId));
@@ -123,6 +127,20 @@ public class FriendshipService
     private boolean relationExists(Long userId, Long friendId)
     {
         return friendRepository.existsById(new Key(userId, friendId));
+    }
+
+    private Friendship getByIds(Long userId, Long friendId) throws EntityNotFoundException
+    {
+        Friendship friendship = friendRepository.getById(new Key(userId, friendId));
+        return friendship;
+    }
+
+    private List<FriendshipDTO> entityListToDTOList(Collection<Friendship> list)
+    {
+        return list
+                    .stream()
+                    .map(friendship -> new FriendshipDTO(friendship))
+                    .collect(Collectors.toList());
     }
 
 }
