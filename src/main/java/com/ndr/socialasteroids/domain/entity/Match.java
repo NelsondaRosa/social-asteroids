@@ -27,7 +27,7 @@ import lombok.Data;
     generator = ObjectIdGenerators.PropertyGenerator.class, 
     property = "id")
 public class Match
-{  
+{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

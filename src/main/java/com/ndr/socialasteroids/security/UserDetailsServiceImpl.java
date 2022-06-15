@@ -1,6 +1,7 @@
 package com.ndr.socialasteroids.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,6 +12,7 @@ import com.ndr.socialasteroids.domain.entity.User;
 import com.ndr.socialasteroids.infra.data.repository.UserRepository;
 
 @Service
+@Primary
 public class UserDetailsServiceImpl implements UserDetailsService
 {
     private final UserRepository userRepository;
@@ -28,8 +30,6 @@ public class UserDetailsServiceImpl implements UserDetailsService
         User user = userRepository.findByUsername(username)
                                     .orElseThrow(() -> new UsernameNotFoundException("Cannot find user " + username));
 
-        UserDetails userDetails = new UserDetailsImpl(new UserSecurityDTO(user));
-
-        return userDetails;
+        return UserDetailsImpl.build(user);
     }    
 }

@@ -8,6 +8,5 @@ public class DuplicateValueException extends AbstractApiRuntimeException
     public DuplicateValueException(String message)
     {
         super(HttpStatus.CONFLICT, message);
-        //TODO Auto-generated constructor stub
     }
 }

@@ -15,17 +15,17 @@ import lombok.Data;
 @Data
 public class UserDetailsImpl implements UserDetails
 {
-    private UserSecurityDTO user;
+    private UserSecurityDTO userSecurityInfo;
     private Collection<? extends GrantedAuthority> authorities;
 
     public UserDetailsImpl(UserSecurityDTO user)
     {
-        this.user = user;
+        this.userSecurityInfo = user;
     }
 
     public UserDetailsImpl(UserSecurityDTO user, Collection<? extends GrantedAuthority> authorities)
     {
-        this.user = user;
+        this.userSecurityInfo = user;
         this.authorities = authorities;
     }
 
@@ -42,12 +42,12 @@ public class UserDetailsImpl implements UserDetails
     @Override
     public String getUsername()
     {
-        return user.getUsername();
+        return userSecurityInfo.getUsername();
     }
 
     @Override
     public String getPassword(){
-        return user.getPassword();
+        return userSecurityInfo.getPassword();
     }
 
     @Override
@@ -83,5 +83,4 @@ public class UserDetailsImpl implements UserDetails
         // TODO Auto-generated method stub
         return true;
     }
-    
 }

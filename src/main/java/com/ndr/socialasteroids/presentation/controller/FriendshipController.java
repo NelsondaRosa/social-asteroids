@@ -33,7 +33,7 @@ public class FriendshipController
     }
 
     @PostMapping(path = "/send-invite")
-    @PreAuthorize("#user.getUserId() == principal.getUser().getId()")
+    @PreAuthorize("#user.getUserId() == principal.getUserSecurityInfo().getId()")
     public ResponseEntity<?> sendInvite(@P("user") @RequestBody FriendshipRequest friendshipReq)
     {
         friendshipService.sendInvite(friendshipReq.getUserId(), friendshipReq.getFriendId());
@@ -41,7 +41,7 @@ public class FriendshipController
     }
 
     @PostMapping(path = "/answer-invite")
-    @PreAuthorize("#user.getUserId() == principal.getUser().getId()")
+    @PreAuthorize("#user.getUserId() == principal.getUserSecurityInfo().getId()")
     public ResponseEntity<?> answerInvite(@P("user") @RequestBody AnswerFriendshipRequest request)
     {       
         UserDTO inviter = 
@@ -51,7 +51,7 @@ public class FriendshipController
     }
 
     @DeleteMapping(path = "/unfriend")
-    @PreAuthorize("#user.getUserId() == principal.getUser().getId()")
+    @PreAuthorize("#user.getUserId() == principal.getUserSecurityInfo().getId()")
     public ResponseEntity<?> unfriend(@P("user") @RequestBody FriendshipRequest request)
     {
         friendshipService.unfriend(request.getUserId(), request.getFriendId());
@@ -59,7 +59,7 @@ public class FriendshipController
     }
 
     @DeleteMapping(path = "/unrequest")
-    @PreAuthorize("#user.getUserId() == principal.getUser().getId()")
+    @PreAuthorize("#user.getUserId() == principal.getUserSecurityInfo().getId()")
     public ResponseEntity<?> unrequest( @P("user") @RequestBody FriendshipRequest request)
     {
         friendshipService.unrequest(request.getUserId(), request.getFriendId());
@@ -67,7 +67,7 @@ public class FriendshipController
     }
 
     @GetMapping(path = "/get/{userId}")
-    @PreAuthorize("#user == principal.getUser().getId()")
+    @PreAuthorize("#user == principal.getUserSecurityInfo().getId()")
     public ResponseEntity<?> getFriends(@P("user") @PathVariable Long userId)
     {
         List<FriendshipDTO> friends = friendshipService.getFriends(userId);
@@ -79,7 +79,7 @@ public class FriendshipController
     }
 
     @GetMapping(path = "/invites/{userId}")
-    @PreAuthorize("#user == principal.getUser().getId()")
+    @PreAuthorize("#user == principal.getUserSecurityInfo().getId()")
     public ResponseEntity<?> getFriendInvites(@P("user") @PathVariable Long userId)
     {
         List<FriendshipDTO> friendInvites = friendshipService.getInvites(userId);

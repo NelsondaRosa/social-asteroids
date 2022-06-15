@@ -31,7 +31,7 @@ public class MatchController
     }
 
     @PostMapping(path = "/register")
-    @PreAuthorize("#user.getPlayerId() == principal.getUser().getId()")
+    @PreAuthorize("#user.getPlayerId() == principal.getUserSecurityInfo().getId()")
     public ResponseEntity<?> register(@P("user") @RequestBody MatchRequest request)
     {
         matchService.register(

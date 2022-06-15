@@ -11,14 +11,17 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.ndr.socialasteroids.infra.error.exception.DataInconsistencyException;
 import com.ndr.socialasteroids.infra.error.exception.DuplicateValueException;
 import com.ndr.socialasteroids.infra.error.exception.InexistentDataException;
+import com.ndr.socialasteroids.infra.error.exception.JwtException;
 
 @Order(Ordered.HIGHEST_PRECEDENCE) @ControllerAdvice
 public class ResponseErrorHandler extends ResponseEntityExceptionHandler
@@ -28,21 +31,28 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
 
     // ------------------------- CUSTOM EXCEPTIONS ----------------------------
     @ExceptionHandler(InexistentDataException.class)
-    protected ResponseEntity<ErrorDetails> handleInexistentResource(InexistentDataException exception)
+    protected ResponseEntity<ErrorDetails> handleInexistentResource(InexistentDataException exception, WebRequest request)
     {
         ErrorDetails error = new ErrorDetails(exception.getStatus(), exception.getMessage());
         return buildResponse(error);
     }
 
     @ExceptionHandler(DataInconsistencyException.class)
-    protected ResponseEntity<ErrorDetails> handleDataInconsistency(DataInconsistencyException exception)
+    protected ResponseEntity<ErrorDetails> handleDataInconsistency(DataInconsistencyException exception, WebRequest request)
     {
         ErrorDetails error = new ErrorDetails(exception.getStatus(), exception.getMessage());
         return buildResponse(error);
     }
 
     @ExceptionHandler(DuplicateValueException.class)
-    protected ResponseEntity<ErrorDetails> handleDuplicateValueException(DuplicateValueException exception)
+    protected ResponseEntity<ErrorDetails> handleDuplicateValue(DuplicateValueException exception, WebRequest request)
+    {
+        ErrorDetails error = new ErrorDetails(exception.getStatus(), exception.getMessage());
+        return buildResponse(error);
+    }
+
+    @ExceptionHandler(JwtException.class)
+    protected ResponseEntity<ErrorDetails> handleUserAuthentication(JwtException exception, WebRequest request)
     {
         ErrorDetails error = new ErrorDetails(exception.getStatus(), exception.getMessage());
         return buildResponse(error);
@@ -50,49 +60,54 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
 
     // ------------------------- IMPORTED EXCEPTIONS ----------------------------
     @ExceptionHandler(NoSuchElementException.class)
-    protected ResponseEntity<ErrorDetails> handleNotSuchElement(NoSuchElementException exception)
+    protected ResponseEntity<ErrorDetails> handleNotSuchElement(NoSuchElementException exception, WebRequest request)
     {
         ErrorDetails error = new ErrorDetails(HttpStatus.NOT_FOUND, "No such data in the DB");
         return buildResponse(error);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
-    protected ResponseEntity<ErrorDetails> handleEntityNotFound(EntityNotFoundException exception)
+    protected ResponseEntity<ErrorDetails> handleEntityNotFound(EntityNotFoundException exception, WebRequest request)
     {
         ErrorDetails error = new ErrorDetails(HttpStatus.NOT_FOUND, "Data can't be found anymore");
         return buildResponse(error);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    protected ResponseEntity<ErrorDetails> handleIllegalArgument(IllegalArgumentException exception)
+    protected ResponseEntity<ErrorDetails> handleIllegalArgument(IllegalArgumentException exception, WebRequest request)
     {
-        ErrorDetails error = new ErrorDetails(HttpStatus.BAD_REQUEST, "Sent data is innapropriate, can't process");
+        logger.error(exception.getMessage());
+        ErrorDetails error = new ErrorDetails(HttpStatus.BAD_REQUEST, "Sent data is incorrect");
         return buildResponse(error);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    protected ResponseEntity<ErrorDetails> handleAccessDenied(AccessDeniedException exception)
+    protected ResponseEntity<ErrorDetails> handleAccessDenied(AccessDeniedException exception, WebRequest request)
     {
-        ErrorDetails error = new ErrorDetails(HttpStatus.UNAUTHORIZED, "Requesting user is not allowed to do this");
-
+        ErrorDetails error = new ErrorDetails(HttpStatus.UNAUTHORIZED, "Access denied for this operation");
         return buildResponse(error);
     }
     
     @ExceptionHandler(UsernameNotFoundException.class)
-    protected ResponseEntity<ErrorDetails> handleUsernameNotFound(UsernameNotFoundException exception)
+    protected ResponseEntity<ErrorDetails> handleUsernameNotFound(UsernameNotFoundException exception, WebRequest request)
     {
-        //TODO: Better response - handle also wrong password - the same way
         ErrorDetails error = new ErrorDetails(HttpStatus.NOT_FOUND, "Wrong user data");
+        return buildResponse(error);
+    }
 
+    @ExceptionHandler(AuthenticationException.class)
+    protected ResponseEntity<ErrorDetails> handleAuthentication(AuthenticationException exception, WebRequest request)
+    {
+        ErrorDetails error = new ErrorDetails(HttpStatus.UNAUTHORIZED, "Unauthorized");
         return buildResponse(error);
     }
 
     @ExceptionHandler(Exception.class)
-    protected ResponseEntity<ErrorDetails> handleException(Exception exception)
+    protected ResponseEntity<ErrorDetails> handleServerException(Exception exception, WebRequest request)
     {
         ErrorDetails error = new ErrorDetails(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error");
 
-        logger.error(exception.getMessage());
+        logger.error("Unexpected error : " + exception.getMessage());
         exception.printStackTrace();
 
         return buildResponse(error);

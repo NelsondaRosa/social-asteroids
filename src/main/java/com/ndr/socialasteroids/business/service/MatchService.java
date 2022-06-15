@@ -57,7 +57,7 @@ public class MatchService
         List<MatchDTO> matches = 
                 matchRepository.findByPlayer(player).orElseThrow()
                         .stream()
-                        .map((match) -> new MatchDTO(match))
+                        .map(MatchDTO::new)
                         .collect(Collectors.toList());
 
         return matches;

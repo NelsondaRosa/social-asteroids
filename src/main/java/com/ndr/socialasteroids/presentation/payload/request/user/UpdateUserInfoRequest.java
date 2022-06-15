@@ -3,7 +3,7 @@ package com.ndr.socialasteroids.presentation.payload.request.user;
 import lombok.Data;
 
 @Data
-public class UpdateUserRequest
+public class UpdateUserInfoRequest
 {
     private Long id;
     private String username;

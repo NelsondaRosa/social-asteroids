@@ -66,7 +66,7 @@ public class FriendshipService
     {
        var inviteList = friendRepository.findInvitesById(userId).orElseThrow();
     
-       return entityListToDTOList(inviteList);
+       return entityCollectionToDTOList(inviteList);
     }
 
     public UserDTO answerFriendshipInvite(Long userId, Long inviterId, Boolean accepted)
@@ -100,7 +100,7 @@ public class FriendshipService
         User user = userService.getEntityById(userId);
         var friendsList = friendRepository.findAllByUser(user).orElseThrow();
                 
-        return entityListToDTOList(friendsList);
+        return entityCollectionToDTOList(friendsList);
     }
 
     public void unrequest(Long userId, Long friendId) throws IllegalArgumentException, DataInconsistencyException
@@ -135,11 +135,11 @@ public class FriendshipService
         return friendship;
     }
 
-    private List<FriendshipDTO> entityListToDTOList(Collection<Friendship> list)
+    private List<FriendshipDTO> entityCollectionToDTOList(Collection<Friendship> collection)
     {
-        return list
+        return collection
                     .stream()
-                    .map(friendship -> new FriendshipDTO(friendship))
+                    .map(FriendshipDTO::new)
                     .collect(Collectors.toList());
     }
 

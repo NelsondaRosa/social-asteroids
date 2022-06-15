@@ -12,15 +12,17 @@ public class UserSecurityDTO
 {
     private Long id;
     private String username;
+    private String email;
     private String password;
     private Set<Role> roles;
 
-    public UserSecurityDTO(User appUser)
+    public UserSecurityDTO(User user)
     {
-        this.id = appUser.getId();
-        this.username = appUser.getUsername();
-        this.password = appUser.getPassword();
-        this.roles = appUser.getRoles();
+        this.id = user.getId();
+        this.username = user.getUsername();
+        this.password = user.getPassword();
+        this.email = user.getEmail();
+        this.roles = user.getRoles();
     }
 
     public UserSecurityDTO(Long id, String username, String password, Set<Role> roles)
