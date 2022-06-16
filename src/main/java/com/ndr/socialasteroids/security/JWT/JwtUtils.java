@@ -21,25 +21,21 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtUtils
 {
-    //@Value("${sa.jwt.secret}")
-    //private String stringKey;
     @Value("${sa.jwt.expiration-ms}")
-    private int jwtExpirationMs;
+    private static int jwtExpirationMs;
+
     @Value("${sa.jwt.cookie-name}")
-    private String jwtCookieName;
+    private static String jwtCookieName;
+
     @Value("${sa.jwt.cookie-path}")
-    private String jwtCookiePath;
+    private static String jwtCookiePath;
+
     @Value("${sa.jwt.cookie-max-age}")
-    private long cookieMaxAge;
+    private static long cookieMaxAge;
 
-    private Key jwtKey;
+    private static Key jwtKey = Keys.hmacShaKeyFor("B@46a01a1569cdfa14332fwj3780409a1kk3h4d0oed".getBytes());
 
-    public JwtUtils()
-    {
-        jwtKey = Keys.hmacShaKeyFor("B@46a0ef6fasdfqwwfdsfasdasdewqeasfxgsdgqwdwasfsdgqwasd".getBytes());
-    }
-
-    public String getJwtFromCookies(HttpServletRequest request)
+    public static String getJwtFromCookies(HttpServletRequest request)
     {
         Cookie cookie = WebUtils.getCookie(request, jwtCookieName);
 
@@ -52,18 +48,24 @@ public class JwtUtils
         }
     }
 
-    public void eraseJwtCookie(HttpServletRequest request, HttpServletResponse response)
+    public static void eraseJwtCookie(HttpServletRequest request, HttpServletResponse response)
     {
-        Cookie cookie = WebUtils.getCookie(request, jwtCookieName);
-        if (cookie != null)
-        {
-            cookie.setValue(null);
-            cookie.setMaxAge(0);
-            response.addCookie(cookie);
+        //TODO:: getCookie está dando exceção para cookie não existente, deveria retornar null, verificar isso
+        try{
+            Cookie cookie = WebUtils.getCookie(request, jwtCookieName);
+
+            if (cookie != null)
+            {
+                cookie.setValue(null);
+                cookie.setMaxAge(0);
+                response.addCookie(cookie);
+            }
+        } catch(NullPointerException ex) {
+            return;
         }
     }
 
-    public ResponseCookie generateJwtCookie(UserDetailsImpl userPrincipal)
+    public static ResponseCookie generateJwtCookie(UserDetailsImpl userPrincipal)
     {
         String jwt = generateTokenFromUsername(userPrincipal.getUsername());
         ResponseCookie cookie = ResponseCookie.from(jwtCookieName, jwt).path(jwtCookiePath).maxAge(cookieMaxAge)
@@ -72,18 +74,18 @@ public class JwtUtils
         return cookie;
     }
 
-    public ResponseCookie getCleanJwtCookie()
+    public static ResponseCookie getCleanJwtCookie()
     {
         ResponseCookie cookie = ResponseCookie.from(jwtCookieName, null).path(jwtCookiePath).build();
         return cookie;
     }
 
-    public String getUsernameFromJwtToken(String jws)
+    public static String getUsernameFromJwtToken(String jws)
     {
         return Jwts.parserBuilder().setSigningKey(jwtKey).build().parseClaimsJws(jws).getBody().getSubject();
     }
 
-    public boolean validateJwtToken(String authToken)
+    public static boolean validateJwtToken(String authToken)
     {
         try{
             Jwts.parserBuilder().setSigningKey(jwtKey).build().parseClaimsJws(authToken);
@@ -94,7 +96,7 @@ public class JwtUtils
         }
     }
 
-    private String generateTokenFromUsername(String username)
+    private static String generateTokenFromUsername(String username)
     {
         return Jwts.builder()
                 .setSubject(username)

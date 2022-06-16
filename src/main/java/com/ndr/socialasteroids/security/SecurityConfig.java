@@ -63,7 +63,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 .antMatchers("/h2-console", "/h2-console/**").permitAll()
                 .antMatchers("/auth/**").permitAll()
                 .anyRequest().authenticated()
-                .and()
+            .and()// Inicio - habilitar H2 Console
+                //.csrf().ignoringAntMatchers("/h2-console/**")
+                .headers().frameOptions().sameOrigin()
+            .and()// Fim - Habilitar H2 Console
             .exceptionHandling()
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
 

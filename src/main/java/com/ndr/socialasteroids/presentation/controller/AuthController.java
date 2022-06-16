@@ -14,33 +14,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ndr.socialasteroids.business.DTOs.UserDTO;
+import com.ndr.socialasteroids.business.service.AuthService;
 import com.ndr.socialasteroids.business.service.UserService;
 import com.ndr.socialasteroids.presentation.payload.request.user.CreateUserRequest;
 import com.ndr.socialasteroids.presentation.payload.request.user.LoginRequest;
 import com.ndr.socialasteroids.security.JWT.JwtUtils;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AuthController
 {
-    private final UserService userService;
-    private final JwtUtils jwtUtils;
+    private final @NonNull AuthService authService;
+    private final @NonNull UserService userService;
 
-    @Autowired
-    public AuthController(UserService userService, JwtUtils jwtUtils)
-    {
-        this.userService = userService;
-        this.jwtUtils = jwtUtils;
-    }
-    @PostMapping(path = "/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest)
-    {
-        UserDTO user = userService.authenticateUser(loginRequest.getUsername(), loginRequest.getPassword());
-        ResponseCookie cookie = userService.createJwtCookie();
-
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(user);
-    }
-    
     @PostMapping(path = "/signup")
     public ResponseEntity<?> signup(@RequestBody CreateUserRequest request) throws URISyntaxException
     {
@@ -48,11 +38,28 @@ public class AuthController
 
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
+
+    @PostMapping(path = "/refresh-token")
+    public ResponseEntity<?> refreshToken(@RequestBody String refreshToken)
+    {
+        ResponseCookie cookie = authService.generateJwtCookieFromRefreshToken(refreshToken);
+
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
+    }
+    
+    @PostMapping(path = "/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest)
+    {
+        UserDTO user = authService.authenticateUser(loginRequest.getUsername(), loginRequest.getPassword());
+        ResponseCookie cookie = authService.createJwtCookie();
+
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(user);
+    }
     
     @GetMapping(path = "/logout")
     public ResponseEntity<?> logout()
     {
-        ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
+        ResponseCookie cookie = JwtUtils.getCleanJwtCookie();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
-    }   
+    }
 }

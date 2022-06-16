@@ -20,17 +20,15 @@ import com.ndr.socialasteroids.business.DTOs.UserDTO;
 import com.ndr.socialasteroids.business.service.FriendshipService;
 import com.ndr.socialasteroids.presentation.payload.request.friendship.AnswerFriendshipRequest;
 import com.ndr.socialasteroids.presentation.payload.request.friendship.FriendshipRequest;
+
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/friend")
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class FriendshipController
 {
-    private final FriendshipService friendshipService;
-
-    @Autowired
-    public FriendshipController(FriendshipService friendshipService)
-    {
-        this.friendshipService = friendshipService;
-    }
+    private final @NonNull FriendshipService friendshipService;
 
     @PostMapping(path = "/send-invite")
     @PreAuthorize("#user.getUserId() == principal.getUserSecurityInfo().getId()")

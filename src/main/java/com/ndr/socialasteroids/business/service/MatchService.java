@@ -14,19 +14,16 @@ import com.ndr.socialasteroids.domain.entity.Match;
 import com.ndr.socialasteroids.domain.entity.User;
 import com.ndr.socialasteroids.infra.data.repository.MatchRepository;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class MatchService
 {
 
-    private final MatchRepository matchRepository;
-    private final UserService userService;
-
-    @Autowired
-    public MatchService(MatchRepository matchRepository, UserService userService)
-    {
-        this.matchRepository = matchRepository;
-        this.userService = userService;
-    }
+    private final @NonNull MatchRepository matchRepository;
+    private final @NonNull UserService userService;
 
     public Match save(Match match)
     {

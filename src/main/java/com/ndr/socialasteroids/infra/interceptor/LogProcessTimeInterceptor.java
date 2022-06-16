@@ -30,7 +30,22 @@ public class LogProcessTimeInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception
+    {
+        // logger.info(Boolean.toString(request.getSession().isNew()));
+
+        // Enumeration<String> attNames = request.getSession().getAttributeNames();
+        // if (!attNames.hasMoreElements())
+        //     logger.info("NO ELEMENTS ON THE SESSION STORAGE MY MAN");
+
+        // while (attNames.hasMoreElements())
+        // {
+        //     String attName = attNames.nextElement();
+        //     Object att = request.getSession().getAttribute(attName);
+        //     logger.info(att.toString());
+        // }
+
+
         startTime = System.currentTimeMillis();
         return true;
     }

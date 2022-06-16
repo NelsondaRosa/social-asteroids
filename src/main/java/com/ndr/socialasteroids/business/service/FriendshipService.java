@@ -19,18 +19,15 @@ import com.ndr.socialasteroids.infra.data.repository.FriendshipRepository;
 import com.ndr.socialasteroids.infra.error.exception.DataInconsistencyException;
 import com.ndr.socialasteroids.infra.error.exception.InexistentDataException;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class FriendshipService
 {
-    private final FriendshipRepository friendRepository;
-    private final UserService userService;
-
-    @Autowired
-    public FriendshipService(FriendshipRepository friendshiRepository, UserService userService)
-    {
-        this.friendRepository = friendshiRepository;
-        this.userService = userService;
-    }
+    private final @NonNull FriendshipRepository friendRepository;
+    private final @NonNull UserService userService;
 
     public void sendInvite(Long userId, Long friendId)
             throws NoSuchElementException, EntityNotFoundException, DataInconsistencyException, IllegalArgumentException

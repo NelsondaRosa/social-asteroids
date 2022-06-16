@@ -17,18 +17,14 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.ndr.socialasteroids.security.UserDetailsServiceImpl;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+
 @Component
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AuthTokenFilter extends OncePerRequestFilter
 {
-    private final UserDetailsServiceImpl userDetailsService;
-    private final JwtUtils jwtUtils;
-
-    @Autowired
-    public AuthTokenFilter(UserDetailsServiceImpl userDetailsService, JwtUtils jwtUtils)
-    {
-        this.userDetailsService = userDetailsService;
-        this.jwtUtils = jwtUtils;
-    }
+    private final @NonNull UserDetailsServiceImpl userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -36,13 +32,13 @@ public class AuthTokenFilter extends OncePerRequestFilter
     {
         try
         {   
-            String jwt = jwtUtils.getJwtFromCookies(request);
+            String jwt = JwtUtils.getJwtFromCookies(request);
 
             if (jwt != null)
             {
-                if(jwtUtils.validateJwtToken(jwt))
+                if(JwtUtils.validateJwtToken(jwt))
                 {
-                    String username = jwtUtils.getUsernameFromJwtToken(jwt);
+                    String username = JwtUtils.getUsernameFromJwtToken(jwt);
                     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                     UsernamePasswordAuthenticationToken authentication = 
                                                             new UsernamePasswordAuthenticationToken(
@@ -51,12 +47,12 @@ public class AuthTokenFilter extends OncePerRequestFilter
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 } else {
-                    jwtUtils.eraseJwtCookie(request, response);
+                    JwtUtils.eraseJwtCookie(request, response);
                 }
             }
         } catch (Exception e)
         {
-            jwtUtils.eraseJwtCookie(request, response);
+            JwtUtils.eraseJwtCookie(request, response);
         }
 
         filterChain.doFilter(request, response);

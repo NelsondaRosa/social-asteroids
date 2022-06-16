@@ -18,17 +18,15 @@ import com.ndr.socialasteroids.business.DTOs.MatchDTO;
 import com.ndr.socialasteroids.business.service.MatchService;
 import com.ndr.socialasteroids.presentation.payload.request.match.MatchRequest;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+
 
 @RestController @RequestMapping("/match")
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class MatchController
 {
-    private final MatchService matchService;
-
-    @Autowired
-    public MatchController(MatchService matchService)
-    {
-        this.matchService = matchService;
-    }
+    private final @NonNull MatchService matchService;
 
     @PostMapping(path = "/register")
     @PreAuthorize("#user.getPlayerId() == principal.getUserSecurityInfo().getId()")

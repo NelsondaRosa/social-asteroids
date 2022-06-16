@@ -16,17 +16,15 @@ import com.ndr.socialasteroids.business.service.UserService;
 import com.ndr.socialasteroids.presentation.payload.request.user.UpdatePasswordRequest;
 import com.ndr.socialasteroids.presentation.payload.request.user.UpdateUserInfoRequest;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/user")
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class UserController 
 {
-    private final UserService userService;
-    
-    @Autowired
-    public UserController(UserService userService)
-    {
-        this.userService = userService;
-    }
+    private final @NonNull UserService userService;
 
     @PostMapping(path = "/update")
     @PreAuthorize("#user.id == principal.getUserSecurityInfo().getId()")

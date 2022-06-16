@@ -3,12 +3,7 @@ package com.ndr.socialasteroids.business.service;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,49 +14,18 @@ import com.ndr.socialasteroids.domain.enums.ERole;
 import com.ndr.socialasteroids.infra.data.repository.RoleRepository;
 import com.ndr.socialasteroids.infra.data.repository.UserRepository;
 import com.ndr.socialasteroids.infra.error.exception.DuplicateValueException;
-import com.ndr.socialasteroids.security.UserDetailsImpl;
-import com.ndr.socialasteroids.security.JWT.JwtUtils;
+
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class UserService
 {
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final RoleRepository roleRepository;
-    private final AuthenticationManager authManager;
-    private final JwtUtils jwtUtils;
+    private final @NonNull UserRepository userRepository;
+    private final @NonNull PasswordEncoder passwordEncoder;
+    private final @NonNull RoleRepository roleRepository;
 
-    @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository, AuthenticationManager authManager, JwtUtils jwtUtils)
-    {
-        this.roleRepository = roleRepository;
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.authManager = authManager;
-        this.jwtUtils = jwtUtils;
-    }
-
-    public UserDTO authenticateUser(String username, String password)
-    {
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password);
-
-        Authentication authentication = authManager.authenticate(authToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        
-        UserDTO user = new UserDTO(userDetails.getUserSecurityInfo());
-        return user;
-    }
-
-    public ResponseCookie createJwtCookie()
-    {
-        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
-
-        return jwtCookie;
-    }
-    
     public UserDTO createUser(String username, String email, String password)
         throws NoSuchElementException, DuplicateValueException
     {
