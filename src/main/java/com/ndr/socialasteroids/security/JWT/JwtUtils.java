@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
@@ -27,7 +28,7 @@ public class JwtUtils
     @Value("${sa.jwt.cookie-name}")
     private String jwtCookieName;
     @Value("${sa.jwt.cookie-path}")
-    private String cookiePath;
+    private String jwtCookiePath;
     @Value("${sa.jwt.cookie-max-age}")
     private long cookieMaxAge;
 
@@ -51,12 +52,29 @@ public class JwtUtils
         }
     }
 
+    public void eraseJwtCookie(HttpServletRequest request, HttpServletResponse response)
+    {
+        Cookie cookie = WebUtils.getCookie(request, jwtCookieName);
+        if (cookie != null)
+        {
+            cookie.setValue(null);
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
+        }
+    }
+
     public ResponseCookie generateJwtCookie(UserDetailsImpl userPrincipal)
     {
         String jwt = generateTokenFromUsername(userPrincipal.getUsername());
-        ResponseCookie cookie = ResponseCookie.from(jwtCookieName, jwt).path(cookiePath).maxAge(cookieMaxAge)
+        ResponseCookie cookie = ResponseCookie.from(jwtCookieName, jwt).path(jwtCookiePath).maxAge(cookieMaxAge)
                 .httpOnly(true).build();
 
+        return cookie;
+    }
+
+    public ResponseCookie getCleanJwtCookie()
+    {
+        ResponseCookie cookie = ResponseCookie.from(jwtCookieName, null).path(jwtCookiePath).build();
         return cookie;
     }
 

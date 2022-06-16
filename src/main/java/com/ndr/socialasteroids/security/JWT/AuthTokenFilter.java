@@ -15,7 +15,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.ndr.socialasteroids.infra.error.exception.JwtException;
 import com.ndr.socialasteroids.security.UserDetailsServiceImpl;
 
 @Component
@@ -39,21 +38,25 @@ public class AuthTokenFilter extends OncePerRequestFilter
         {   
             String jwt = jwtUtils.getJwtFromCookies(request);
 
-            if (jwt != null && jwtUtils.validateJwtToken(jwt))
+            if (jwt != null)
             {
-                String username = jwtUtils.getUsernameFromJwtToken(jwt);
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authentication = 
-                                                        new UsernamePasswordAuthenticationToken(
-                                                            userDetails, null, userDetails.getAuthorities());
-
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                if(jwtUtils.validateJwtToken(jwt))
+                {
+                    String username = jwtUtils.getUsernameFromJwtToken(jwt);
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                    UsernamePasswordAuthenticationToken authentication = 
+                                                            new UsernamePasswordAuthenticationToken(
+                                                                userDetails, null, userDetails.getAuthorities());
+    
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                } else {
+                    jwtUtils.eraseJwtCookie(request, response);
+                }
             }
         } catch (Exception e)
         {
-            //TODO\; Apagar token quando cair aqui. adicionar isso ao response. lançar exceção(?)
-            response.sendError(401);
+            jwtUtils.eraseJwtCookie(request, response);
         }
 
         filterChain.doFilter(request, response);
