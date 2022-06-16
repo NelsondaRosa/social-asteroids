@@ -2,3 +2,5 @@
 Project to exemplify experience with Spring Boot technologies. A place to play asteroids, see scores and make new friends.
 
 Work in Progress
+
+To be documented
