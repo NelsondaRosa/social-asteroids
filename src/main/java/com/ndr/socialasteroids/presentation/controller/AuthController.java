@@ -30,6 +30,7 @@ public class AuthController
 {
     private final @NonNull AuthService authService;
     private final @NonNull UserService userService;
+    private final @NonNull JwtUtils jwtUtils;
 
     @PostMapping(path = "/signup")
     public ResponseEntity<?> signup(@RequestBody CreateUserRequest request) throws URISyntaxException
@@ -40,6 +41,7 @@ public class AuthController
     }
 
     @PostMapping(path = "/refresh-token")
+    //@PreAuthorize("#userId == principal.getUserSecurityInfo().getId()")
     public ResponseEntity<?> refreshToken(@RequestBody String refreshToken)
     {
         ResponseCookie cookie = authService.generateJwtCookieFromRefreshToken(refreshToken);
@@ -53,13 +55,14 @@ public class AuthController
         UserDTO user = authService.authenticateUser(loginRequest.getUsername(), loginRequest.getPassword());
         ResponseCookie cookie = authService.createJwtCookie();
 
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(user);
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString(), cookie.toString()).body(user);
     }
     
     @GetMapping(path = "/logout")
     public ResponseEntity<?> logout()
     {
-        ResponseCookie cookie = JwtUtils.getCleanJwtCookie();
+        //TODO:: Passar logout para service
+        ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
     }
 }

@@ -25,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthTokenFilter extends OncePerRequestFilter
 {
     private final @NonNull UserDetailsServiceImpl userDetailsService;
+    private final @NonNull JwtUtils jwtUtils;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -32,13 +33,13 @@ public class AuthTokenFilter extends OncePerRequestFilter
     {
         try
         {   
-            String jwt = JwtUtils.getJwtFromCookies(request);
+            String jwt = jwtUtils.getJwtFromCookies(request);
 
             if (jwt != null)
             {
-                if(JwtUtils.validateJwtToken(jwt))
+                if(jwtUtils.validateJwtToken(jwt))
                 {
-                    String username = JwtUtils.getUsernameFromJwtToken(jwt);
+                    String username = jwtUtils.getUsernameFromJwtToken(jwt);
                     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                     UsernamePasswordAuthenticationToken authentication = 
                                                             new UsernamePasswordAuthenticationToken(
@@ -47,12 +48,12 @@ public class AuthTokenFilter extends OncePerRequestFilter
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 } else {
-                    JwtUtils.eraseJwtCookie(request, response);
+                    jwtUtils.eraseJwtCookie(request, response);
                 }
             }
         } catch (Exception e)
         {
-            JwtUtils.eraseJwtCookie(request, response);
+            jwtUtils.eraseJwtCookie(request, response);
         }
 
         filterChain.doFilter(request, response);

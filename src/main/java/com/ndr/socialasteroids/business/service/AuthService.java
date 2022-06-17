@@ -3,14 +3,15 @@ package com.ndr.socialasteroids.business.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.ndr.socialasteroids.business.DTOs.UserDTO;
-import com.ndr.socialasteroids.infra.error.exception.RefreshTokenException;
 import com.ndr.socialasteroids.security.UserDetailsImpl;
 import com.ndr.socialasteroids.security.JWT.JwtUtils;
 import com.ndr.socialasteroids.security.JWT.RefreshToken;
@@ -27,6 +28,7 @@ public class AuthService
     private final @NonNull UserService userService;
     private final @NonNull AuthenticationManager authManager;
     private final @NonNull RefreshTokenService refreshTokenService;
+    private final @NonNull JwtUtils jwtUtils;
 
     @Value("${sa.jwt.refresh-expiration-ms}")
     private long refreshTokenDurationMs;
@@ -43,30 +45,44 @@ public class AuthService
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         
         UserDTO user = new UserDTO(userDetails.getUserSecurityInfo());
+
         return user;
+    }
+
+    public ResponseCookie createRefreshToken()
+    {
+        //refreshTokenService.createRefreshToken(user.getId());
+
     }
 
     public ResponseCookie createJwtCookie()
     {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        ResponseCookie jwtCookie = JwtUtils.generateJwtCookie(userDetails);
+        ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
 
         return jwtCookie;
     }
 
-    public ResponseCookie generateJwtCookieFromRefreshToken(String refreshToken)
+    public ResponseCookie generateJwtCookieFromRefreshToken(String refreshTokenString)
     {
-        RefreshToken refreshTokenEntity = refreshTokenService.findRefreshToken(refreshToken);
+        System.out.println(refreshTokenString);
+        RefreshToken refreshToken = refreshTokenService.findRefreshToken(refreshTokenString);
+        var principal = SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+
+        //Operation can't be done by anonymous user
+        if (!(principal instanceof UserDetails))
+            throw new AccessDeniedException("Access denied");
+
+        UserDetailsImpl userDetails = (UserDetailsImpl) principal;
         
-        if (refreshTokenEntity.isExpired())
-        {
-            throw new RefreshTokenException("Refresh token is expired. Please, login again");
-        }
+        if (refreshToken.getUser().getId() != userDetails.getUserSecurityInfo().getId())
+            throw new AccessDeniedException("Access denied");
+            
+        refreshTokenService.verifyExpiration(refreshToken);
 
-        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        ResponseCookie newTokenCookie = JwtUtils.generateJwtCookie(userDetails);
+        ResponseCookie newTokenCookie = jwtUtils.generateJwtCookie(userDetails);
         return newTokenCookie;
-
     }
 
     
