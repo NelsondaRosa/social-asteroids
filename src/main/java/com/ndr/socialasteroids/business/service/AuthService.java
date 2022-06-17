@@ -52,7 +52,7 @@ public class AuthService
     public ResponseCookie createRefreshToken()
     {
         //refreshTokenService.createRefreshToken(user.getId());
-
+        return null;
     }
 
     public ResponseCookie createJwtCookie()
