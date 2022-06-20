@@ -1,6 +1,7 @@
 package com.ndr.socialasteroids.security.JWT;
 
 import java.time.Instant;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,6 +38,15 @@ public class RefreshToken
 
     @Column(nullable = false)
     private Instant expiryDate;
+
+    public RefreshToken(User  user, Long durationInMillis)
+    {
+        this.user = user;
+        this.token = UUID.randomUUID().toString();
+        this.expiryDate = Instant.now().plusMillis(durationInMillis);
+    }
+    
+    public RefreshToken(){}
 
     public boolean isExpired()
     {

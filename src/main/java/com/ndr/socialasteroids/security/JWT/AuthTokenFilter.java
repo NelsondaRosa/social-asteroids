@@ -26,32 +26,29 @@ public class AuthTokenFilter extends OncePerRequestFilter
 {
     private final @NonNull UserDetailsServiceImpl userDetailsService;
     private final @NonNull JwtUtils jwtUtils;
+    private final @NonNull RefreshTokenService refreshTokenService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException
     {
         try
-        {   
+        {
             String jwt = jwtUtils.getJwtFromCookies(request);
 
             if (jwt != null)
             {
-                if(jwtUtils.validateJwtToken(jwt))
-                {
-                    String username = jwtUtils.getUsernameFromJwtToken(jwt);
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                    UsernamePasswordAuthenticationToken authentication = 
-                                                            new UsernamePasswordAuthenticationToken(
-                                                                userDetails, null, userDetails.getAuthorities());
-    
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                } else {
-                    jwtUtils.eraseJwtCookie(request, response);
-                }
+                jwtUtils.validateJwt(jwt);
+
+                String username = jwtUtils.getUsernameFromJwtToken(jwt);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
+
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-        } catch (Exception e)
+        } catch (Exception exception) //If jwt is invalid, exception will be thrown and Jwt cookie erased
         {
             jwtUtils.eraseJwtCookie(request, response);
         }

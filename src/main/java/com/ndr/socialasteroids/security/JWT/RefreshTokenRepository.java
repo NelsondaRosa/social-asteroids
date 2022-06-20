@@ -1,6 +1,7 @@
 package com.ndr.socialasteroids.security.JWT;
 
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -15,5 +16,9 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
 
     Optional<RefreshToken> findByToken(String token);
 
-    boolean deleteByUser(User user);
+    Long deleteByUser(User user);
+
+    Optional<RefreshToken> findByUser(User user);
+
+    Optional<Set<RefreshToken>> findAllByUser(User user);
 }

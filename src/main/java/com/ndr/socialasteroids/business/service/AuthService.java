@@ -2,7 +2,6 @@ package com.ndr.socialasteroids.business.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -49,41 +48,44 @@ public class AuthService
         return user;
     }
 
-    public ResponseCookie createRefreshToken()
+    public String createRefreshToken(Long userId)
     {
-        //refreshTokenService.createRefreshToken(user.getId());
-        return null;
+        refreshTokenService.deleteByUserId(userId);
+        String newRefreshToken = refreshTokenService.createRefreshToken(userId).getToken();
+                 
+        return newRefreshToken;
     }
 
-    public ResponseCookie createJwtCookie()
+    public String createJwt(String username)
     {
-        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
+        String jwt = jwtUtils.generateToken(username);
 
-        return jwtCookie;
+        return jwt;
     }
 
-    public ResponseCookie generateJwtCookieFromRefreshToken(String refreshTokenString)
+    public String generateJwtFromRefreshToken(String refreshTokenString)
     {
-        System.out.println(refreshTokenString);
         RefreshToken refreshToken = refreshTokenService.findRefreshToken(refreshTokenString);
-        var principal = SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
-
-        //Operation can't be done by anonymous user
-        if (!(principal instanceof UserDetails))
-            throw new AccessDeniedException("Access denied");
-
-        UserDetailsImpl userDetails = (UserDetailsImpl) principal;
+        UserDetailsImpl userDetails = getUserDetailsImplOrElseThrow();
         
         if (refreshToken.getUser().getId() != userDetails.getUserSecurityInfo().getId())
             throw new AccessDeniedException("Access denied");
-            
-        refreshTokenService.verifyExpiration(refreshToken);
 
-        ResponseCookie newTokenCookie = jwtUtils.generateJwtCookie(userDetails);
-        return newTokenCookie;
+        refreshTokenService.verifyExpiration(refreshToken);
+        String newJwt = jwtUtils.generateToken(userDetails.getUsername());
+        
+        return newJwt;
     }
 
-    
+    private UserDetailsImpl getUserDetailsImplOrElseThrow()
+    {
+        var principal = SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+
+        //If not stance of UserDetails, its anonymous user
+        if (!(principal instanceof UserDetails))
+            throw new AccessDeniedException("Access denied");
+
+        return (UserDetailsImpl) principal;
+    }
 }

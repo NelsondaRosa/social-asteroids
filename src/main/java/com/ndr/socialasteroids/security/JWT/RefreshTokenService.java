@@ -1,7 +1,6 @@
 package com.ndr.socialasteroids.security.JWT;
 
-import java.time.Instant;
-import java.util.UUID;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,13 +30,8 @@ public class RefreshTokenService
     
     public RefreshToken createRefreshToken(Long userId)
     {
-        RefreshToken refreshToken = new RefreshToken();
         User user = userRepository.findById(userId).orElseThrow();
-        
-        //TODO:: Colocar em construtor todas propriedades obrigatorias
-        refreshToken.setUser(user);
-        refreshToken.setExpiryDate(Instant.now().plusMillis(Long.valueOf(refreshTokenDuration)));
-        refreshToken.setToken(UUID.randomUUID().toString());
+        RefreshToken refreshToken = new RefreshToken(user, Long.valueOf(refreshTokenDuration));
 
         refreshToken = refreshTokenRepository.save(refreshToken);
 
@@ -55,12 +49,17 @@ public class RefreshTokenService
         return refreshToken;
     }
 
-    public void deleteByUserId(Long userId)
+    public RefreshToken getByUser(User user)
     {
-        User user = userRepository.findById(userId).orElseThrow();
-        refreshTokenRepository.deleteByUser(user);
+        RefreshToken refreshToken = refreshTokenRepository.findByUser(user).orElse(null);
+        return refreshToken;
     }
 
+    @Transactional
+    public Long deleteByUserId(Long userId)
+    {
+        User user = userRepository.findById(userId).orElseThrow();
 
-    
+        return refreshTokenRepository.deleteByUser(user);
+    }
 }
