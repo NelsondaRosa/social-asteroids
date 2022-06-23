@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.ndr.socialasteroids.infra.error.exception.DataInconsistencyException;
 import com.ndr.socialasteroids.infra.error.exception.DuplicateValueException;
+import com.ndr.socialasteroids.infra.error.exception.EncrypterException;
 import com.ndr.socialasteroids.infra.error.exception.InexistentDataException;
 import com.ndr.socialasteroids.infra.error.exception.JwtException;
 import com.ndr.socialasteroids.infra.error.exception.RefreshTokenException;
@@ -68,6 +69,13 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
     {
         ErrorDetails error = new ErrorDetails(exception.getStatus(), exception.getMessage());
         exception.printStackTrace();
+        return buildResponse(error);
+    }
+
+    @ExceptionHandler(EncrypterException.class)
+    protected ResponseEntity<ErrorDetails> handleEncoderException(EncrypterException exception, WebRequest request)
+    {
+        ErrorDetails error = new ErrorDetails(exception.getStatus(), exception.getMessage());
         return buildResponse(error);
     }
 

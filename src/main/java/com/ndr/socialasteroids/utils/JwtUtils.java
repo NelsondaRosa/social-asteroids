@@ -1,4 +1,4 @@
-package com.ndr.socialasteroids.security.JWT;
+package com.ndr.socialasteroids.utils;
 
 import java.security.Key;
 import java.time.Instant;
@@ -9,14 +9,12 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.WebUtils;
 
-import com.ndr.socialasteroids.security.UserDetailsImpl;
+import com.ndr.socialasteroids.security.entities.UserDetailsImpl;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -31,18 +29,23 @@ public class JwtUtils
     @Value("${sa.jwt.expiration-ms}")
     private int jwtExpirationMs;
 
-    @Value("${sa.jwt.cookie-name}")
+    @Value("${sa.jwt.jwt-cookie-name}")
     private String jwtCookieName;
 
     @Value("${sa.jwt.cookie-path}")
-    private String jwtCookiePath;
+    private String cookiePath;
 
-    @Value("${sa.jwt.cookie-max-age}")
-    private long cookieMaxAge;
+    @Value("${sa.jwt.jwt-cookie-max-age-ms}")
+    private long jwtCookieMaxAge;
 
-    private Key jwtKey = Keys.hmacShaKeyFor("B@46a01a1569cdfa14332fwj3780409a1kk3h4d0oed".getBytes());
+    @Value("${sa.jwt.refresh-token-cookie-name}")
+    private String refreshTokenCookieName;
 
-    private Logger logger = LoggerFactory.getLogger(JwtUtils.class);
+    @Value("${sa.jwt.refresh-token-cookie-max-age}")
+    private long refreshTokenCookieMaxAge;
+
+    @Value("${sa.jwt.secret}")
+    private String secret;
 
     public String getJwtFromCookies(HttpServletRequest request)
     {
@@ -77,30 +80,44 @@ public class JwtUtils
     public ResponseCookie generateJwtCookie(UserDetailsImpl userPrincipal)
     {
         String jwt = generateToken(userPrincipal.getUsername());
-        ResponseCookie cookie = ResponseCookie.from(jwtCookieName, jwt).path(jwtCookiePath).maxAge(cookieMaxAge)
-                .httpOnly(true).build();
+        ResponseCookie cookie = ResponseCookie.from(jwtCookieName, jwt).path(cookiePath).maxAge(jwtCookieMaxAge)
+                .sameSite("lax").httpOnly(true).build();
+
+        return cookie;
+    }
+    
+    public ResponseCookie generateRefreshTokenCookie(String token)
+    {
+        ResponseCookie cookie = ResponseCookie.from(refreshTokenCookieName, token).path(cookiePath)
+                .maxAge(refreshTokenCookieMaxAge).sameSite("lax").httpOnly(true).build();
 
         return cookie;
     }
 
     public ResponseCookie getCleanJwtCookie()
     {
-        ResponseCookie cookie = ResponseCookie.from(jwtCookieName, null).path(jwtCookiePath).build();
+        ResponseCookie cookie = ResponseCookie.from(jwtCookieName, null).path(cookiePath).build();
         return cookie;
     }
 
     public String getUsernameFromJwtToken(String jws)
     {
+        Key jwtKey = Keys.hmacShaKeyFor(secret.getBytes());
+
         return Jwts.parserBuilder().setSigningKey(jwtKey).build().parseClaimsJws(jws).getBody().getSubject();
     }
 
     public void validateJwt(String authToken) throws MalformedJwtException, ExpiredJwtException, UnsupportedJwtException, IllegalArgumentException, SignatureException
     {
+        Key jwtKey = Keys.hmacShaKeyFor(secret.getBytes());
+
         Jwts.parserBuilder().setSigningKey(jwtKey).build().parseClaimsJws(authToken);
     }
 
     public String generateToken(String username)
     {
+        Key jwtKey = Keys.hmacShaKeyFor(secret.getBytes());
+        
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(Date.from(Instant.now()))

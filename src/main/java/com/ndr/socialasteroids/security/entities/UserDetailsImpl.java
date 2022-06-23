@@ -1,4 +1,4 @@
-package com.ndr.socialasteroids.security;
+package com.ndr.socialasteroids.security.entities;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,15 +15,15 @@ import lombok.Data;
 @Data
 public class UserDetailsImpl implements UserDetails
 {
-    private UserSecurityDTO userSecurityInfo;
+    private UserSecurityInfo userSecurityInfo;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(UserSecurityDTO user)
+    public UserDetailsImpl(UserSecurityInfo user)
     {
         this.userSecurityInfo = user;
     }
 
-    public UserDetailsImpl(UserSecurityDTO user, Collection<? extends GrantedAuthority> authorities)
+    public UserDetailsImpl(UserSecurityInfo user, Collection<? extends GrantedAuthority> authorities)
     {
         this.userSecurityInfo = user;
         this.authorities = authorities;
@@ -36,7 +36,7 @@ public class UserDetailsImpl implements UserDetails
                 .map(role -> new SimpleGrantedAuthority(role.getName().name()))
                 .collect(Collectors.toList());
             
-        return new UserDetailsImpl(new UserSecurityDTO(user), authorities);    
+        return new UserDetailsImpl(new UserSecurityInfo(user), authorities);    
     }
 
     @Override
@@ -46,7 +46,8 @@ public class UserDetailsImpl implements UserDetails
     }
 
     @Override
-    public String getPassword(){
+    public String getPassword()
+    {
         return userSecurityInfo.getPassword();
     }
 
@@ -59,28 +60,24 @@ public class UserDetailsImpl implements UserDetails
     @Override
     public boolean isAccountNonExpired()
     {
-        // TODO Auto-generated method stub
         return true;
     }
 
     @Override
     public boolean isAccountNonLocked()
     {
-        // TODO Auto-generated method stub
         return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired()
     {
-        // TODO Auto-generated method stub
         return true;
     }
 
     @Override
     public boolean isEnabled()
     {
-        // TODO Auto-generated method stub
         return true;
     }
 }

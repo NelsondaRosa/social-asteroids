@@ -1,7 +1,7 @@
-package com.ndr.socialasteroids.business.service;
+package com.ndr.socialasteroids.security.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,15 +11,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.ndr.socialasteroids.business.DTOs.UserDTO;
-import com.ndr.socialasteroids.security.UserDetailsImpl;
-import com.ndr.socialasteroids.security.JWT.JwtUtils;
-import com.ndr.socialasteroids.security.JWT.RefreshToken;
-import com.ndr.socialasteroids.security.JWT.RefreshTokenService;
+import com.ndr.socialasteroids.business.service.UserService;
+import com.ndr.socialasteroids.security.entities.RefreshToken;
+import com.ndr.socialasteroids.security.entities.UserDetailsImpl;
+import com.ndr.socialasteroids.utils.JwtUtils;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-//TODO:: Onde ta verificando se o token atual expirou?
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AuthService
@@ -28,9 +27,6 @@ public class AuthService
     private final @NonNull AuthenticationManager authManager;
     private final @NonNull RefreshTokenService refreshTokenService;
     private final @NonNull JwtUtils jwtUtils;
-
-    @Value("${sa.jwt.refresh-expiration-ms}")
-    private long refreshTokenDurationMs;
     
     //Called the when the user log in, the filter will not receive this data, so its set here for this request
     //Also, the filter doesnt authenticate, as the JwtToken secret is owned by the server, it doesnt need user authentication in every request
@@ -48,33 +44,44 @@ public class AuthService
         return user;
     }
 
-    public String createRefreshToken(Long userId)
+    public ResponseCookie createRefreshTokenCookie(Long userId)
     {
         refreshTokenService.deleteByUserId(userId);
-        String newRefreshToken = refreshTokenService.createRefreshToken(userId).getToken();
+        
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userId);
+        ResponseCookie cookie = jwtUtils.generateRefreshTokenCookie(refreshToken.getToken());
                  
-        return newRefreshToken;
+        return cookie;
     }
 
-    public String createJwt(String username)
+    public ResponseCookie createJwt()
     {
-        String jwt = jwtUtils.generateToken(username);
+        UserDetailsImpl userDetails = getUserDetailsImplOrElseThrow();
+        ResponseCookie cookie = jwtUtils.generateJwtCookie(userDetails);
 
-        return jwt;
+        return cookie;
     }
 
-    public String generateJwtFromRefreshToken(String refreshTokenString)
+    public ResponseCookie authWithRefreshToken(String refreshTokenString)
     {
         RefreshToken refreshToken = refreshTokenService.findRefreshToken(refreshTokenString);
         UserDetailsImpl userDetails = getUserDetailsImplOrElseThrow();
-        
+
         if (refreshToken.getUser().getId() != userDetails.getUserSecurityInfo().getId())
             throw new AccessDeniedException("Access denied");
 
         refreshTokenService.verifyExpiration(refreshToken);
-        String newJwt = jwtUtils.generateToken(userDetails.getUsername());
-        
-        return newJwt;
+
+        ResponseCookie cookie = jwtUtils.generateJwtCookie(userDetails);
+
+        return cookie;
+    }
+    
+    public void removeRefreshToken()
+    {
+        UserDetailsImpl userDetails = getUserDetailsImplOrElseThrow();
+
+        refreshTokenService.deleteByUserId(userDetails.getUserSecurityInfo().getId());
     }
 
     private UserDetailsImpl getUserDetailsImplOrElseThrow()

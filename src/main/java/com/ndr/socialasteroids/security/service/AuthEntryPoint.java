@@ -1,4 +1,4 @@
-package com.ndr.socialasteroids.security.JWT;
+package com.ndr.socialasteroids.security.service;
 
 import java.io.IOException;
 
@@ -18,13 +18,11 @@ public class AuthEntryPoint implements AuthenticationEntryPoint{
     Logger logger = LoggerFactory.getLogger(AuthEntryPoint.class);
     
     //Class/method to handle unauthenticated users trying to access protected resources
-    //different purpose of ResponseErrorHandler
+    //different purpose of ResponseErrorHandler - normal behaviour is redirect to /login
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException authException) throws IOException, ServletException
     {
-        logger.error("Unauthorized : {}", authException.getMessage());
-        logger.error("Failed to access {}", request.getServletPath());
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You don't have access to this resource, try to authenticate first.");
     }
     

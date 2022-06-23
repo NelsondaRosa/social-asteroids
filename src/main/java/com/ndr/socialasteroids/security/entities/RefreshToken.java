@@ -1,4 +1,4 @@
-package com.ndr.socialasteroids.security.JWT;
+package com.ndr.socialasteroids.security.entities;
 
 import java.time.Instant;
 import java.util.UUID;

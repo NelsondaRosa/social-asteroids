@@ -1,4 +1,4 @@
-package com.ndr.socialasteroids.security;
+package com.ndr.socialasteroids.security.encoding;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

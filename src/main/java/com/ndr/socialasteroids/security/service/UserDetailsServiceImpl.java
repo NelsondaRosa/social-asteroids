@@ -1,4 +1,4 @@
-package com.ndr.socialasteroids.security;
+package com.ndr.socialasteroids.security.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ndr.socialasteroids.domain.entity.User;
 import com.ndr.socialasteroids.infra.data.repository.UserRepository;
+import com.ndr.socialasteroids.security.entities.UserDetailsImpl;
 
 @Service
 @Primary

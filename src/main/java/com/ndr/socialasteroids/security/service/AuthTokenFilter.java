@@ -1,4 +1,4 @@
-package com.ndr.socialasteroids.security.JWT;
+package com.ndr.socialasteroids.security.service;
 
 import java.io.IOException;
 
@@ -15,7 +15,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.ndr.socialasteroids.security.UserDetailsServiceImpl;
+import com.ndr.socialasteroids.utils.JwtUtils;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

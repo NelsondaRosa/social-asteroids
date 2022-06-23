@@ -1,4 +1,4 @@
-package com.ndr.socialasteroids.security;
+package com.ndr.socialasteroids.security.entities;
 
 import java.util.Set;
 
@@ -8,7 +8,7 @@ import com.ndr.socialasteroids.domain.entity.User;
 import lombok.Data;
 
 @Data
-public class UserSecurityDTO
+public class UserSecurityInfo
 {
     private Long id;
     private String username;
@@ -16,7 +16,7 @@ public class UserSecurityDTO
     private String password;
     private Set<Role> roles;
 
-    public UserSecurityDTO(User user)
+    public UserSecurityInfo(User user)
     {
         this.id = user.getId();
         this.username = user.getUsername();
@@ -25,7 +25,7 @@ public class UserSecurityDTO
         this.roles = user.getRoles();
     }
 
-    public UserSecurityDTO(Long id, String username, String password, Set<Role> roles)
+    public UserSecurityInfo(Long id, String username, String password, Set<Role> roles)
     {
         this.id = id;
         this.username = username;
@@ -33,7 +33,7 @@ public class UserSecurityDTO
         this.roles = roles;
     }
 
-    public UserSecurityDTO(Long id, String username, String password)
+    public UserSecurityInfo(Long id, String username, String password)
     {
         this.id = id;
         this.username = username;

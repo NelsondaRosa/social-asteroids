@@ -1,4 +1,4 @@
-package com.ndr.socialasteroids.security.JWT;
+package com.ndr.socialasteroids.security.service;
 
 import javax.transaction.Transactional;
 
@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import com.ndr.socialasteroids.domain.entity.User;
 import com.ndr.socialasteroids.infra.data.repository.UserRepository;
 import com.ndr.socialasteroids.infra.error.exception.RefreshTokenException;
+import com.ndr.socialasteroids.security.entities.RefreshToken;
+import com.ndr.socialasteroids.security.repository.RefreshTokenRepository;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

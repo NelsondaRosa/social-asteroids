@@ -34,8 +34,9 @@ public class UserService
             throw new DuplicateValueException("Username or email alredy exist");
         }
 
+        //todo::validate password
         User user = new User(username, email, passwordEncoder.encode(password));
-        
+
         //TODO: arrumar atribuição de role
         Role role = roleRepository.findByName(ERole.ROLE_USER).orElseThrow();
         user.addRole(role);

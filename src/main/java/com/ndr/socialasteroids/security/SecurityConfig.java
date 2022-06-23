@@ -16,7 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.ndr.socialasteroids.security.JWT.AuthTokenFilter;
+import com.ndr.socialasteroids.security.service.AuthTokenFilter;
 
 @Configuration
 @EnableWebSecurity

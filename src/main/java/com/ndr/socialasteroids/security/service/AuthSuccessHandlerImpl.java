@@ -1,4 +1,4 @@
-package com.ndr.socialasteroids.security;
+package com.ndr.socialasteroids.security.service;
 
 import java.io.IOException;
 
