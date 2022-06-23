@@ -29,7 +29,8 @@ public class SocialAsteroidsApplication
 				registry.addMapping("/**")
 					.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
 					.allowedOrigins("*")
-					.allowedHeaders("*");
+					.allowedHeaders("Date, Content-Type, Accept, X-Requested-With, Authorization, From, X-Auth-Token, Request-Id")
+					.allowCredentials(true);
 			}
 		};
 	}

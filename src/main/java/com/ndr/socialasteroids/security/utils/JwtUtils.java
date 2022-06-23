@@ -1,4 +1,4 @@
-package com.ndr.socialasteroids.utils;
+package com.ndr.socialasteroids.security.utils;
 
 import java.security.Key;
 import java.time.Instant;

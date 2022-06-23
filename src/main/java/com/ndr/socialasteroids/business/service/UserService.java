@@ -83,7 +83,7 @@ public class UserService
     }
     
     //Protected method only to be used in the service package. Returns domain entity
-    protected User getEntityById(Long userId) throws NoSuchElementException
+    public User getEntityById(Long userId) throws NoSuchElementException
     {
         User user = userRepository.findById(userId).orElseThrow();
 

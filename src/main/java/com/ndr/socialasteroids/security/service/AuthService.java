@@ -12,9 +12,10 @@ import org.springframework.stereotype.Service;
 
 import com.ndr.socialasteroids.business.DTOs.UserDTO;
 import com.ndr.socialasteroids.business.service.UserService;
+import com.ndr.socialasteroids.security.encoding.Encrypter;
 import com.ndr.socialasteroids.security.entities.RefreshToken;
 import com.ndr.socialasteroids.security.entities.UserDetailsImpl;
-import com.ndr.socialasteroids.utils.JwtUtils;
+import com.ndr.socialasteroids.security.utils.JwtUtils;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -49,12 +50,13 @@ public class AuthService
         refreshTokenService.deleteByUserId(userId);
         
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userId);
-        ResponseCookie cookie = jwtUtils.generateRefreshTokenCookie(refreshToken.getToken());
+        ResponseCookie cookie = jwtUtils.generateRefreshTokenCookie(Encrypter.encrypt(refreshToken.getToken()));
                  
         return cookie;
     }
 
-    public ResponseCookie createJwt()
+    //Only accessible if user is authenticated
+    public ResponseCookie createJwtCookie()
     {
         UserDetailsImpl userDetails = getUserDetailsImplOrElseThrow();
         ResponseCookie cookie = jwtUtils.generateJwtCookie(userDetails);
@@ -62,19 +64,14 @@ public class AuthService
         return cookie;
     }
 
-    public ResponseCookie authWithRefreshToken(String refreshTokenString)
+    public UserDTO authWithRefreshToken(String refreshTokenEncrypted)
     {
-        RefreshToken refreshToken = refreshTokenService.findRefreshToken(refreshTokenString);
-        UserDetailsImpl userDetails = getUserDetailsImplOrElseThrow();
-
-        if (refreshToken.getUser().getId() != userDetails.getUserSecurityInfo().getId())
-            throw new AccessDeniedException("Access denied");
+        String refreshTokenString = Encrypter.decrypt(refreshTokenEncrypted);
+        RefreshToken refreshToken = refreshTokenService.getByToken(refreshTokenString);
 
         refreshTokenService.verifyExpiration(refreshToken);
 
-        ResponseCookie cookie = jwtUtils.generateJwtCookie(userDetails);
-
-        return cookie;
+        return authenticateUser(refreshToken.getUser().getUsername(), refreshToken.getUser().getPassword());
     }
     
     public void removeRefreshToken()

@@ -24,11 +24,6 @@ public class RefreshTokenService
 
     private final @NonNull RefreshTokenRepository refreshTokenRepository;
     private final @NonNull UserRepository userRepository;
-
-    public RefreshToken findRefreshToken(String token)
-    {
-        return refreshTokenRepository.findByToken(token).orElseThrow(() -> new RefreshTokenException("Refresh Token doesn't exist"));
-    }
     
     public RefreshToken createRefreshToken(Long userId)
     {
@@ -49,6 +44,11 @@ public class RefreshTokenService
         }
 
         return refreshToken;
+    }
+
+    public RefreshToken getByToken(String token)
+    {
+        return refreshTokenRepository.findByToken(token).orElseThrow(() -> new RefreshTokenException("Refresh Token doesn't exist"));
     }
 
     public RefreshToken getByUser(User user)

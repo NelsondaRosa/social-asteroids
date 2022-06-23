@@ -15,7 +15,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.ndr.socialasteroids.utils.JwtUtils;
+import com.ndr.socialasteroids.security.utils.JwtUtils;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public class AuthTokenFilter extends OncePerRequestFilter
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException
-    {
+    {    
         try
         {
             String jwt = jwtUtils.getJwtFromCookies(request);
