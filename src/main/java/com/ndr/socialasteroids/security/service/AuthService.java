@@ -64,6 +64,7 @@ public class AuthService
         return cookie;
     }
 
+    //TODO:: integration test needed
     public UserDTO authWithRefreshToken(String refreshTokenEncrypted)
     {
         String refreshTokenString = Encrypter.decrypt(refreshTokenEncrypted);

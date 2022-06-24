@@ -1,5 +1,7 @@
 package com.ndr.socialasteroids.security;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,8 +17,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.ndr.socialasteroids.security.service.AuthTokenFilter;
+
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
@@ -24,11 +32,12 @@ import com.ndr.socialasteroids.security.service.AuthTokenFilter;
     // securedEnabled = true,
     // jsr250Enabled = true,
     prePostEnabled = true)
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SecurityConfig extends WebSecurityConfigurerAdapter
 {
-    private final UserDetailsService userDetailsService;
-    private final AuthTokenFilter authTokenFilter;
-    private final PasswordEncoder passwordEncoder;
+    private final @NonNull UserDetailsService userDetailsService;
+    private final @NonNull AuthTokenFilter authTokenFilter;
+    private final @NonNull PasswordEncoder passwordEncoder;
 
     @Bean
     @Override
@@ -37,13 +46,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
         return super.authenticationManagerBean();
     }
 
-    @Autowired
-    public SecurityConfig(UserDetailsService userDetailsService, AuthTokenFilter authTokenFilter, PasswordEncoder passwordEncoder)
-     {
-         this.userDetailsService = userDetailsService;
-         this.authTokenFilter = authTokenFilter;
-         this.passwordEncoder = passwordEncoder;
-     }
+    @Bean
+    CorsConfigurationSource corsConfigurationSource()
+    {
+        CorsConfiguration configuration = new CorsConfiguration();
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+
+        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type", "Set-Cookie"));
+        configuration.setExposedHeaders(List.of("Authorization", "Set-Cookie"));
+        configuration.setAllowCredentials(true);
+        
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
+        
+    }
 
     @Override
     public void configure(AuthenticationManagerBuilder authBuilder) throws Exception

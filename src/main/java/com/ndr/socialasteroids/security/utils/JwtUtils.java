@@ -27,29 +27,42 @@ import io.jsonwebtoken.security.SignatureException;
 public class JwtUtils
 {
     @Value("${sa.jwt.expiration-ms}")
-    private int jwtExpirationMs;
-
-    @Value("${sa.jwt.jwt-cookie-name}")
-    private String jwtCookieName;
+    private long jwtExpirationMs;
 
     @Value("${sa.jwt.cookie-path}")
     private String cookiePath;
 
-    @Value("${sa.jwt.jwt-cookie-max-age-ms}")
-    private long jwtCookieMaxAge;
-
     @Value("${sa.jwt.refresh-token-cookie-name}")
     private String refreshTokenCookieName;
 
-    @Value("${sa.jwt.refresh-token-cookie-max-age}")
+    @Value("${sa.jwt.jwt-cookie-name}")
+    private String jwtCookieName;
+
+    @Value("${sa.jwt.jwt-cookie-max-age-ms}")
+    private long jwtCookieMaxAge;
+
+    @Value("${sa.jwt.refresh-token-cookie-max-age-ms}")
     private long refreshTokenCookieMaxAge;
 
     @Value("${sa.jwt.secret}")
     private String secret;
 
-    public String getJwtFromCookies(HttpServletRequest request)
+    public String getJwtFromCookie(HttpServletRequest request)
     {
         Cookie cookie = WebUtils.getCookie(request, jwtCookieName);
+
+        if (cookie != null)
+        {
+            return cookie.getValue();
+        } else
+        {
+            return null;
+        }
+    }
+
+    public String getRrefreshTokenFromCookie(HttpServletRequest request)
+    {
+        Cookie cookie = WebUtils.getCookie(request, refreshTokenCookieName);
 
         if (cookie != null)
         {
@@ -100,6 +113,12 @@ public class JwtUtils
         return cookie;
     }
 
+    public ResponseCookie getCleanRefreshTokenCookie()
+    {
+        ResponseCookie cookie = ResponseCookie.from(refreshTokenCookieName, null).path(cookiePath).build();
+        return cookie;
+    }
+
     public String getUsernameFromJwtToken(String jws)
     {
         Key jwtKey = Keys.hmacShaKeyFor(secret.getBytes());
@@ -109,9 +128,9 @@ public class JwtUtils
 
     public void validateJwt(String authToken) throws MalformedJwtException, ExpiredJwtException, UnsupportedJwtException, IllegalArgumentException, SignatureException
     {
-        Key jwtKey = Keys.hmacShaKeyFor(secret.getBytes());
+            Key jwtKey = Keys.hmacShaKeyFor(secret.getBytes());
 
-        Jwts.parserBuilder().setSigningKey(jwtKey).build().parseClaimsJws(authToken);
+            Jwts.parserBuilder().setSigningKey(jwtKey).build().parseClaimsJws(authToken);
     }
 
     public String generateToken(String username)
@@ -121,7 +140,7 @@ public class JwtUtils
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(Date.from(Instant.now()))
-                .setExpiration(Date.from(Instant.now().plus(Long.valueOf(jwtExpirationMs), ChronoUnit.MILLIS)))
+                .setExpiration(Date.from(Instant.now().plus(jwtExpirationMs, ChronoUnit.MILLIS)))
                 .signWith(jwtKey)
                 .compact();
     }

@@ -69,8 +69,9 @@ public class AuthController
     public ResponseEntity<?> logout()
     {
         authService.removeRefreshToken();
-        ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
+        ResponseCookie cleanJwtCookie = jwtUtils.getCleanJwtCookie();
+        ResponseCookie cleanRefreshTokenCookie = jwtUtils.getCleanRefreshTokenCookie();
         
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cleanJwtCookie.toString(), cleanRefreshTokenCookie.toString()).build();
     }
 }

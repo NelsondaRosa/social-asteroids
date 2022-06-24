@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +17,9 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.ndr.socialasteroids.security.encoding.Encrypter;
+import com.ndr.socialasteroids.security.entities.RefreshToken;
+import com.ndr.socialasteroids.security.entities.UserDetailsImpl;
 import com.ndr.socialasteroids.security.utils.JwtUtils;
 
 import lombok.NonNull;
@@ -31,22 +36,56 @@ public class AuthTokenFilter extends OncePerRequestFilter
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException
-    {    
+    {
         try
         {
-            String jwt = jwtUtils.getJwtFromCookies(request);
+            String jwt = jwtUtils.getJwtFromCookie(request);
 
             if (jwt != null)
             {
-                jwtUtils.validateJwt(jwt);
+                boolean authWithRefreshToken = false;
+                RefreshToken refreshToken = null;
+                
+                //TODO:: DOCUMENTAR EL MACARRONE
+                try
+                {
+                    jwtUtils.validateJwt(jwt);
 
-                String username = jwtUtils.getUsernameFromJwtToken(jwt);
+                } catch (Exception ex)
+                {
+                    authWithRefreshToken = true;
+                    String refreshTokenEncrypted = jwtUtils.getRrefreshTokenFromCookie(request);
+
+                    if (refreshTokenEncrypted == null)
+                    {
+                        throw ex;
+                    }
+
+                    String refreshTokenString = Encrypter.decrypt(refreshTokenEncrypted);
+                    refreshToken = refreshTokenService.getByToken(refreshTokenString);
+
+                    refreshTokenService.verifyExpiration(refreshToken);
+                }
+
+                String username = authWithRefreshToken && (refreshToken != null) ?
+                        refreshToken.getUser().getUsername() :
+                        jwtUtils.getUsernameFromJwtToken(jwt);
+                
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
-
+    
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                if (authWithRefreshToken)
+                {    
+                    ResponseCookie newJwtCookie = jwtUtils.generateJwtCookie((UserDetailsImpl) userDetails);
+                    response.setHeader(HttpHeaders.SET_COOKIE, newJwtCookie.toString());
+                        //TODO
+                    System.out.println("### REFRESH TOKEN AUTH ###");
+                }
+                
             }
         } catch (Exception exception) //If jwt is invalid, exception will be thrown and Jwt cookie erased
         {
