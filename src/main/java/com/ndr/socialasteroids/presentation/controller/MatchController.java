@@ -2,6 +2,8 @@ package com.ndr.socialasteroids.presentation.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +32,7 @@ public class MatchController
 
     @PostMapping(path = "/register")
     @PreAuthorize("#user.getPlayerId() == principal.getUserSecurityInfo().getId()")
-    public ResponseEntity<?> register(@P("user") @RequestBody MatchRequest request)
+    public ResponseEntity<?> register(@P("user") @Valid @RequestBody MatchRequest request)
     {
         matchService.register(
             request.getPlayerId(),

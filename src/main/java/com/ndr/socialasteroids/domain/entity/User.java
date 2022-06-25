@@ -50,7 +50,6 @@ public class User
     @Column(name = "password", nullable = false)
     private String password;
 
-    //TODO: Testar remoção de JSON Ignore de todas entidades com ele
     @JsonIgnore
     @OneToMany(mappedBy = "player", orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Match> matches = new HashSet<Match>();

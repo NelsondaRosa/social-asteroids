@@ -2,6 +2,8 @@ package com.ndr.socialasteroids.security.comunication;
 
 import java.net.URISyntaxException;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -33,7 +35,7 @@ public class AuthController
     private final @NonNull JwtUtils jwtUtils;
 
     @PostMapping(path = "/signup")
-    public ResponseEntity<?> signup(@RequestBody CreateUserRequest request) throws URISyntaxException
+    public ResponseEntity<?> signup(@RequestBody @Valid CreateUserRequest request) throws URISyntaxException
     {
         UserDTO newUser = userService.createUser(request.getUsername(), request.getEmail(), request.getPassword());
 
@@ -50,7 +52,7 @@ public class AuthController
     }
     
     @PostMapping(path = "/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest)
+    public ResponseEntity<?> login(@RequestBody @Valid LoginRequest loginRequest)
     {
         UserDTO userDTO = authService.authenticateUser(loginRequest.getUsername(), loginRequest.getPassword());
 

@@ -1,12 +1,14 @@
 package com.ndr.socialasteroids.presentation.payload.request.friendship;
 
+import javax.validation.constraints.NotNull;
+
 import lombok.Data;
 
 @Data
 public class FriendshipRequest
 {
-    private Long userId;
-    private Long friendId;
+    @NotNull private Long userId;
+    @NotNull private Long friendId;
 
     public FriendshipRequest(){}
 }

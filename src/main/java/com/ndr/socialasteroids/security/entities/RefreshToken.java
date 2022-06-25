@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotNull;
 
 import com.ndr.socialasteroids.domain.entity.User;
 
@@ -30,13 +31,15 @@ public class RefreshToken
     private Long id;
 
     @OneToOne
-    //@JoinColumn(name = "user_id", referencedColumnName = "id")
+    @NotNull
     private User user;
 
-    @Column(nullable = false)
+    @Column
+    @NotNull
     private String token;
 
-    @Column(nullable = false)
+    @Column
+    @NotNull
     private Instant expiryDate;
 
     public RefreshToken(User  user, Long durationInMillis)

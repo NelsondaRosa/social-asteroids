@@ -2,6 +2,8 @@ package com.ndr.socialasteroids.presentation.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +34,7 @@ public class FriendshipController
 
     @PostMapping(path = "/send-invite")
     @PreAuthorize("#user.getUserId() == principal.getUserSecurityInfo().getId()")
-    public ResponseEntity<?> sendInvite(@P("user") @RequestBody FriendshipRequest friendshipReq)
+    public ResponseEntity<?> sendInvite(@P("user") @Valid @RequestBody FriendshipRequest friendshipReq)
     {
         friendshipService.sendInvite(friendshipReq.getUserId(), friendshipReq.getFriendId());
 
@@ -41,7 +43,7 @@ public class FriendshipController
 
     @PostMapping(path = "/answer-invite")
     @PreAuthorize("#user.getUserId() == principal.getUserSecurityInfo().getId()")
-    public ResponseEntity<?> answerInvite(@P("user") @RequestBody AnswerFriendshipRequest request)
+    public ResponseEntity<?> answerInvite(@P("user") @Valid @RequestBody AnswerFriendshipRequest request)
     {       
         UserDTO inviter = 
             friendshipService.answerFriendshipInvite(request.getUserId(), request.getInviterId(), request.isAccepted());
@@ -59,7 +61,7 @@ public class FriendshipController
 
     @DeleteMapping(path = "/unrequest")
     @PreAuthorize("#user.getUserId() == principal.getUserSecurityInfo().getId()")
-    public ResponseEntity<?> unrequest( @P("user") @RequestBody FriendshipRequest request)
+    public ResponseEntity<?> unrequest( @P("user") @Valid @RequestBody FriendshipRequest request)
     {
         friendshipService.unrequest(request.getUserId(), request.getFriendId());
         

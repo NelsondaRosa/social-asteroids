@@ -1,5 +1,7 @@
 package com.ndr.socialasteroids.presentation.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,7 +30,7 @@ public class UserController
 
     @PostMapping(path = "/update")
     @PreAuthorize("#user.id == principal.getUserSecurityInfo().getId()")
-    public ResponseEntity<?> updateInfo(@P("user") @RequestBody UpdateUserInfoRequest request)
+    public ResponseEntity<?> updateInfo(@P("user") @Valid @RequestBody UpdateUserInfoRequest request)
     {
         UserDTO updatedUser = userService.update(
                                             request.getId(),
@@ -40,7 +42,7 @@ public class UserController
 
     @PostMapping(path = "/update-password")
     @PreAuthorize("#user.id == principal.getUserSecurityInfo().getId()")
-    public ResponseEntity<?> updatePassword(@P("user") @RequestBody UpdatePasswordRequest request)
+    public ResponseEntity<?> updatePassword(@P("user") @Valid @RequestBody UpdatePasswordRequest request)
     {
         UserDTO updatedUser = userService.updatePassword(
                                             request.getId(),

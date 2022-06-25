@@ -40,8 +40,8 @@ public class FriendshipService
         User user = userService.getEntityById(userId);
         User friend = userService.getEntityById(friendId);
 
-        // Se a relação já existir do lado oposto,cria a relação do lado atual e
-        // ativa o status de amizade
+        //If relation already exists in opposite side, create the relation in actual side and
+        //activate the friend status
         if (relationExists(friendId, userId))
         {
             Friendship userSide = new Friendship(user, friend, true);
