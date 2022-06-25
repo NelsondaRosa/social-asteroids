@@ -1,6 +1,8 @@
 package com.ndr.socialasteroids.domain.entity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -64,6 +66,12 @@ public class User
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<Role>();
+
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY )
+    private List<Post> posts = new ArrayList<Post>();
+
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+    private List<ForumThread> threads = new ArrayList<ForumThread>();
 
     public User(){}
     public User(String username, String email, String password)
