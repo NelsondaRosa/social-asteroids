@@ -34,7 +34,6 @@ public class UserService
             throw new DuplicateValueException("Username or email alredy exist");
         }
 
-        //TODO: Validate password before being encoded
         User user = new User(username, email, passwordEncoder.encode(password));
 
         //TODO: arrumar atribuição de role
