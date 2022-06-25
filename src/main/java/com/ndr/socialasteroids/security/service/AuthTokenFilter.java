@@ -38,9 +38,10 @@ public class AuthTokenFilter extends OncePerRequestFilter
      * Will check the existence of a JWT in the request.
      * If the token exists and is invalid (expired, incorrect values ​​etc) it will try to authenticate via RefreshToken. 
      * If the refresh token is invalid, delete the possible JWT cookie value on the client.
-     *
-     * Finally, you will proceed to the filter chair.
-     * It does not return HttpStatus.UNAUTHORIZED because this is done by other parts of the application with Spring Security.
+     * <p>
+     * Finally, it will proceed to the filter chair.
+     * <p>
+     * It does not add HttpStatus.UNAUTHORIZED to response because this is done by other parts of the application with Spring Security.
      * If it did, endpoints accessible by everyone would be blocked.
      */
     @Override

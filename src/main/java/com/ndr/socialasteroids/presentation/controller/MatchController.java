@@ -44,13 +44,21 @@ public class MatchController
     }
 
     @GetMapping(path = "/get/{userId}")
-    public ResponseEntity<?> getMatches(@PathVariable Long userId)
+    public ResponseEntity<?> getMatches(@PathVariable String userId)
     {
-        List<MatchDTO> matches = matchService.getMatches(userId);
+        List<MatchDTO> matches = matchService.getMatches(Long.valueOf(userId));
 
         if(matches.isEmpty())
             return ResponseEntity.noContent().build();
 
         return ResponseEntity.ok().body(matches);
+    }
+
+    @GetMapping(path = "/get/{matchId}")
+    public ResponseEntity<?> getMatch(@PathVariable String matchId)
+    {
+        MatchDTO match = matchService.getMatch(Long.valueOf(matchId));
+        
+        return ResponseEntity.ok().body(match);
     }
 }

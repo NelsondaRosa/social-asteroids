@@ -41,8 +41,8 @@ public class MatchService
     {
         User user = userService.getEntityById(userId);
         Match match = new Match(duration, score, ammoSpent, destroyedTargets);
+        
         match.setPlayer(user);
-
         MatchDTO registeredMatch = new MatchDTO(save(match));
 
         return registeredMatch;
@@ -58,5 +58,12 @@ public class MatchService
                         .collect(Collectors.toList());
 
         return matches;
+    }
+
+    public MatchDTO getMatch(Long matchId)
+    {
+        MatchDTO match = new MatchDTO(matchRepository.getById(matchId));
+        
+        return match;
     }
 }

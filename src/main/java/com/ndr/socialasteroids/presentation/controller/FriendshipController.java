@@ -35,6 +35,7 @@ public class FriendshipController
     public ResponseEntity<?> sendInvite(@P("user") @RequestBody FriendshipRequest friendshipReq)
     {
         friendshipService.sendInvite(friendshipReq.getUserId(), friendshipReq.getFriendId());
+
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -61,14 +62,15 @@ public class FriendshipController
     public ResponseEntity<?> unrequest( @P("user") @RequestBody FriendshipRequest request)
     {
         friendshipService.unrequest(request.getUserId(), request.getFriendId());
+        
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @GetMapping(path = "/get/{userId}")
     @PreAuthorize("#user == principal.getUserSecurityInfo().getId()")
-    public ResponseEntity<?> getFriends(@P("user") @PathVariable Long userId)
+    public ResponseEntity<?> getFriends(@P("user") @PathVariable String userId)
     {
-        List<FriendshipDTO> friends = friendshipService.getFriends(userId);
+        List<FriendshipDTO> friends = friendshipService.getFriends(Long.valueOf(userId));
 
         if(friends.size() <= 0)
             return ResponseEntity.noContent().build();
@@ -78,9 +80,9 @@ public class FriendshipController
 
     @GetMapping(path = "/invites/{userId}")
     @PreAuthorize("#user == principal.getUserSecurityInfo().getId()")
-    public ResponseEntity<?> getFriendInvites(@P("user") @PathVariable Long userId)
+    public ResponseEntity<?> getFriendInvites(@P("user") @PathVariable String userId)
     {
-        List<FriendshipDTO> friendInvites = friendshipService.getInvites(userId);
+        List<FriendshipDTO> friendInvites = friendshipService.getInvites(Long.valueOf(userId));
 
         if(friendInvites.size() <= 0)
             return ResponseEntity.noContent().build();

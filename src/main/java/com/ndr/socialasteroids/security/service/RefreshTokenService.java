@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RefreshTokenService
 {
-    @Value("${sa.jwt.refresh-expiration-ms}")
+    @Value("${sa.jwt.refresh-expiration-sec}")
     private String refreshTokenDuration;
 
     private final @NonNull RefreshTokenRepository refreshTokenRepository;

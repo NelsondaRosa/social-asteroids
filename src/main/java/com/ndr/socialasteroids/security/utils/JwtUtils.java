@@ -26,7 +26,7 @@ import io.jsonwebtoken.security.SignatureException;
 @Component
 public class JwtUtils
 {
-    @Value("${sa.jwt.expiration-ms}")
+    @Value("${sa.jwt.expiration-sec}")
     private long jwtExpirationMs;
 
     @Value("${sa.jwt.cookie-path}")
@@ -38,10 +38,10 @@ public class JwtUtils
     @Value("${sa.jwt.jwt-cookie-name}")
     private String jwtCookieName;
 
-    @Value("${sa.jwt.jwt-cookie-max-age-ms}")
+    @Value("${sa.jwt.jwt-cookie-max-age-sec}")
     private long jwtCookieMaxAge;
 
-    @Value("${sa.jwt.refresh-token-cookie-max-age-ms}")
+    @Value("${sa.jwt.refresh-token-cookie-max-age-sec}")
     private long refreshTokenCookieMaxAge;
 
     @Value("${sa.jwt.secret}")
