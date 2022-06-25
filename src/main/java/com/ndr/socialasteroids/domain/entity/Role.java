@@ -22,7 +22,6 @@ public class Role
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     private ERole name;
 
