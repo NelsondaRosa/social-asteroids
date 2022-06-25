@@ -12,6 +12,7 @@ public class Encrypter
 {
     private static final String ALGO = "AES";
 
+    //TODO: Put secret in enviroment var
     private static byte[] secret = new byte[]
         {49, 113, -25, -75, -110, -96, -113, 47, -123, -83, -40, 46, -68, 100, 91, -59};
     
