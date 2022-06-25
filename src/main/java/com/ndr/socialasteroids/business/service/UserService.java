@@ -81,7 +81,6 @@ public class UserService
         return updatedUserDTO;
     }
     
-    //Protected method only to be used in the service package. Returns domain entity
     public User getEntityById(Long userId) throws NoSuchElementException
     {
         User user = userRepository.findById(userId).orElseThrow();
