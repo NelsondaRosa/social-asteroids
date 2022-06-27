@@ -81,7 +81,7 @@ public class ForumService
         User owner = userService.getEntityById(ownerId);
         List<ThreadDTO> threads = new ArrayList<ThreadDTO>();
         
-        threadRepository.findByUser(owner).orElseThrow()
+        threadRepository.findByOwner(owner).orElseThrow()
                         .stream()
                         .forEach(thread -> threads.add(new ThreadDTO(thread)));
 

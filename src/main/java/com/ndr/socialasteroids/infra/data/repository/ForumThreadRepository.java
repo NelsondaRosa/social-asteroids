@@ -13,5 +13,5 @@ import com.ndr.socialasteroids.domain.entity.User;
 public interface ForumThreadRepository extends JpaRepository<ForumThread, Long>
 {
 
-    Optional<List<ForumThread>> findByUser(User user);
+    Optional<List<ForumThread>> findByOwner(User owner);
 }
