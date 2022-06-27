@@ -20,7 +20,7 @@ public class FriendshipDTO extends RepresentationModel<FriendshipDTO>  {
     {
         this.user = new UserDTO(friendship.getUser());
         this.friend = new UserDTO(friendship.getFriend());
-
+        //user - friend
         add(linkTo(methodOn(UserController.class).getUser(user.getId().toString())).withRel("user"));
         add(linkTo(methodOn(UserController.class).getUser(friend.getId().toString())).withRel("friend"));
     }

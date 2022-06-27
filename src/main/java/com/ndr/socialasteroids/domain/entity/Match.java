@@ -1,8 +1,7 @@
 package com.ndr.socialasteroids.domain.entity;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.Instant;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -16,7 +15,6 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.ndr.socialasteroids.infra.data.converters.DurationConverter;
-import com.ndr.socialasteroids.infra.data.converters.ZoneIdConverter;
 
 import lombok.Data;
 
@@ -33,11 +31,7 @@ public class Match
     private Long id;
 
     @Column(name = "match_on", columnDefinition = "TIMESTAMP", nullable = false)
-    private LocalDateTime matchOn;
-
-    @Column(name = "time_zone_id", nullable = false)
-    @Convert(converter = ZoneIdConverter.class)
-    private ZoneId zoneId;
+    private Instant matchOn;
 
     @Column(name = "duration", nullable = false)
     @Convert(converter = DurationConverter.class)
@@ -63,12 +57,6 @@ public class Match
         this.score = score;
         this.ammoSpent = ammoSpent;
         this.destroyedTargets = destroyedTargets;
-        setTimeNow();
-    }
-
-    public void setTimeNow()
-    {
-        this.matchOn = LocalDateTime.now();
-        this.zoneId = ZoneId.systemDefault();
+        this.matchOn = Instant.now();
     }
 }

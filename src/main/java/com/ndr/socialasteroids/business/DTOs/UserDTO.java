@@ -27,7 +27,7 @@ public class UserDTO extends RepresentationModel<UserDTO>
         this.id = user.getId();
         this.username = user.getUsername();
         this.email = user.getEmail();
-
+        //Self - matches - friends
         add(linkTo(methodOn(UserController.class).getUser(this.id.toString())).withSelfRel());
         add(linkTo(methodOn(MatchController.class).getMatches(this.id.toString())).withRel("matches"));
         add(linkTo(methodOn(FriendshipController.class).getFriends(this.id.toString())).withRel("friends"));

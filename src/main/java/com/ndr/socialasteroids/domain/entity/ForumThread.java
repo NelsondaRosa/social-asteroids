@@ -1,12 +1,10 @@
 package com.ndr.socialasteroids.domain.entity;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -18,7 +16,6 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.ndr.socialasteroids.infra.data.converters.ZoneIdConverter;
 
 import lombok.Data;
 
@@ -34,6 +31,9 @@ public class ForumThread
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "title", nullable = false)
+    private String title;
+
     @ManyToOne
     private User owner;
     
@@ -41,28 +41,23 @@ public class ForumThread
     private List<Post> posts = new ArrayList<Post>();
 
     @Column(name = "created_on")
-    private LocalDateTime createdOn;
+    private Instant createdOn;
 
-    @Column(name = "time_zone_id")
-    @Convert(converter = ZoneIdConverter.class)
-    private ZoneId zoneId;
+    @Column(name = "deleted")
+    public Boolean deleted;
 
     public ForumThread(){}
 
-    public ForumThread(User owner)
+    public ForumThread(String title, User owner)
     {
+        this.title = title;
         this.owner = owner;
-        setTimeNow();
+        this.deleted = false;
+        this.createdOn = Instant.now();
     }
 
-    public void setTimeNow()
+    public void addPost(Post post)
     {
-        this.createdOn = LocalDateTime.now();
-        this.zoneId = ZoneId.systemDefault();
-    }
-
-
-
-
-    
+        this.posts.add(post);
+    }   
 }
