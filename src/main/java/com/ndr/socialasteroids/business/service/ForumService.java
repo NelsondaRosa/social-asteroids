@@ -1,9 +1,10 @@
 package com.ndr.socialasteroids.business.service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.Instant;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.ndr.socialasteroids.business.DTOs.PostDTO;
@@ -30,7 +31,7 @@ public class ForumService
         User owner = userService.getEntityById(ownerId);
         ForumThread thread = new ForumThread(title, owner);
 
-        ThreadDTO createdThread = new ThreadDTO(threadRepository.saveAndFlush(thread));
+        ThreadDTO createdThread = new ThreadDTO(threadRepository.save(thread));
 
         return createdThread;
     }
@@ -40,8 +41,11 @@ public class ForumService
         User owner = userService.getEntityById(ownerId);
         ForumThread thread = threadRepository.findById(threadId).orElseThrow();
         Post post = new Post(owner, thread, content);
+        
+        thread.setUpdatedOn(Instant.now());
 
-        PostDTO createdPost = new PostDTO(postRepository.saveAndFlush(post));
+        PostDTO createdPost = new PostDTO(postRepository.save(post));
+        threadRepository.save(thread);
 
         return createdPost;
     }
@@ -54,12 +58,20 @@ public class ForumService
         return threadDTO;
     }
 
+    public PostDTO getPost(Long postId)
+    {
+        Post post = postRepository.findById(postId).orElseThrow();
+        PostDTO postDTO = new PostDTO(post);
+
+        return postDTO;
+    }
+
     public PostDTO editPost(Long postId, String content)
     {
         Post post = postRepository.findById(postId).orElseThrow();
         post.setContent(content);
         
-        Post editedPost = postRepository.saveAndFlush(post);
+        Post editedPost = postRepository.save(post);
         PostDTO postDTO = new PostDTO(editedPost);
 
         return postDTO;
@@ -76,48 +88,33 @@ public class ForumService
     }
 
     //TODO Test findByUserId
-    public List<ThreadDTO> getThreadsByOwner(Long ownerId)
+    public Page<ThreadDTO> getPagedThreadsByOwner(Long ownerId, Pageable pageable)
     {
         User owner = userService.getEntityById(ownerId);
-        List<ThreadDTO> threads = new ArrayList<ThreadDTO>();
         
-        threadRepository.findByOwner(owner).orElseThrow()
-                        .stream()
-                        .forEach(thread -> threads.add(new ThreadDTO(thread)));
-
-        
-        return threads;
+        return threadRepository.findByOwner(owner, pageable)
+                            .map(thread -> new ThreadDTO(thread));
     }
 
-    public PostDTO getPost(Long postId)
-    {
-        Post post = postRepository.findById(postId).orElseThrow();
-        PostDTO postDTO = new PostDTO(post);
-
-        return postDTO;
-    }
-
-    public List<PostDTO> getPostsByThread(Long threadId)
+    public Page<PostDTO> getPagedPostsByThread(Long threadId, Pageable pageable)
     {
         ForumThread thread = threadRepository.findById(threadId).orElseThrow();
-        List<PostDTO> posts = new ArrayList<PostDTO>();
 
-        postRepository.findByThread(thread).orElseThrow()
-                      .stream()
-                      .forEach(post -> posts.add(new PostDTO(post)));
-                      
-        return posts;
+        return postRepository.findByThread(thread, pageable)
+                            .map(post -> new PostDTO(post));
     }
 
-    public List<PostDTO> getPostsByOwner(Long ownerId)
+    public Page<PostDTO> getPagedPostsByOwner(Long ownerId, Pageable pageable)
     {
         User owner = userService.getEntityById(ownerId);
-        List<PostDTO> posts = new ArrayList<PostDTO>();
 
-        postRepository.findByOwner(owner).orElseThrow()
-                      .stream()
-                      .forEach(post -> posts.add(new PostDTO(post)));
-        
-        return posts;
+        return postRepository.findByOwner(owner, pageable)
+                            .map(post -> new PostDTO(post));
+    }
+
+    public Page<ThreadDTO> getPagedThreads(Pageable pageable)
+    {   
+        return threadRepository.findAll(pageable)
+                        .map(thread -> new ThreadDTO(thread));
     }
 }

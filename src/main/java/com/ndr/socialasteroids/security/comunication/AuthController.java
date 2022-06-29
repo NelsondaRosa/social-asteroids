@@ -1,7 +1,5 @@
 package com.ndr.socialasteroids.security.comunication;
 
-import java.net.URISyntaxException;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,23 +32,15 @@ public class AuthController
     private final @NonNull UserService userService;
     private final @NonNull JwtUtils jwtUtils;
 
+
     @PostMapping(path = "/signup")
-    public ResponseEntity<?> signup(@RequestBody @Valid CreateUserRequest request) throws URISyntaxException
+    public ResponseEntity<?> signup(@RequestBody @Valid CreateUserRequest request)
     {
         UserDTO newUser = userService.createUser(request.getUsername(), request.getEmail(), request.getPassword());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
-    @PostMapping(path = "/refresh-token")
-    public ResponseEntity<?> refreshToken(@RequestBody String refreshToken)
-    {
-        authService.authWithRefreshToken(refreshToken);
-        ResponseCookie newJwtCookie = authService.createJwtCookie();
-
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, newJwtCookie.toString()).build();
-    }
-    
     @PostMapping(path = "/login")
     public ResponseEntity<?> login(@RequestBody @Valid LoginRequest loginRequest)
     {
@@ -59,12 +49,17 @@ public class AuthController
         ResponseCookie jwtCookie = authService.createJwtCookie();
         ResponseCookie refreshTokenCookie = authService.createRefreshTokenCookie(userDTO.getId());
 
-        return ResponseEntity
-            .ok()
-            .header(HttpHeaders.SET_COOKIE, 
-                    jwtCookie.toString(), 
-                    refreshTokenCookie.toString())
-            .body(userDTO);
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString(), refreshTokenCookie.toString())
+                .body(userDTO);
+    }
+    
+    @PostMapping(path = "/refresh-token")
+    public ResponseEntity<?> refreshToken(@RequestBody String refreshToken)
+    {
+        authService.authWithRefreshToken(refreshToken);
+        ResponseCookie newJwtCookie = authService.createJwtCookie();
+
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, newJwtCookie.toString()).build();
     }
     
     @GetMapping(path = "/logout")

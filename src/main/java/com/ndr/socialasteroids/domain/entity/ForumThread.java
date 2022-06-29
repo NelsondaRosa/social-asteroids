@@ -34,26 +34,30 @@ public class ForumThread
     @Column(name = "title", nullable = false)
     private String title;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private User owner;
     
     @OneToMany(mappedBy = "thread", fetch = FetchType.LAZY)
     private List<Post> posts = new ArrayList<Post>();
 
-    @Column(name = "created_on")
+    @Column(name = "created_on", nullable = false)
     private Instant createdOn;
 
-    @Column(name = "deleted")
+    @Column(name = "updated_on", nullable = false)
+    private Instant updatedOn;
+
+    @Column(name = "deleted", nullable = false)
     public Boolean deleted;
 
     public ForumThread(){}
 
     public ForumThread(String title, User owner)
     {
+        this.createdOn = Instant.now();
+        this.updatedOn = this.createdOn;
         this.title = title;
         this.owner = owner;
         this.deleted = false;
-        this.createdOn = Instant.now();
     }
 
     public void addPost(Post post)

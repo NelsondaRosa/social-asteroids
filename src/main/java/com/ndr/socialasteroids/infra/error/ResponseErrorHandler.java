@@ -41,7 +41,7 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
     protected ResponseEntity<ErrorDetails> handleInexistentResource(InexistentDataException exception, WebRequest request)
     {
         ErrorDetails error = new ErrorDetails(exception.getStatus(), exception.getMessage());
-        //exception.printStackTrace();
+
         return buildResponse(error);
     }
 
@@ -49,7 +49,7 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
     protected ResponseEntity<ErrorDetails> handleDataInconsistency(DataInconsistencyException exception, WebRequest request)
     {
         ErrorDetails error = new ErrorDetails(exception.getStatus(), exception.getMessage());
-        //exception.printStackTrace();
+
         return buildResponse(error);
     }
 
@@ -57,7 +57,7 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
     protected ResponseEntity<ErrorDetails> handleDuplicateValue(DuplicateValueException exception, WebRequest request)
     {
         ErrorDetails error = new ErrorDetails(exception.getStatus(), exception.getMessage());
-        //exception.printStackTrace();
+
         return buildResponse(error);
     }
 
@@ -65,7 +65,7 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
     protected ResponseEntity<ErrorDetails> handleUserAuthentication(JwtException exception, WebRequest request)
     {
         ErrorDetails error = new ErrorDetails(exception.getStatus(), exception.getMessage());
-        //exception.printStackTrace();
+
         return buildResponse(error);
     }
 
@@ -73,7 +73,7 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
     protected ResponseEntity<ErrorDetails> handleRefrehToken(RefreshTokenException exception, WebRequest request)
     {
         ErrorDetails error = new ErrorDetails(exception.getStatus(), exception.getMessage());
-        //exception.printStackTrace();
+
         return buildResponse(error);
     }
 
@@ -81,6 +81,7 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
     protected ResponseEntity<ErrorDetails> handleEncoderException(EncrypterException exception, WebRequest request)
     {
         ErrorDetails error = new ErrorDetails(exception.getStatus(), exception.getMessage());
+
         return buildResponse(error);
     }
 
@@ -104,16 +105,16 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
     @ExceptionHandler(NoSuchElementException.class)
     protected ResponseEntity<ErrorDetails> handleNotSuchElement(NoSuchElementException exception, WebRequest request)
     {
-        ErrorDetails error = new ErrorDetails(HttpStatus.NOT_FOUND, "No such data in the DB");
-        //exception.printStackTrace();
+        ErrorDetails error = new ErrorDetails(HttpStatus.NOT_FOUND, "No such data");
+
         return buildResponse(error);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
     protected ResponseEntity<ErrorDetails> handleEntityNotFound(EntityNotFoundException exception, WebRequest request)
     {
-        ErrorDetails error = new ErrorDetails(HttpStatus.NOT_FOUND, "Data can't be found anymore");
-        //exception.printStackTrace();
+        ErrorDetails error = new ErrorDetails(HttpStatus.NOT_FOUND, "Data can't be found");
+
         return buildResponse(error);
     }
 
@@ -121,7 +122,7 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
     protected ResponseEntity<ErrorDetails> handleIllegalArgument(IllegalArgumentException exception, WebRequest request)
     {
         ErrorDetails error = new ErrorDetails(HttpStatus.BAD_REQUEST, "Sent data is incorrect");
-        //exception.printStackTrace();
+
         return buildResponse(error);
     }
 
@@ -129,15 +130,15 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
     protected ResponseEntity<ErrorDetails> handleAccessDenied(AccessDeniedException exception, WebRequest request)
     {
         ErrorDetails error = new ErrorDetails(HttpStatus.UNAUTHORIZED, "Access denied for this operation");
-        //exception.printStackTrace();
+
         return buildResponse(error);
     }
     
     @ExceptionHandler(UsernameNotFoundException.class)
     protected ResponseEntity<ErrorDetails> handleUsernameNotFound(UsernameNotFoundException exception, WebRequest request)
     {
-        ErrorDetails error = new ErrorDetails(HttpStatus.NOT_FOUND, "Wrong user data");
-        //exception.printStackTrace();
+        ErrorDetails error = new ErrorDetails(HttpStatus.NOT_FOUND, "Wrong login");
+
         return buildResponse(error);
     }
 
@@ -145,7 +146,7 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
     protected ResponseEntity<ErrorDetails> handleAuthentication(AuthenticationException exception, WebRequest request)
     {
         ErrorDetails error = new ErrorDetails(HttpStatus.UNAUTHORIZED, "Unauthorized");
-        //exception.printStackTrace();
+
         return buildResponse(error);
     }
 
@@ -154,7 +155,8 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
     {
         ErrorDetails error = new ErrorDetails(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error");
 
-        //logger.error("Unexpected error : " + exception.getMessage());
+        exception.printStackTrace();
+        logger.info(exception.getMessage());
 
         return buildResponse(error);
     }

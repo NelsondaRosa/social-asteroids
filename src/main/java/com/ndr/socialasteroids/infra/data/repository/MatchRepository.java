@@ -13,5 +13,7 @@ import com.ndr.socialasteroids.domain.entity.User;
 public interface MatchRepository extends JpaRepository<Match, Long>
 {
     Optional<List<Match>> findByPlayer(User player);
+
+    Optional<List<Match>> findAllByOrderByScoreDesc();
     
 }

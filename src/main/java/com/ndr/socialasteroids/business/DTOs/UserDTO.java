@@ -3,6 +3,8 @@ package com.ndr.socialasteroids.business.DTOs;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.RepresentationModel;
 
 import com.ndr.socialasteroids.domain.entity.User;
@@ -28,12 +30,13 @@ public class UserDTO extends RepresentationModel<UserDTO>
         this.id = user.getId();
         this.username = user.getUsername();
         this.email = user.getEmail();
+        Pageable pageable = PageRequest.of(0, 20);
         //Self - matches - friends - threads - forums
         add(linkTo(methodOn(UserController.class).getUser(this.id.toString())).withSelfRel());
         add(linkTo(methodOn(MatchController.class).getMatches(this.id.toString())).withRel("matches"));
         add(linkTo(methodOn(FriendshipController.class).getFriends(this.id.toString())).withRel("friends"));
-        add(linkTo(methodOn(ForumController.class).getThreadsByOwner(this.id.toString())).withRel("threads"));
-        add(linkTo(methodOn(ForumController.class).getPostsByOwner(this.id.toString())).withRel("posts"));
+        add(linkTo(methodOn(ForumController.class).getThreadsByOwner(this.id.toString(), pageable)).withRel("threads"));
+        add(linkTo(methodOn(ForumController.class).getPostsByOwner(this.id.toString(), pageable)).withRel("posts"));
     }
 
     public UserDTO(Long id, String username, String email)

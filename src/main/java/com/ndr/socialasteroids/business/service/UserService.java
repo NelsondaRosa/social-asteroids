@@ -1,5 +1,7 @@
 package com.ndr.socialasteroids.business.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +81,17 @@ public class UserService
         UserDTO updatedUserDTO = new UserDTO(userRepository.saveAndFlush(userToUpdate));
 
         return updatedUserDTO;
+    }
+
+    public List<UserDTO> searchByUsername(String search)
+    {
+        List<UserDTO> users = new ArrayList<UserDTO>();
+
+        userRepository.searchByUsername(search)
+                        .stream()
+                        .forEach(user -> users.add(new UserDTO(user)));
+    
+        return users;
     }
     
     public User getEntityById(Long userId) throws NoSuchElementException

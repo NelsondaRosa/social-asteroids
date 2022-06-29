@@ -1,5 +1,7 @@
 package com.ndr.socialasteroids.presentation.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class UserController 
 {
     private final @NonNull UserService userService;
-
+    
     @PostMapping(path = "/update")
     @PreAuthorize("#user.id == principal.getUserSecurityInfo().getId()")
     public ResponseEntity<?> updateInfo(@P("user") @Valid @RequestBody UpdateUserInfoRequest request)
@@ -58,6 +60,19 @@ public class UserController
         UserDTO user = userService.getById(Long.valueOf(userId));
 
         return ResponseEntity.ok().body(user);
+    }
+
+    @GetMapping(path = "search/{query}")
+    public ResponseEntity<?> searchByUsername(@PathVariable String query)
+    {
+        List<UserDTO> users = userService.searchByUsername(query);
+
+        if (users.size() <= 0)
+        {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok().body(users);
     }
 }
 

@@ -29,7 +29,7 @@ public class PostDTO extends RepresentationModel<PostDTO>
         this.postedOn = post.getPostedOn();
         //Setf - Thread - Owner
         add(linkTo(methodOn(ForumController.class).getPost(id.toString())).withSelfRel());
-        add(linkTo(methodOn(ForumController.class).getThread(post.getThread().toString())).withRel("thread"));
-        add(linkTo(methodOn(UserController.class).getUser(post.getOwner().toString())).withRel("owner"));
+        add(linkTo(methodOn(ForumController.class).getThread(post.getThread().getId().toString())).withRel("thread"));
+        add(linkTo(methodOn(UserController.class).getUser(post.getOwner().getId().toString())).withRel("owner"));
     }
 }

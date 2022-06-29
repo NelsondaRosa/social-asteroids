@@ -30,6 +30,14 @@ public class MatchController
 {
     private final @NonNull MatchService matchService;
 
+    @GetMapping
+    public ResponseEntity<?> getAll()
+    {
+        List<MatchDTO> matches = matchService.getAll();
+
+        return ResponseEntity.ok().body(matches);
+    }
+    
     @PostMapping(path = "/register")
     @PreAuthorize("#user.getPlayerId() == principal.getUserSecurityInfo().getId()")
     public ResponseEntity<?> register(@P("user") @Valid @RequestBody MatchRequest request)
@@ -45,10 +53,10 @@ public class MatchController
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping(path = "/get/{userId}")
+    @GetMapping(path = "/get/user/{userId}")
     public ResponseEntity<?> getMatches(@PathVariable String userId)
     {
-        List<MatchDTO> matches = matchService.getMatches(Long.valueOf(userId));
+        List<MatchDTO> matches = matchService.getMatchesByUserId(Long.valueOf(userId));
 
         if(matches.isEmpty())
             return ResponseEntity.noContent().build();

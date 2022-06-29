@@ -1,8 +1,8 @@
 package com.ndr.socialasteroids.presentation.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,6 +31,14 @@ import lombok.RequiredArgsConstructor;
 public class ForumController
 {
     private final @NonNull ForumService forumService;
+
+    @GetMapping
+    public ResponseEntity<?> getAll(Pageable pageable)
+    {
+        Page<ThreadDTO> threads = forumService.getPagedThreads(pageable);
+
+        return ResponseEntity.ok().body(threads);
+    }
 
     @PostMapping(path = "/create") @PreAuthorize("#thread.getOwnerId() == principal.getUserSecurityInfo().getId()")
     public ResponseEntity<?> createThread(@P("thread") @RequestBody CreateThreadRequest request)
@@ -84,9 +92,9 @@ public class ForumController
     }
 
     @GetMapping(path = "/thread/user/{ownerId}")
-    public ResponseEntity<?> getThreadsByOwner(@PathVariable String ownerId)
+    public ResponseEntity<?> getThreadsByOwner(@PathVariable String ownerId, Pageable pageable)
     {
-        List<ThreadDTO> threads = forumService.getThreadsByOwner(Long.valueOf(ownerId));
+        Page<ThreadDTO> threads = forumService.getPagedThreadsByOwner(Long.valueOf(ownerId), pageable);
         
         return ResponseEntity.ok().body(threads);
     }
@@ -100,17 +108,17 @@ public class ForumController
     }
 
     @GetMapping(path = "/post/thread/{threadId}")
-    public ResponseEntity<?> getPostsByThread(@PathVariable String threadId)
+    public ResponseEntity<?> getPostsByThread(@PathVariable String threadId, Pageable pageable)
     {
-        List<PostDTO> posts = forumService.getPostsByThread(Long.valueOf(threadId));
+        Page<PostDTO> posts = forumService.getPagedPostsByThread(Long.valueOf(threadId), pageable);
 
         return ResponseEntity.ok().body(posts);
     }
 
     @GetMapping(path="/post/user/{onwerId}")
-    public ResponseEntity<?> getPostsByOwner(@PathVariable String onwerId)
+    public ResponseEntity<?> getPostsByOwner(@PathVariable String onwerId, Pageable pageable)
     {
-        List<PostDTO> posts = forumService.getPostsByOwner(Long.valueOf(onwerId));
+        Page<PostDTO> posts = forumService.getPagedPostsByOwner(Long.valueOf(onwerId), pageable);
 
         return ResponseEntity.ok().body(posts);
     }

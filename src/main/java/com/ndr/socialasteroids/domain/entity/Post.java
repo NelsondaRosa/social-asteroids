@@ -21,19 +21,19 @@ public class Post
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private User owner;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private ForumThread thread;
 
-    @Column(name = "content")
+    @Column(name = "content", columnDefinition = "text")
     private String content;
 
-    @Column(name = "posted_on")
+    @Column(name = "posted_on", nullable = false)
     private Instant postedOn;
 
-    @Column(name = "deleted")
+    @Column(name = "deleted", nullable = false)
     private Boolean deleted;
 
     public Post(){}

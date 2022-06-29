@@ -80,7 +80,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
             .and()
             .authorizeRequests()
                 .antMatchers("/h2-console", "/h2-console/**").permitAll()
-                .antMatchers("/auth/**").permitAll()
+                .antMatchers("/home","/auth/**").permitAll()
                 .anyRequest().authenticated()
             .and()// Inicio - habilitar H2 Console
                 //.csrf().ignoringAntMatchers("/h2-console/**")
