@@ -42,7 +42,7 @@ public class ForumService
         ForumThread thread = threadRepository.findById(threadId).orElseThrow();
         Post post = new Post(owner, thread, content);
         
-        thread.setUpdatedOn(Instant.now());
+        thread.setUpdatedAt(Instant.now());
 
         PostDTO createdPost = new PostDTO(postRepository.save(post));
         threadRepository.save(thread);
