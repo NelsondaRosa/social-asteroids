@@ -40,11 +40,11 @@ public class ForumThread
     @OneToMany(mappedBy = "thread", fetch = FetchType.LAZY)
     private List<Post> posts = new ArrayList<Post>();
 
-    @Column(name = "created_on", nullable = false)
-    private Instant createdOn;
+    @Column(name = "created_at", nullable = false)
+    private Instant createdAt;
 
-    @Column(name = "updated_on", nullable = false)
-    private Instant updatedOn;
+    @Column(name = "updated_at", nullable = false)
+    private Instant updatedAt;
 
     @Column(name = "deleted", nullable = false)
     public Boolean deleted;
@@ -53,8 +53,8 @@ public class ForumThread
 
     public ForumThread(String title, User owner)
     {
-        this.createdOn = Instant.now();
-        this.updatedOn = this.createdOn;
+        this.createdAt = Instant.now();
+        this.updatedAt = this.createdAt;
         this.title = title;
         this.owner = owner;
         this.deleted = false;

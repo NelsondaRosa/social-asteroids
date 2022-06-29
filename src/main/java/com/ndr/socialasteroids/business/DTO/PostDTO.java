@@ -1,4 +1,4 @@
-package com.ndr.socialasteroids.business.DTOs;
+package com.ndr.socialasteroids.business.DTO;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -20,16 +20,16 @@ public class PostDTO extends RepresentationModel<PostDTO>
 {
     private Long id;
     private String content;
-    private Instant postedOn;
+    private Instant postedAt;
     
     public PostDTO(Post post)
     {
         this.id = post.getId();
         this.content = post.getContent();
-        this.postedOn = post.getPostedOn();
+        this.postedAt = post.getPostedAt();
         //Setf - Thread - Owner
         add(linkTo(methodOn(ForumController.class).getPost(id.toString())).withSelfRel());
         add(linkTo(methodOn(ForumController.class).getThread(post.getThread().getId().toString())).withRel("thread"));
-        add(linkTo(methodOn(UserController.class).getUser(post.getOwner().getId().toString())).withRel("owner"));
+        add(linkTo(methodOn(UserController.class).getUserById(post.getOwner().getId().toString())).withRel("owner"));
     }
 }

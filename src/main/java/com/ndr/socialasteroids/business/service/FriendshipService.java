@@ -10,8 +10,8 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ndr.socialasteroids.business.DTOs.FriendshipDTO;
-import com.ndr.socialasteroids.business.DTOs.UserDTO;
+import com.ndr.socialasteroids.business.DTO.FriendshipDTO;
+import com.ndr.socialasteroids.business.DTO.UserDTO;
 import com.ndr.socialasteroids.domain.entity.Friendship;
 import com.ndr.socialasteroids.domain.entity.Friendship.Key;
 import com.ndr.socialasteroids.domain.entity.User;

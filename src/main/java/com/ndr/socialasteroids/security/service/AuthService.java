@@ -10,7 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import com.ndr.socialasteroids.business.DTOs.UserDTO;
+import com.ndr.socialasteroids.business.DTO.UserDTO;
 import com.ndr.socialasteroids.business.service.UserService;
 import com.ndr.socialasteroids.security.encoding.Encrypter;
 import com.ndr.socialasteroids.security.entities.RefreshToken;

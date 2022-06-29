@@ -1,4 +1,4 @@
-package com.ndr.socialasteroids.business.DTOs;
+package com.ndr.socialasteroids.business.DTO;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -33,6 +33,6 @@ public class MatchDTO extends RepresentationModel<MatchDTO>
         this.destroyedTargets = match.getAmmoSpent();
         //Self - player
         add(linkTo(methodOn(MatchController.class).getMatch(match.getId().toString())).withSelfRel());
-        add(linkTo(methodOn(UserController.class).getUser(match.getPlayer().getId().toString())).withRel("player"));
+        add(linkTo(methodOn(UserController.class).getUserById(match.getPlayer().getId().toString())).withRel("player"));
     }
 }

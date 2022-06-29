@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ndr.socialasteroids.business.DTOs.PostDTO;
-import com.ndr.socialasteroids.business.DTOs.ThreadDTO;
+import com.ndr.socialasteroids.business.DTO.PostDTO;
+import com.ndr.socialasteroids.business.DTO.ThreadDTO;
 import com.ndr.socialasteroids.business.service.ForumService;
 import com.ndr.socialasteroids.presentation.payload.request.forum.CreatePostRequest;
 import com.ndr.socialasteroids.presentation.payload.request.forum.CreateThreadRequest;
@@ -33,7 +33,7 @@ public class ForumController
     private final @NonNull ForumService forumService;
 
     @GetMapping
-    public ResponseEntity<?> getAll(Pageable pageable)
+    public ResponseEntity<?> getPaged(Pageable pageable)
     {
         Page<ThreadDTO> threads = forumService.getPagedThreads(pageable);
 

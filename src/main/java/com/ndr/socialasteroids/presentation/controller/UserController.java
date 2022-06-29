@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,10 +16,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ndr.socialasteroids.business.DTOs.UserDTO;
+import com.ndr.socialasteroids.business.DTO.UserDTO;
 import com.ndr.socialasteroids.business.service.UserService;
 import com.ndr.socialasteroids.presentation.payload.request.user.UpdatePasswordRequest;
 import com.ndr.socialasteroids.presentation.payload.request.user.UpdateUserInfoRequest;
+import com.ndr.socialasteroids.security.entities.UserDetailsImpl;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,20 @@ import lombok.RequiredArgsConstructor;
 public class UserController 
 {
     private final @NonNull UserService userService;
+
+    @GetMapping(path = "/active")
+    public ResponseEntity<?> getActiveUser()
+    {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof String)
+        {
+            return ResponseEntity.noContent().build();
+        }
+
+        UserDTO userDTO = new UserDTO(((UserDetailsImpl) principal).getUserSecurityInfo());
+
+        return ResponseEntity.ok().body(userDTO);
+    }
     
     @PostMapping(path = "/update")
     @PreAuthorize("#user.id == principal.getUserSecurityInfo().getId()")
@@ -55,7 +71,7 @@ public class UserController
     }
 
     @GetMapping(path = "get/{userId}")
-    public ResponseEntity<UserDTO> getUser(@PathVariable String userId)
+    public ResponseEntity<UserDTO> getUserById(@PathVariable String userId)
     {
         UserDTO user = userService.getById(Long.valueOf(userId));
 

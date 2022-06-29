@@ -9,7 +9,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.ndr.socialasteroids.business.DTOs.UserDTO;
+import com.ndr.socialasteroids.business.DTO.UserDTO;
 import com.ndr.socialasteroids.domain.entity.Role;
 import com.ndr.socialasteroids.domain.entity.User;
 import com.ndr.socialasteroids.domain.enums.ERole;
@@ -83,6 +83,7 @@ public class UserService
         return updatedUserDTO;
     }
 
+    //TODO: make pageable
     public List<UserDTO> searchByUsername(String search)
     {
         List<UserDTO> users = new ArrayList<UserDTO>();

@@ -31,7 +31,7 @@ public class Post
     private String content;
 
     @Column(name = "posted_on", nullable = false)
-    private Instant postedOn;
+    private Instant postedAt;
 
     @Column(name = "deleted", nullable = false)
     private Boolean deleted;
@@ -44,6 +44,6 @@ public class Post
         this.thread = thread;
         this.content = content;
         this.deleted = false;
-        this.postedOn = Instant.now();
+        this.postedAt = Instant.now();
     }
 }

@@ -1,4 +1,4 @@
-package com.ndr.socialasteroids.business.DTOs;
+package com.ndr.socialasteroids.business.DTO;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -21,7 +21,7 @@ public class FriendshipDTO extends RepresentationModel<FriendshipDTO>  {
         this.user = new UserDTO(friendship.getUser());
         this.friend = new UserDTO(friendship.getFriend());
         //user - friend
-        add(linkTo(methodOn(UserController.class).getUser(user.getId().toString())).withRel("user"));
-        add(linkTo(methodOn(UserController.class).getUser(friend.getId().toString())).withRel("friend"));
+        add(linkTo(methodOn(UserController.class).getUserById(user.getId().toString())).withRel("user"));
+        add(linkTo(methodOn(UserController.class).getUserById(friend.getId().toString())).withRel("friend"));
     }
 }

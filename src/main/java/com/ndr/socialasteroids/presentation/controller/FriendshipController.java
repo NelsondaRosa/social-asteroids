@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ndr.socialasteroids.business.DTOs.FriendshipDTO;
-import com.ndr.socialasteroids.business.DTOs.UserDTO;
+import com.ndr.socialasteroids.business.DTO.FriendshipDTO;
+import com.ndr.socialasteroids.business.DTO.UserDTO;
 import com.ndr.socialasteroids.business.service.FriendshipService;
 import com.ndr.socialasteroids.presentation.payload.request.friendship.AnswerFriendshipRequest;
 import com.ndr.socialasteroids.presentation.payload.request.friendship.FriendshipRequest;

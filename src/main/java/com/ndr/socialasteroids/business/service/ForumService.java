@@ -7,8 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.ndr.socialasteroids.business.DTOs.PostDTO;
-import com.ndr.socialasteroids.business.DTOs.ThreadDTO;
+import com.ndr.socialasteroids.business.DTO.PostDTO;
+import com.ndr.socialasteroids.business.DTO.ThreadDTO;
 import com.ndr.socialasteroids.domain.entity.ForumThread;
 import com.ndr.socialasteroids.domain.entity.Post;
 import com.ndr.socialasteroids.domain.entity.User;
@@ -93,7 +93,7 @@ public class ForumService
         User owner = userService.getEntityById(ownerId);
         
         return threadRepository.findByOwner(owner, pageable)
-                            .map(thread -> new ThreadDTO(thread));
+                            .map(thread -> new ThreadDTO(thread, pageable));
     }
 
     public Page<PostDTO> getPagedPostsByThread(Long threadId, Pageable pageable)
@@ -115,6 +115,6 @@ public class ForumService
     public Page<ThreadDTO> getPagedThreads(Pageable pageable)
     {   
         return threadRepository.findAll(pageable)
-                        .map(thread -> new ThreadDTO(thread));
+                        .map(thread -> new ThreadDTO(thread, pageable));
     }
 }

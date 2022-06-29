@@ -1,10 +1,10 @@
 package com.ndr.socialasteroids.presentation.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ndr.socialasteroids.business.DTOs.MatchDTO;
+import com.ndr.socialasteroids.business.DTO.MatchDTO;
 import com.ndr.socialasteroids.business.service.MatchService;
 import com.ndr.socialasteroids.presentation.payload.request.match.MatchRequest;
 
@@ -31,9 +31,9 @@ public class MatchController
     private final @NonNull MatchService matchService;
 
     @GetMapping
-    public ResponseEntity<?> getAll()
+    public ResponseEntity<?> getPaged(Pageable pageable)
     {
-        List<MatchDTO> matches = matchService.getAll();
+        Page<MatchDTO> matches = matchService.getPaged(pageable);
 
         return ResponseEntity.ok().body(matches);
     }
@@ -54,9 +54,9 @@ public class MatchController
     }
 
     @GetMapping(path = "/get/user/{userId}")
-    public ResponseEntity<?> getMatches(@PathVariable String userId)
+    public ResponseEntity<?> getMatches(@PathVariable String userId, Pageable pageable)
     {
-        List<MatchDTO> matches = matchService.getMatchesByUserId(Long.valueOf(userId));
+        Page<MatchDTO> matches = matchService.getMatchesByUserId(Long.valueOf(userId), pageable);
 
         if(matches.isEmpty())
             return ResponseEntity.noContent().build();

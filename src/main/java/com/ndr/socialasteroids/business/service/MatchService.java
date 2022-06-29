@@ -1,13 +1,11 @@
 package com.ndr.socialasteroids.business.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.ndr.socialasteroids.business.DTOs.MatchDTO;
+import com.ndr.socialasteroids.business.DTO.MatchDTO;
 import com.ndr.socialasteroids.domain.entity.Match;
 import com.ndr.socialasteroids.domain.entity.User;
 import com.ndr.socialasteroids.infra.data.repository.MatchRepository;
@@ -25,7 +23,7 @@ public class MatchService
 
     public Match save(Match match)
     {
-        Match newMatch = matchRepository.saveAndFlush(match);
+        Match newMatch = matchRepository.save(match);
         return newMatch;
     }
 
@@ -45,32 +43,24 @@ public class MatchService
         return registeredMatch;
     }
 
-    public List<MatchDTO> getMatchesByUserId(Long userId)
+    public Page<MatchDTO> getMatchesByUserId(Long userId, Pageable pageable)
     {
         User player = userService.getEntityById(userId);
-        List<MatchDTO> matches = 
-                matchRepository.findByPlayer(player).orElseThrow()
-                        .stream()
-                        .map(MatchDTO::new)
-                        .collect(Collectors.toList());
 
-        return matches;
+        return matchRepository.findPagedByPlayer(player, pageable)
+                        .map(match -> new MatchDTO(match));
     }
 
-    public List<MatchDTO> getAll()
+    //TODO make pageable
+    public Page<MatchDTO> getPaged(Pageable pageable)
     {
-        List<MatchDTO> matches = new ArrayList<MatchDTO>();
-
-        matchRepository.findAllByOrderByScoreDesc().orElseThrow()
-                        .stream()
-                        .forEach(match -> matches.add(new MatchDTO(match)));
-                        
-        return matches;
+        return matchRepository.findPagedByOrderByScoreDesc(pageable)
+                                .map(match -> new MatchDTO(match));
     }
 
     public MatchDTO getMatch(Long matchId)
     {
-        MatchDTO match = new MatchDTO(matchRepository.getById(matchId));
+        MatchDTO match = new MatchDTO(matchRepository.findById(matchId).orElseThrow());
         
         return match;
     }
