@@ -11,7 +11,7 @@ import com.ndr.socialasteroids.domain.entity.User;
 @Repository
 public interface ForumThreadRepository extends PagingAndSortingRepository<ForumThread, Long>
 {
-    Page<ForumThread> findByAuthor(User author, Pageable pageable);
+    Page<ForumThread> findByAuthorOrderByUpdatedAtDesc(User author, Pageable pageable);
 
-    Page<ForumThread> findAll(Pageable pageable);
+    Page<ForumThread> findByOrderByUpdatedAtDesc(Pageable pageable);
 }

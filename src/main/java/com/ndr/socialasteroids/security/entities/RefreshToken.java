@@ -38,11 +38,11 @@ public class RefreshToken
     @Column
     private Instant expiryDate;
 
-    public RefreshToken(User  user, Long durationInMillis)
+    public RefreshToken(User  user, Long durationInSeconds)
     {
         this.user = user;
         this.token = UUID.randomUUID().toString();
-        this.expiryDate = Instant.now().plusMillis(durationInMillis);
+        this.expiryDate = Instant.now().plusSeconds(durationInSeconds);
     }
     
     public RefreshToken(){}

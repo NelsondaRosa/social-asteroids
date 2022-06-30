@@ -12,7 +12,7 @@ import com.ndr.socialasteroids.domain.entity.User;
 @Repository
 public interface PostRespository extends PagingAndSortingRepository<Post, Long>
 {
-    Page<Post> findByThread(ForumThread thread, Pageable pageable);
+    Page<Post> findByThreadOrderByPostedAtDesc(ForumThread thread, Pageable pageable);
 
-    Page<Post> findByAuthor(User author, Pageable pageable);
+    Page<Post> findByAuthorOrderByPostedAtDesc(User author, Pageable pageable);
 }

@@ -17,6 +17,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.ndr.socialasteroids.infra.error.exception.JwtException;
 import com.ndr.socialasteroids.security.entities.RefreshToken;
 import com.ndr.socialasteroids.security.entities.UserDetailsImpl;
 import com.ndr.socialasteroids.security.utils.JwtUtils;
@@ -54,48 +55,47 @@ public class AuthTokenFilter extends OncePerRequestFilter
         {
             String jwt = jwtUtils.getJwtFromCookie(request);
 
-            if (jwt != null)
+            try
             {
-                try
+                if (jwt == null)
+                    throw new JwtException();
+
+                jwtUtils.validateJwt(jwt);
+
+            } catch (ExpiredJwtException | JwtException ex)
+            {
+                //If jwt token is expired, get refreshToken by the cookie
+                String refreshTokenString = jwtUtils.getRefreshTokenFromCookie(request);
+                refreshToken = refreshTokenService.getByToken(refreshTokenString);
+
+                if (refreshTokenString == null)
                 {
-                    jwtUtils.validateJwt(jwt);
-
-                } catch (ExpiredJwtException ex)
-                {
-                    //If jwt token is expired, get refreshToken by the cookie
-                    String refreshTokenString = jwtUtils.getRefreshTokenFromCookie(request);
-                    refreshToken = refreshTokenService.getByToken(refreshTokenString);
-
-                    if (refreshTokenString == null)
-                    {
-                        throw ex;
-                    }
-
-                    //If refreshToken has expired, throw exception to the next catch bloc to invalidate auth proccess
-                    refreshTokenService.verifyExpiration(refreshToken);
+                    throw ex;
                 }
 
-                //If refreshToken has been populated, get username by him, otherwise, get username by jwt claims
-                String username = (refreshToken != null) ? refreshToken.getUser().getUsername()
-                        : jwtUtils.getUsernameFromJwtToken(jwt);
-
-                //Populate SecurityContextHolder with owner of jwt or refresh token
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-
-                //If refresh toke has been populated, create new jwt and set with response cookie
-                if (refreshToken != null)
-                {
-                    System.out.println("---------------- JWT TOKEN UPDATED");
-                    ResponseCookie newJwtCookie = jwtUtils.generateJwtCookie((UserDetailsImpl) userDetails);
-                    response.setHeader(HttpHeaders.SET_COOKIE, newJwtCookie.toString());
-                }
-
+                //If refreshToken has expired, throw exception to the next catch bloc to invalidate auth proccess
+                refreshTokenService.verifyExpiration(refreshToken);
             }
+
+            //If refreshToken has been populated, get username by him, otherwise, get username by jwt claims
+            String username = (refreshToken != null) ? refreshToken.getUser().getUsername()
+                    : jwtUtils.getUsernameFromJwtToken(jwt);
+
+            //Populate SecurityContextHolder with owner of jwt or refresh token
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                    userDetails, null, userDetails.getAuthorities());
+
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            //If refresh toke has been populated, create new jwt and set with response cookie
+            if (refreshToken != null)
+            {
+                ResponseCookie newJwtCookie = jwtUtils.generateJwtCookie((UserDetailsImpl) userDetails);
+                response.setHeader(HttpHeaders.SET_COOKIE, newJwtCookie.toString());
+            }
+
         } 
         catch (Exception ex) //If jwt and refresh token is invalid, exception will be thrown and Jwt cookie erased
         {
@@ -105,7 +105,6 @@ public class AuthTokenFilter extends OncePerRequestFilter
             }
         }
 
-        System.out.println("################# going to next filter with status: " + response.getStatus());
         filterChain.doFilter(request, response);
     }
 }

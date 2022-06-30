@@ -8,5 +8,10 @@ public class JwtException extends AbstractApiRuntimeException{
     {
         super(HttpStatus.UNAUTHORIZED, message);
     }
+
+    public JwtException()
+    {
+        super(HttpStatus.UNAUTHORIZED, null);
+    }
     
 }

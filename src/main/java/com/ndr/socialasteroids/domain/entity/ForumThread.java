@@ -34,7 +34,7 @@ public class ForumThread
     @Column(name = "title", nullable = false)
     private String title;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User author;
     
     @OneToMany(mappedBy = "thread", fetch = FetchType.LAZY)

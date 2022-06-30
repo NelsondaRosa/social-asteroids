@@ -29,7 +29,7 @@ import io.jsonwebtoken.security.SignatureException;
 public class JwtUtils
 {
     @Value("${sa.jwt.expiration-sec}")
-    private long jwtExpirationMs;
+    private long jwtExpirationSec;
 
     @Value("${sa.jwt.cookie-path}")
     private String cookiePath;
@@ -102,7 +102,6 @@ public class JwtUtils
 
     public ResponseCookie generateJwtCookie(UserDetailsImpl userPrincipal)
     {
-        System.out.println(jwtCookieMaxAge);
         String jwt = generateToken(userPrincipal.getUsername());
         ResponseCookie cookie = ResponseCookie.from(jwtCookieName, jwt).path(cookiePath).maxAge(Duration.ofSeconds(jwtCookieMaxAge))
                 .sameSite("lax").httpOnly(true).build();
@@ -112,7 +111,6 @@ public class JwtUtils
     
     public ResponseCookie generateRefreshTokenCookie(String token)
     {
-        System.out.println(refreshTokenCookieMaxAge);
         ResponseCookie cookie = ResponseCookie.from(refreshTokenCookieName, token).path(cookiePath)
                 .maxAge(Duration.ofSeconds(refreshTokenCookieMaxAge)).sameSite("lax").httpOnly(true).build();
 
@@ -152,7 +150,7 @@ public class JwtUtils
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(Date.from(Instant.now()))
-                .setExpiration(Date.from(Instant.now().plus(jwtExpirationMs, ChronoUnit.MILLIS)))
+                .setExpiration(Date.from(Instant.now().plus(jwtExpirationSec, ChronoUnit.SECONDS)))
                 .signWith(jwtKey)
                 .compact();
     }

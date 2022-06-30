@@ -32,11 +32,10 @@ public class AuthEntryPoint implements AuthenticationEntryPoint
     public void commence(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException authException) throws IOException, ServletException
     {
-        System.out.println("$$$$$ Unauthorized handler doing its work");
         
         ObjectMapper mapper = new ObjectMapper();
 
-        //jwtUtils.eraseAllJwtRelatedCookies(response);
+        jwtUtils.eraseAllJwtRelatedCookies(response);
 
         response.getWriter().write(mapper.writeValueAsString("You don't have access to this resource, try to authenticate first."));
         response.setContentType("application/json");

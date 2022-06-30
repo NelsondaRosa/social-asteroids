@@ -43,7 +43,6 @@ public class UserController
             UserDTO userDTO = new UserDTO(((UserDetailsImpl) principal).getUserSecurityInfo());
             return ResponseEntity.ok().body(userDTO);
         }
-        System.out.println("no active user");
         return ResponseEntity.noContent().build();
     }
     

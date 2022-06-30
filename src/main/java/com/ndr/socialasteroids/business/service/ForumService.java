@@ -92,7 +92,7 @@ public class ForumService
     {
         User author = userService.getEntityById(authorId);
         
-        return threadRepository.findByAuthor(author, pageable)
+        return threadRepository.findByAuthorOrderByUpdatedAtDesc(author, pageable)
                             .map(thread -> new ThreadDTO(thread, pageable));
     }
 
@@ -100,7 +100,7 @@ public class ForumService
     {
         ForumThread thread = threadRepository.findById(threadId).orElseThrow();
 
-        return postRepository.findByThread(thread, pageable)
+        return postRepository.findByThreadOrderByPostedAtDesc(thread, pageable)
                             .map(post -> new PostDTO(post));
     }
 
@@ -108,13 +108,13 @@ public class ForumService
     {
         User author = userService.getEntityById(authorId);
 
-        return postRepository.findByAuthor(author, pageable)
+        return postRepository.findByAuthorOrderByPostedAtDesc(author, pageable)
                             .map(post -> new PostDTO(post));
     }
 
     public Page<ThreadDTO> getPagedThreads(Pageable pageable)
     {   
-        return threadRepository.findAll(pageable)
+        return threadRepository.findByOrderByUpdatedAtDesc(pageable)
                         .map(thread -> new ThreadDTO(thread, pageable));
     }
 }
