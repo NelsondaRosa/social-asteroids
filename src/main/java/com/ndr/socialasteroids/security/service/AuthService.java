@@ -89,7 +89,7 @@ public class AuthService
         catch (AccessDeniedException ex)
         {
             HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
-            String token = jwtUtils.getRrefreshTokenFromCookie(request);
+            String token = jwtUtils.getRefreshTokenFromCookie(request);
             if(token != null)
                 refreshTokenService.deleteByToken(token);
         };

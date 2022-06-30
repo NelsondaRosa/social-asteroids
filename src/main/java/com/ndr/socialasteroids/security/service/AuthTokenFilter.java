@@ -21,6 +21,7 @@ import com.ndr.socialasteroids.security.entities.RefreshToken;
 import com.ndr.socialasteroids.security.entities.UserDetailsImpl;
 import com.ndr.socialasteroids.security.utils.JwtUtils;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
@@ -55,23 +56,20 @@ public class AuthTokenFilter extends OncePerRequestFilter
 
             if (jwt != null)
             {
-                
-
                 try
                 {
                     jwtUtils.validateJwt(jwt);
 
-                } catch (Exception ex)
+                } catch (ExpiredJwtException ex)
                 {
-                    //If jwt token is invalid, get refreshToken by the cookie
-                    String refreshTokenString = jwtUtils.getRrefreshTokenFromCookie(request);
+                    //If jwt token is expired, get refreshToken by the cookie
+                    String refreshTokenString = jwtUtils.getRefreshTokenFromCookie(request);
+                    refreshToken = refreshTokenService.getByToken(refreshTokenString);
 
                     if (refreshTokenString == null)
                     {
                         throw ex;
                     }
-
-                    refreshToken = refreshTokenService.getByToken(refreshTokenString);
 
                     //If refreshToken has expired, throw exception to the next catch bloc to invalidate auth proccess
                     refreshTokenService.verifyExpiration(refreshToken);
@@ -92,6 +90,7 @@ public class AuthTokenFilter extends OncePerRequestFilter
                 //If refresh toke has been populated, create new jwt and set with response cookie
                 if (refreshToken != null)
                 {
+                    System.out.println("---------------- JWT TOKEN UPDATED");
                     ResponseCookie newJwtCookie = jwtUtils.generateJwtCookie((UserDetailsImpl) userDetails);
                     response.setHeader(HttpHeaders.SET_COOKIE, newJwtCookie.toString());
                 }
@@ -100,12 +99,13 @@ public class AuthTokenFilter extends OncePerRequestFilter
         } 
         catch (Exception ex) //If jwt and refresh token is invalid, exception will be thrown and Jwt cookie erased
         {
-            jwtUtils.eraseJwtCookie(request, response);
-
-            if(refreshToken != null)
+            if (refreshToken != null)
+            {
                 refreshTokenService.deleteByToken(refreshToken.getToken());
+            }
         }
 
+        System.out.println("################# going to next filter with status: " + response.getStatus());
         filterChain.doFilter(request, response);
     }
 }

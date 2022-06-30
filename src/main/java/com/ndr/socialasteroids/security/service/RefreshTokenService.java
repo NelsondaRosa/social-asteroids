@@ -39,6 +39,8 @@ public class RefreshTokenService
     {
         if (refreshToken.isExpired())
         {
+            //TODO
+            System.out.println("################# refreshToken is expired");
             refreshTokenRepository.delete(refreshToken);
             throw new RefreshTokenException("Refresh token is expired, please login again");
         }

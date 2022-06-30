@@ -8,13 +8,22 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
-@Component
-public class AuthEntryPoint implements AuthenticationEntryPoint{
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ndr.socialasteroids.security.utils.JwtUtils;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+
+@Component
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+public class AuthEntryPoint implements AuthenticationEntryPoint
+{
+    private final @NonNull JwtUtils jwtUtils;
     Logger logger = LoggerFactory.getLogger(AuthEntryPoint.class);
     
     //Class/method to handle unauthenticated users trying to access protected resources
@@ -23,7 +32,15 @@ public class AuthEntryPoint implements AuthenticationEntryPoint{
     public void commence(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException authException) throws IOException, ServletException
     {
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You don't have access to this resource, try to authenticate first.");
+        System.out.println("$$$$$ Unauthorized handler doing its work");
+        
+        ObjectMapper mapper = new ObjectMapper();
+
+        //jwtUtils.eraseAllJwtRelatedCookies(response);
+
+        response.getWriter().write(mapper.writeValueAsString("You don't have access to this resource, try to authenticate first."));
+        response.setContentType("application/json");
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
     
 }

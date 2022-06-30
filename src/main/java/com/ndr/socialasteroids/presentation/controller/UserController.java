@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.parameters.P;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,14 +37,14 @@ public class UserController
     public ResponseEntity<?> getActiveUser()
     {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof String)
+
+        if (principal instanceof UserDetails)
         {
-            return ResponseEntity.noContent().build();
+            UserDTO userDTO = new UserDTO(((UserDetailsImpl) principal).getUserSecurityInfo());
+            return ResponseEntity.ok().body(userDTO);
         }
-
-        UserDTO userDTO = new UserDTO(((UserDetailsImpl) principal).getUserSecurityInfo());
-
-        return ResponseEntity.ok().body(userDTO);
+        System.out.println("no active user");
+        return ResponseEntity.noContent().build();
     }
     
     @PostMapping(path = "/update")

@@ -1,6 +1,7 @@
 package com.ndr.socialasteroids.security.utils;
 
 import java.security.Key;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -61,7 +62,7 @@ public class JwtUtils
         }
     }
 
-    public String getRrefreshTokenFromCookie(HttpServletRequest request)
+    public String getRefreshTokenFromCookie(HttpServletRequest request)
     {
         Cookie cookie = WebUtils.getCookie(request, refreshTokenCookieName);
 
@@ -77,27 +78,33 @@ public class JwtUtils
         }
     }
 
-    public void eraseJwtCookie(HttpServletRequest request, HttpServletResponse response)
+    public void eraseJwtCookie(HttpServletResponse response)
     {
-        //TODO:: getCookie está dando exceção para cookie não existente, deveria retornar null, verificar isso
-        try{
-            Cookie cookie = WebUtils.getCookie(request, jwtCookieName);
+        Cookie cookie = new Cookie(jwtCookieName, null);
+        cookie.setPath(cookiePath);
 
-            if (cookie != null)
-            {
-                cookie.setValue(null);
-                cookie.setMaxAge(0);
-                response.addCookie(cookie);
-            }
-        } catch(NullPointerException ex) {
-            return;
-        }
+        response.addCookie(cookie);
+    }
+
+    public void eraseRefreshTokenCookie(HttpServletResponse response)
+    {
+        Cookie cookie = new Cookie(refreshTokenCookieName, null);
+        cookie.setPath(cookiePath);
+
+        response.addCookie(cookie);
+    }
+
+    public void eraseAllJwtRelatedCookies(HttpServletResponse response)
+    {
+        eraseJwtCookie(response);
+        eraseRefreshTokenCookie(response);
     }
 
     public ResponseCookie generateJwtCookie(UserDetailsImpl userPrincipal)
     {
+        System.out.println(jwtCookieMaxAge);
         String jwt = generateToken(userPrincipal.getUsername());
-        ResponseCookie cookie = ResponseCookie.from(jwtCookieName, jwt).path(cookiePath).maxAge(jwtCookieMaxAge)
+        ResponseCookie cookie = ResponseCookie.from(jwtCookieName, jwt).path(cookiePath).maxAge(Duration.ofSeconds(jwtCookieMaxAge))
                 .sameSite("lax").httpOnly(true).build();
 
         return cookie;
@@ -105,8 +112,9 @@ public class JwtUtils
     
     public ResponseCookie generateRefreshTokenCookie(String token)
     {
+        System.out.println(refreshTokenCookieMaxAge);
         ResponseCookie cookie = ResponseCookie.from(refreshTokenCookieName, token).path(cookiePath)
-                .maxAge(refreshTokenCookieMaxAge).sameSite("lax").httpOnly(true).build();
+                .maxAge(Duration.ofSeconds(refreshTokenCookieMaxAge)).sameSite("lax").httpOnly(true).build();
 
         return cookie;
     }
