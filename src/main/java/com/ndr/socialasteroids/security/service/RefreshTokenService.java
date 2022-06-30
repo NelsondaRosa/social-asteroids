@@ -64,4 +64,9 @@ public class RefreshTokenService
 
         return refreshTokenRepository.deleteByUser(user);
     }
+
+    public Long deleteByToken(String refreshToken)
+    {
+        return refreshTokenRepository.deleteByToken(refreshToken);
+    }
 }

@@ -35,7 +35,7 @@ public class ForumThread
     private String title;
 
     @ManyToOne(optional = false)
-    private User owner;
+    private User author;
     
     @OneToMany(mappedBy = "thread", fetch = FetchType.LAZY)
     private List<Post> posts = new ArrayList<Post>();
@@ -51,12 +51,12 @@ public class ForumThread
 
     public ForumThread(){}
 
-    public ForumThread(String title, User owner)
+    public ForumThread(String title, User author)
     {
         this.createdAt = Instant.now();
         this.updatedAt = this.createdAt;
         this.title = title;
-        this.owner = owner;
+        this.author = author;
         this.deleted = false;
     }
 

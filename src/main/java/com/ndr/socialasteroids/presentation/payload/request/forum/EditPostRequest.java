@@ -6,6 +6,6 @@ import lombok.Data;
 public class EditPostRequest
 {
     private Long postId;
-    private Long ownerId;
+    private Long authorId;
     private String content;
 }

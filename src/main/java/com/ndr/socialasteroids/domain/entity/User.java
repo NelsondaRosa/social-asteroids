@@ -67,10 +67,10 @@ public class User
         inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<Role>();
 
-    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY )
+    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY )
     private List<Post> posts = new ArrayList<Post>();
 
-    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
     private List<ForumThread> threads = new ArrayList<ForumThread>();
 
     public User(){}

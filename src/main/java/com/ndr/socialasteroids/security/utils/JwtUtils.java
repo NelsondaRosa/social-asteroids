@@ -14,6 +14,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.WebUtils;
 
+import com.ndr.socialasteroids.security.encoding.Encrypter;
 import com.ndr.socialasteroids.security.entities.UserDetailsImpl;
 
 import io.jsonwebtoken.ExpiredJwtException;
@@ -66,7 +67,10 @@ public class JwtUtils
 
         if (cookie != null)
         {
-            return cookie.getValue();
+            String refreshTokenEncrypted = cookie.getValue();
+            String refreshTokenString = Encrypter.decrypt(refreshTokenEncrypted);
+            
+            return refreshTokenString;
         } else
         {
             return null;

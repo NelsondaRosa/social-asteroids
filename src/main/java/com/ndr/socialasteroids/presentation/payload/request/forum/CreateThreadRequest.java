@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class CreateThreadRequest
 {
-    private Long ownerId;
+    private Long authorId;
     private String title;
 }

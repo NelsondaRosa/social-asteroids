@@ -42,7 +42,7 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
     {
         ErrorDetails error = new ErrorDetails(exception.getStatus(), exception.getMessage());
 
-        return buildResponse(error);
+        return buildResponse(error,exception);
     }
 
     @ExceptionHandler(DataInconsistencyException.class)
@@ -50,7 +50,7 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
     {
         ErrorDetails error = new ErrorDetails(exception.getStatus(), exception.getMessage());
 
-        return buildResponse(error);
+        return buildResponse(error,exception);
     }
 
     @ExceptionHandler(DuplicateValueException.class)
@@ -58,7 +58,7 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
     {
         ErrorDetails error = new ErrorDetails(exception.getStatus(), exception.getMessage());
 
-        return buildResponse(error);
+        return buildResponse(error,exception);
     }
 
     @ExceptionHandler(JwtException.class)
@@ -66,7 +66,7 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
     {
         ErrorDetails error = new ErrorDetails(exception.getStatus(), exception.getMessage());
 
-        return buildResponse(error);
+        return buildResponse(error,exception);
     }
 
     @ExceptionHandler(RefreshTokenException.class)
@@ -74,7 +74,7 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
     {
         ErrorDetails error = new ErrorDetails(exception.getStatus(), exception.getMessage());
 
-        return buildResponse(error);
+        return buildResponse(error,exception);
     }
 
     @ExceptionHandler(EncrypterException.class)
@@ -82,7 +82,7 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
     {
         ErrorDetails error = new ErrorDetails(exception.getStatus(), exception.getMessage());
 
-        return buildResponse(error);
+        return buildResponse(error,exception);
     }
 
     // ------------------------- IMPORTED EXCEPTIONS ----------------------------
@@ -107,7 +107,7 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
     {
         ErrorDetails error = new ErrorDetails(HttpStatus.NOT_FOUND, "No such data");
 
-        return buildResponse(error);
+        return buildResponse(error,exception);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
@@ -115,7 +115,7 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
     {
         ErrorDetails error = new ErrorDetails(HttpStatus.NOT_FOUND, "Data can't be found");
 
-        return buildResponse(error);
+        return buildResponse(error,exception);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
@@ -123,7 +123,7 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
     {
         ErrorDetails error = new ErrorDetails(HttpStatus.BAD_REQUEST, "Sent data is incorrect");
 
-        return buildResponse(error);
+        return buildResponse(error,exception);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
@@ -131,7 +131,7 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
     {
         ErrorDetails error = new ErrorDetails(HttpStatus.UNAUTHORIZED, "Access denied for this operation");
 
-        return buildResponse(error);
+        return buildResponse(error,exception);
     }
     
     @ExceptionHandler(UsernameNotFoundException.class)
@@ -139,7 +139,7 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
     {
         ErrorDetails error = new ErrorDetails(HttpStatus.NOT_FOUND, "Wrong login");
 
-        return buildResponse(error);
+        return buildResponse(error,exception);
     }
 
     @ExceptionHandler(AuthenticationException.class)
@@ -147,7 +147,7 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
     {
         ErrorDetails error = new ErrorDetails(HttpStatus.UNAUTHORIZED, "Unauthorized");
 
-        return buildResponse(error);
+        return buildResponse(error,exception);
     }
 
     @ExceptionHandler(Exception.class)
@@ -158,11 +158,12 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
         exception.printStackTrace();
         logger.info(exception.getMessage());
 
-        return buildResponse(error);
+        return buildResponse(error, exception);
     }
 
-    private ResponseEntity<ErrorDetails> buildResponse(ErrorDetails error)
+    private ResponseEntity<ErrorDetails> buildResponse(ErrorDetails error, Throwable throwable)
     {
+        throwable.printStackTrace();
         return ResponseEntity.status(error.getStatus()).body(error);
     }
 }

@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class DeleteRequest
 {
-    private Long ownerId;
+    private Long authorId;
     private Long entityId;
 }

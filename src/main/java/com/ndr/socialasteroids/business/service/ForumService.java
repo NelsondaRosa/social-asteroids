@@ -26,21 +26,21 @@ public class ForumService
     private final @NonNull PostRespository postRepository;
     private final @NonNull UserService userService;
 
-    public ThreadDTO createThread(Long ownerId, String title)
+    public ThreadDTO createThread(Long authorId, String title)
     {
-        User owner = userService.getEntityById(ownerId);
-        ForumThread thread = new ForumThread(title, owner);
+        User author = userService.getEntityById(authorId);
+        ForumThread thread = new ForumThread(title, author);
 
         ThreadDTO createdThread = new ThreadDTO(threadRepository.save(thread));
 
         return createdThread;
     }
     
-    public PostDTO createPost(Long ownerId, Long threadId, String content)
+    public PostDTO createPost(Long authorId, Long threadId, String content)
     {
-        User owner = userService.getEntityById(ownerId);
+        User author = userService.getEntityById(authorId);
         ForumThread thread = threadRepository.findById(threadId).orElseThrow();
-        Post post = new Post(owner, thread, content);
+        Post post = new Post(author, thread, content);
         
         thread.setUpdatedAt(Instant.now());
 
@@ -88,11 +88,11 @@ public class ForumService
     }
 
     //TODO Test findByUserId
-    public Page<ThreadDTO> getPagedThreadsByOwner(Long ownerId, Pageable pageable)
+    public Page<ThreadDTO> getPagedThreadsByAuthor(Long authorId, Pageable pageable)
     {
-        User owner = userService.getEntityById(ownerId);
+        User author = userService.getEntityById(authorId);
         
-        return threadRepository.findByOwner(owner, pageable)
+        return threadRepository.findByAuthor(author, pageable)
                             .map(thread -> new ThreadDTO(thread, pageable));
     }
 
@@ -104,11 +104,11 @@ public class ForumService
                             .map(post -> new PostDTO(post));
     }
 
-    public Page<PostDTO> getPagedPostsByOwner(Long ownerId, Pageable pageable)
+    public Page<PostDTO> getPagedPostsByAuthor(Long authorId, Pageable pageable)
     {
-        User owner = userService.getEntityById(ownerId);
+        User author = userService.getEntityById(authorId);
 
-        return postRepository.findByOwner(owner, pageable)
+        return postRepository.findByAuthor(author, pageable)
                             .map(post -> new PostDTO(post));
     }
 

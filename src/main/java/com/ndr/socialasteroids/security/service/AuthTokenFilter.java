@@ -17,7 +17,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.ndr.socialasteroids.security.encoding.Encrypter;
 import com.ndr.socialasteroids.security.entities.RefreshToken;
 import com.ndr.socialasteroids.security.entities.UserDetailsImpl;
 import com.ndr.socialasteroids.security.utils.JwtUtils;
@@ -48,13 +47,15 @@ public class AuthTokenFilter extends OncePerRequestFilter
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException
     {
+        RefreshToken refreshToken = null;
+
         try
         {
             String jwt = jwtUtils.getJwtFromCookie(request);
 
             if (jwt != null)
             {
-                RefreshToken refreshToken = null;
+                
 
                 try
                 {
@@ -63,14 +64,13 @@ public class AuthTokenFilter extends OncePerRequestFilter
                 } catch (Exception ex)
                 {
                     //If jwt token is invalid, get refreshToken by the cookie
-                    String refreshTokenEncrypted = jwtUtils.getRrefreshTokenFromCookie(request);
+                    String refreshTokenString = jwtUtils.getRrefreshTokenFromCookie(request);
 
-                    if (refreshTokenEncrypted == null)
+                    if (refreshTokenString == null)
                     {
                         throw ex;
                     }
 
-                    String refreshTokenString = Encrypter.decrypt(refreshTokenEncrypted);
                     refreshToken = refreshTokenService.getByToken(refreshTokenString);
 
                     //If refreshToken has expired, throw exception to the next catch bloc to invalidate auth proccess
@@ -98,9 +98,12 @@ public class AuthTokenFilter extends OncePerRequestFilter
 
             }
         } 
-        catch (Exception ex) //If jwt or refresh token is invalid, exception will be thrown and Jwt cookie erased
+        catch (Exception ex) //If jwt and refresh token is invalid, exception will be thrown and Jwt cookie erased
         {
             jwtUtils.eraseJwtCookie(request, response);
+
+            if(refreshToken != null)
+                refreshTokenService.deleteByToken(refreshToken.getToken());
         }
 
         filterChain.doFilter(request, response);

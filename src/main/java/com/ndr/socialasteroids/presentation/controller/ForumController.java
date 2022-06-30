@@ -40,24 +40,24 @@ public class ForumController
         return ResponseEntity.ok().body(threads);
     }
 
-    @PostMapping(path = "/create") @PreAuthorize("#thread.getOwnerId() == principal.getUserSecurityInfo().getId()")
+    @PostMapping(path = "/create") @PreAuthorize("#thread.getAuthorId() == principal.getUserSecurityInfo().getId()")
     public ResponseEntity<?> createThread(@P("thread") @RequestBody CreateThreadRequest request)
     {
-        ThreadDTO thread = forumService.createThread(request.getOwnerId(), request.getTitle());
+        ThreadDTO thread = forumService.createThread(request.getAuthorId(), request.getTitle());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(thread);
     }
 
-    @PostMapping(path = "/createPost") @PreAuthorize("post.getOwnerId == principal.getUserSecurityInfo().getId()")
+    @PostMapping(path = "/createPost") @PreAuthorize("post.getAuthorId == principal.getUserSecurityInfo().getId()")
     public ResponseEntity<?> createPost(@P("post") @RequestBody CreatePostRequest request)
     {
-        PostDTO post = forumService.createPost(request.getOwnerId(), request.getThreadId(), request.getContent());
+        PostDTO post = forumService.createPost(request.getAuthorId(), request.getThreadId(), request.getContent());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(post);
     }
 
     @PutMapping(path = "/post/edit")
-    @PreAuthorize("post.getOwnerId() == principal.getUserSecurityInfo().getId()")
+    @PreAuthorize("post.getAuthorId() == principal.getUserSecurityInfo().getId()")
     public ResponseEntity<?> editPost(@P("post") @RequestBody EditPostRequest request)
     {
         PostDTO post = forumService.editPost(request.getPostId(), request.getContent());
@@ -66,7 +66,7 @@ public class ForumController
     }
 
     @DeleteMapping(path = "/thread/delete")
-    @PreAuthorize("thread.getOwnerId() == principal.getUserSecurityInfo().getId()")
+    @PreAuthorize("thread.getAuthorId() == principal.getUserSecurityInfo().getId()")
     public ResponseEntity<?> deleteThread(@P("thread") @RequestBody DeleteRequest request)
     {
         forumService.deleteThread(request.getEntityId());
@@ -75,7 +75,7 @@ public class ForumController
     }
     
     @DeleteMapping("path = /post/delete")
-    @PreAuthorize("post.getOwnerId() == principal.getUserSecurityInfo().getId()")
+    @PreAuthorize("post.getAuthorId() == principal.getUserSecurityInfo().getId()")
     public ResponseEntity<?> deletePost(@P("post") @RequestBody DeleteRequest request)
     {
         forumService.deletePost(request.getEntityId());
@@ -91,10 +91,10 @@ public class ForumController
         return ResponseEntity.ok().body(thread);
     }
 
-    @GetMapping(path = "/thread/user/{ownerId}")
-    public ResponseEntity<?> getThreadsByOwner(@PathVariable String ownerId, Pageable pageable)
+    @GetMapping(path = "/thread/user/{auhtorId}")
+    public ResponseEntity<?> getThreadsByAuthor(@PathVariable String authorId, Pageable pageable)
     {
-        Page<ThreadDTO> threads = forumService.getPagedThreadsByOwner(Long.valueOf(ownerId), pageable);
+        Page<ThreadDTO> threads = forumService.getPagedThreadsByAuthor(Long.valueOf(authorId), pageable);
         
         return ResponseEntity.ok().body(threads);
     }
@@ -115,10 +115,10 @@ public class ForumController
         return ResponseEntity.ok().body(posts);
     }
 
-    @GetMapping(path="/post/user/{onwerId}")
-    public ResponseEntity<?> getPostsByOwner(@PathVariable String onwerId, Pageable pageable)
+    @GetMapping(path="/post/user/{authorId}")
+    public ResponseEntity<?> getPostsByAuthor(@PathVariable String onwerId, Pageable pageable)
     {
-        Page<PostDTO> posts = forumService.getPagedPostsByOwner(Long.valueOf(onwerId), pageable);
+        Page<PostDTO> posts = forumService.getPagedPostsByAuthor(Long.valueOf(onwerId), pageable);
 
         return ResponseEntity.ok().body(posts);
     }

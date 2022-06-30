@@ -22,7 +22,7 @@ public class Post
     private Long id;
 
     @ManyToOne(optional = false)
-    private User owner;
+    private User author;
 
     @ManyToOne(optional = false)
     private ForumThread thread;
@@ -30,7 +30,7 @@ public class Post
     @Column(name = "content", columnDefinition = "text")
     private String content;
 
-    @Column(name = "posted_on", nullable = false)
+    @Column(name = "posted_at", nullable = false)
     private Instant postedAt;
 
     @Column(name = "deleted", nullable = false)
@@ -38,9 +38,9 @@ public class Post
 
     public Post(){}
 
-    public Post(User owner, ForumThread thread, String content)
+    public Post(User author, ForumThread thread, String content)
     {
-        this.owner = owner;
+        this.author = author;
         this.thread = thread;
         this.content = content;
         this.deleted = false;

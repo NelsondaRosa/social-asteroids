@@ -1,5 +1,7 @@
 package com.ndr.socialasteroids.security.service;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.access.AccessDeniedException;
@@ -9,6 +11,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.ndr.socialasteroids.business.DTO.UserDTO;
 import com.ndr.socialasteroids.business.service.UserService;
@@ -77,9 +81,18 @@ public class AuthService
     
     public void removeRefreshToken()
     {
-        UserDetailsImpl userDetails = getUserDetailsImplOrElseThrow();
-
-        refreshTokenService.deleteByUserId(userDetails.getUserSecurityInfo().getId());
+        try
+        {
+            UserDetailsImpl userDetails = getUserDetailsImplOrElseThrow();
+            refreshTokenService.deleteByUserId(userDetails.getUserSecurityInfo().getId());
+        }
+        catch (AccessDeniedException ex)
+        {
+            HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+            String token = jwtUtils.getRrefreshTokenFromCookie(request);
+            if(token != null)
+                refreshTokenService.deleteByToken(token);
+        };
     }
 
     private UserDetailsImpl getUserDetailsImplOrElseThrow()

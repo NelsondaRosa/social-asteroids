@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class CreatePostRequest
 {
-    private Long ownerId;
+    private Long authorId;
     private Long threadId;
     private String content;
     

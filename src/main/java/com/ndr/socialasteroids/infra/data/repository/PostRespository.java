@@ -14,5 +14,5 @@ public interface PostRespository extends PagingAndSortingRepository<Post, Long>
 {
     Page<Post> findByThread(ForumThread thread, Pageable pageable);
 
-    Page<Post> findByOwner(User owner, Pageable pageable);
+    Page<Post> findByAuthor(User author, Pageable pageable);
 }

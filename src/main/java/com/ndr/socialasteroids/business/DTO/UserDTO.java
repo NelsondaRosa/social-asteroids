@@ -35,8 +35,8 @@ public class UserDTO extends RepresentationModel<UserDTO>
         add(linkTo(methodOn(UserController.class).getUserById(this.id.toString())).withSelfRel());
         add(linkTo(methodOn(MatchController.class).getMatches(this.id.toString(), pageable)).withRel("matches"));
         add(linkTo(methodOn(FriendshipController.class).getFriends(this.id.toString())).withRel("friends"));
-        add(linkTo(methodOn(ForumController.class).getThreadsByOwner(this.id.toString(), pageable)).withRel("threads"));
-        add(linkTo(methodOn(ForumController.class).getPostsByOwner(this.id.toString(), pageable)).withRel("posts"));
+        add(linkTo(methodOn(ForumController.class).getThreadsByAuthor(this.id.toString(), pageable)).withRel("threads"));
+        add(linkTo(methodOn(ForumController.class).getPostsByAuthor(this.id.toString(), pageable)).withRel("posts"));
     }
 
     public UserDTO(Long id, String username, String email)
