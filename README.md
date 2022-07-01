@@ -1,8 +1,8 @@
 # Social Asteroids
 
-Social Asteroids is a place to play the classic Asteroids game while sharing your scores, meet friends and to discuss on the forum.
+Social Asteroids is a place to play the classic Asteroids game while you share your scores, meet friends and discuss on the forum.
 
-The purpose of the project is to serve as a portfolio to demonstrate capabilities with the Spring ecosystem in Java. In it, **DDD** architecture concepts are implemented, as well as the criteria of a **REST** application. I also want it to serve as a reference for those who need content for the technologies used.
+The purpose of the project is to serve as a portfolio to demonstrate my capabilities with the Spring ecosystem in Java. **DDD** architecture concepts are implemented, as well as the criteria of a **REST** application. I also want it to serve as a reference for those who need content for the technologies used.
 
 
 ## Architecture
@@ -13,27 +13,29 @@ In the application a simple layered architecture for a *monolith* was applied.
 </div>
  
  #### Domain
-In the domain is the heart of the business, the entities that contain the data necessary for its operation, as well as their mappings are found here.
+In the domain is the heart of the business, the entities that contain the data necessary for all operations and give purpose to the application, as well as their mappings are found here.
 
 #### Security
-The security layer contains its own entities, repositories, services and controllers. As it is not necessarily part of the logical context of the rest of the application, a layer was created especially for it.
+The security layer contains its own entities, repositories, services and controllers. As it's not necessarily part of the application's main context, a layer was created especially for it.
 
 #### Infrastructure
 The infrastructure layer is responsible for the application backbone. Repositories, request interceptors, and error handling are its responsibility.
 
 #### Business
-In the business layer, all the application logic is concentrated, it is also responsible for handling the data that arrives and leaves it.
+All the application's logic is concentrated in the business layer, it is also responsible for handling the data that arrives and leaves it.
 
 #### Presentation
 The presentation layer receives the data from *requests*, forwards them for processing and receives the data that should be forwarded to the *response*.
 <br>
 ### Stateless
-Starting from the main principle of a REST application, this API is stateless, that is, it does not store any client state on the server, each request is independent and needs to contain everything necessary to access resources. For this, the security layer uses *Json Web Tokens* for authentication.
+Starting from the main principle of a REST application, this API is stateless, that is, it doesn't stores any client state on the server. Each request is independent and needs to contain everything necessary to access the intended resources. Thinking about it, the security layer uses ***J**son **W**eb **T**okens* for authentication.
 
 #### JWT
-It allows the user to navigate between server requests without having to authenticate at each request, as well as maintaining the Stateless server.
+It allows the user to navigate between server requests without having to authenticate at each request, as well as maintaining the Stateless server's aspect.
 
-After the user is logged in, a token is created on the server with the necessary user data and and encrypted with a key belonging to the server. This token has a short validity time, and is sent to the user through a cookie. Along with the JWT, a Refresh Token is created that is stored in a database table, it has a longer validity time. Every time a cookie with expired JWT is sent, the server will capture the Refresh Token data, which is also encrypted with a server secret, and perform its validation, having passed the validation, a new JWT is generated and aggregated. as a cookie to the response. When the Refresh Token expires, the user will need to authenticate with their credentials again.
+After the user is logged in, a token is created on the server with the user data and encrypted with a key. This token has a short validity time, and is sent to the user through a cookie. 
+
+Along with the JWT, a Refresh Token is created, it's stored in a database table and has a longer validity time. Every time a expired JWT is sent, the server will capture the Refresh Token from its cookie, which is also encrypted with another secret, and perform its validation. Having passed the validation, a new JWT is generated and his cookie value is updated. When the Refresh Token expires the user will need to authenticate with their credentials again.
 
 With the Refresh Token, if the user's JWT is spoofed, the attacker will have a short period of authentication time.
 
@@ -225,7 +227,7 @@ With HATEOAS there is no need for the client to know the paths used by the serve
 		    Match		    
 <hr/>
 
-#### Get Matches
+#### Get Matches by Player
 |Request URI|Method|Details|
 |--|--|--|
 |api/match/player/{id}|GET|Pageable|
@@ -236,5 +238,45 @@ With HATEOAS there is no need for the client to know the paths used by the serve
     Response: 200 OK
 	    Payload:
 		    Page<Match>
+<hr/>
 
+#### Get Match
+|Request URI|Method|
+|--|--|
+|api/match/{id}|GET
+    Request
+	    Path Variable:
+		    Match ID
+	------------------------------------------		     
+    Response: 200 OK
+	    Payload:
+		    Match
+<hr/>
 
+### Friendship
+#### Invite
+|Request URI|Method|
+|--|--|
+|api/friend/send-invite|POST|
+    Request 
+	    Payload:
+		    Long : userId,
+		    Long: friendId
+	------------------------------------------		     
+    Response: 201 CREATED    
+<hr/>
+
+#### Answer Invite
+|Request URI|Method|
+|--|--|
+|api/friend/answer-invite|POST|
+    Request 
+	    Payload:
+		    Long : userId,
+		    Long: friendId,
+		    boolean : accepted
+	------------------------------------------		     
+    Response: 201 CREATED
+	    Payload:
+		    User : inviter
+<hr/>
