@@ -24,7 +24,7 @@ The infrastructure layer is responsible for the application backbone. Repositori
 #### Business
 In the business layer, all the application logic is concentrated, it is also responsible for handling the data that arrives and leaves it.
 
-### Presentation
+#### Presentation
 The presentation layer receives the data from *requests*, forwards them for processing and receives the data that should be forwarded to the *response*.
 <br>
 ### Stateless
@@ -236,3 +236,5 @@ With HATEOAS there is no need for the client to know the paths used by the serve
     Response: 200 OK
 	    Payload:
 		    Page<Match>
+
+
