@@ -95,8 +95,9 @@ With HATEOAS there is no need for the client to know the paths used by the serve
 	    Hypermedia Link, Thread : thread - api/forum/thread/{id}
 	    Hypermedia Link, User : author - api/user/{id}
 	    
+<hr/>
 
-### Authentication
+## Authentication
 #### Signup
 |Request URI|Method|
 |--|--|
@@ -139,7 +140,7 @@ With HATEOAS there is no need for the client to know the paths used by the serve
 		    Cookie : refresh-token
 <hr/>
 
-### User
+## User 
 #### Active
 |Request URI|Method|
 |--|--|
@@ -209,7 +210,7 @@ With HATEOAS there is no need for the client to know the paths used by the serve
 	Response: 204 NO CONTENT
 <hr/>
 
-### Match
+## Match
 #### Add
 |Request URI|Method|
 |--|--|
@@ -253,7 +254,7 @@ With HATEOAS there is no need for the client to know the paths used by the serve
 		    Match
 <hr/>
 
-### Friendship
+## Friendship
 #### Invite
 |Request URI|Method|
 |--|--|
@@ -280,3 +281,4 @@ With HATEOAS there is no need for the client to know the paths used by the serve
 	    Payload:
 		    User : inviter
 <hr/>
+
