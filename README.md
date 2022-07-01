@@ -94,15 +94,145 @@ With HATEOAS there is no need for the client to know the paths used by the serve
 	    Hypermedia Link, User : author - api/user/{id}
 	    
 
-
+### Authentication
 #### Signup
 |Request URI|Method|
 |--|--|
 |api/auth/signup|POST|
+    Request 
+	    Payload:
+	    	String : username,
+	    	String : email,
+	    	String : password
+    ------------------------------------------		 
+    Response: 201 CREATED
+	    Payload -
+		    User 
+<hr/>
 
-    Request Payload:
-    	String : username
-    	String : email
-    	String : password
-    Response:
+#### Login
+|Request URI|Method|
+|--|--|
+|api/auth/login|POST|
+    Request 
+	    Payload:
+	    	String : username,
+	    	String : password
+    ------------------------------------------		 
+    Response: 200 OK
+	    Headers -
+		    Cookie : auth,
+		    Cookie : refresh-token
+		Payload -
+		    User 
+<hr/>
 
+#### Logout
+|Request URI|Method|
+|--|--|
+|api/auth/logout|GET|
+    Response: 200 OK
+	    Headers -
+		    Cookie : auth,
+		    Cookie : refresh-token
+<hr/>
+
+### User
+#### Active
+|Request URI|Method|
+|--|--|
+|api/user/active|GET|
+    Response: 200 OK
+	    Payload:
+		    User
+	------------------------------------------	    
+	Response: 204 NO CONTENT
+<hr/>
+
+#### Update
+|Request URI|Method|
+|--|--|
+|api/user/update|POST|
+    Request 
+	    Payload:
+	    	Long  : id,
+	    	String : username,
+	    	String : email
+	------------------------------------------	     	
+    Response: 200 OK
+		Payload -
+		    User 
+<hr/>
+
+#### Update Password
+|Request URI|Method|
+|--|--|
+|api/user/update-password|POST|
+    Request 
+	    Payload:
+	    	Long  : id,
+	    	String : actualPassword,
+	    	String : newPassword
+	------------------------------------------		     
+    Response: 200 OK
+		Payload -
+		    User
+<hr/>
+
+#### Get User
+|Request URI|Method|
+|--|--|
+|api/user/{id}|GET|
+    Request 
+	    Path variable:
+			User ID
+	------------------------------------------		     
+    Response: 200 OK
+		Payload -
+		    User
+<hr/>
+
+#### Search
+|Request URI|Method|
+|--|--|
+|api/user/{search}|GET|
+    Request 
+	    Path variable:
+			Search Query
+	------------------------------------------		     
+    Response: 200 OK
+		Payload -
+		    List<User>
+    ------------------------------------------	    
+	Response: 204 NO CONTENT
+<hr/>
+
+### Match
+#### Add
+|Request URI|Method|
+|--|--|
+|api/match/add|POST|
+    Request 
+	    Payload:
+		    Long : durationInMilis,
+		    Long : score,
+		    Long : ammoSpent,
+		    Long : destroyedTargets,
+		    Long : playerId
+	------------------------------------------		     
+    Response: 201 CREATED
+	    Payload:
+		    Match		    
+<hr/>
+
+#### Get Matches
+|Request URI|Method|Details|
+|--|--|--|
+|api/match/player/{id}|GET|Pageable|
+    Request
+	    Path Variable:
+		    User ID
+	------------------------------------------		     
+    Response: 200 OK
+	    Payload:
+		    Page<Match>
