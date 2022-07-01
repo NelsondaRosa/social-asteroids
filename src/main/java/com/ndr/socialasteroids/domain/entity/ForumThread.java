@@ -36,6 +36,9 @@ public class ForumThread
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User author;
+
+    @Column(name = "author_id", insertable = false, updatable = false)
+    private Long authorId;
     
     @OneToMany(mappedBy = "thread", fetch = FetchType.LAZY)
     private List<Post> posts = new ArrayList<Post>();
@@ -47,7 +50,10 @@ public class ForumThread
     private Instant updatedAt;
 
     @Column(name = "deleted", nullable = false)
-    public Boolean deleted;
+    private Boolean deleted;
+
+    @Column(name = "posts_count")
+    private Long postsCount;
 
     public ForumThread(){}
 
@@ -63,5 +69,15 @@ public class ForumThread
     public void addPost(Post post)
     {
         this.posts.add(post);
-    }   
+    }
+
+    public void incrementPostsCount()
+    {
+        this.postsCount++;
+    }
+
+    public void decrementPostsCount()
+    {
+        this.postsCount--;
+    }
 }

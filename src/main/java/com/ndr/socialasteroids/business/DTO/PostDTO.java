@@ -29,7 +29,7 @@ public class PostDTO extends RepresentationModel<PostDTO>
         this.postedAt = post.getPostedAt();
 
         add(linkTo(methodOn(ForumController.class).getPost(id.toString())).withSelfRel());
-        add(linkTo(methodOn(ForumController.class).getThread(post.getThread().getId().toString())).withRel("thread"));
-        add(linkTo(methodOn(UserController.class).getUserById(post.getAuthor().getId().toString())).withRel("author"));
+        add(linkTo(methodOn(ForumController.class).getThread(post.getThreadId().toString())).withRel("thread"));
+        add(linkTo(methodOn(UserController.class).getUserById(post.getAuthorId().toString())).withRel("author"));
     }
 }

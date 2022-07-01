@@ -49,6 +49,9 @@ public class Match
     @ManyToOne
     private User player;
 
+    @Column(name = "player_id", insertable = false, updatable = false)
+    private Long playerId;
+
     public Match(){}
 
     public Match(Long duration, Long score, Long ammoSpent, Long destroyedTargets)

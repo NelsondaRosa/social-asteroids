@@ -25,8 +25,14 @@ public class Post
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User author;
 
+    @Column(name = "author_id", insertable = false, updatable = false)
+    private Long authorId;
+
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private ForumThread thread;
+
+    @Column(name = "thread_id", insertable = false, updatable = false)
+    private Long threadId;
 
     @Column(name = "content", columnDefinition = "text")
     private String content;

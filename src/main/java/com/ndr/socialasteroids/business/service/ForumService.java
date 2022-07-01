@@ -45,6 +45,8 @@ public class ForumService
         thread.setUpdatedAt(Instant.now());
 
         PostDTO createdPost = new PostDTO(postRepository.save(post));
+
+        thread.incrementPostsCount();
         threadRepository.save(thread);
 
         return createdPost;
