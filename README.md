@@ -481,4 +481,98 @@ With HATEOAS there is no need for the client to know the paths used by the serve
 			Page<Post> : post
 <hr/>
 
+## Errors
+#### Data Inconsistency
+Happens when there is an attempt to create data that generates inconsistency in the database
 
+	Response: 409 CONFLICT
+			Payload:
+				String : message
+<hr/>
+
+#### Duplicate Value
+Happens when there is an attempt to create replicated data in a unique data field
+
+	Response: 409 CONFLICT
+			Payload:
+				String : message
+<hr/>
+
+#### JWT
+Happens when a JWT related issue happens
+
+	Response: 401 UNAUTHORIZED
+			Payload:
+				String : message
+<hr/>
+
+#### Refresh Token
+Happens when a Refresh Token related issue happens
+
+	Response: 401 UNAUTHORIZED
+			Payload:
+				String : message
+<hr/>
+
+#### Encoder
+Happens when encoder fails to encrypt or decrypt data
+
+	Response: 500 INTERNAL SERVER ERROR
+			Payload:
+				String : message
+<hr/>
+
+#### Method Argument Not Valid
+Happens when the data sent is not valid
+
+	Response: 400 BAD REQUEST
+			Payload:
+				Map<String, String> : argument, errorMessage
+<hr/>
+
+#### Entity Not Found
+Happens when there is a request for an entity that does not exist
+
+	Response: 404 NOT FOUND
+		Payload:
+			message : Data can't be found
+<hr/>
+
+#### Illegal Agument
+Happens when trying to make a request with arguments not compatible with those in need
+
+	Response: 400 BAD REQUEST
+		Payload:
+			message : Sent data is incorrect
+<hr/>
+
+#### Access Denied
+Happens when there is an attempt to access a resource by a disallowed user
+
+	Response: 401 UNAUTHORIZED
+		Payload:
+			message : Access Denied for this operation
+<hr/>
+
+#### Username not found
+Happens when there is a login attempt with non-existent username
+
+	Response: 404 NOT FOUND
+		Payload:
+			message : Wrong login credentials
+<hr/>
+
+#### Authentication
+Happens when there is an unhandled issue related to authentication
+
+	Response: 400 BAD REQUEST
+		Payload:
+			message : Authentication failed
+<hr/>
+
+#### Error
+Happens when a problem not handled by the backend application occurs.
+
+	Response: 500 INTERNAL SERVER ERROR
+			Payload:
+				message : Unexpected error
