@@ -59,16 +59,16 @@ public class FriendshipController
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @DeleteMapping(path = "/unrequest")
+    @DeleteMapping(path = "/undo-request")
     @PreAuthorize("#user.getUserId() == principal.getUserSecurityInfo().getId()")
-    public ResponseEntity<?> unrequest( @P("user") @Valid @RequestBody FriendshipRequest request)
+    public ResponseEntity<?> undoRequest( @P("user") @Valid @RequestBody FriendshipRequest request)
     {
-        friendshipService.unrequest(request.getUserId(), request.getFriendId());
+        friendshipService.undoRequest(request.getUserId(), request.getFriendId());
         
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping(path = "/get/{userId}")
+    @GetMapping(path = "/{userId}")
     @PreAuthorize("#user == principal.getUserSecurityInfo().getId()")
     public ResponseEntity<?> getFriends(@P("user") @PathVariable String userId)
     {

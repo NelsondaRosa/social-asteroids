@@ -38,11 +38,11 @@ public class MatchController
         return ResponseEntity.ok().body(matches);
     }
     
-    @PostMapping(path = "/register")
+    @PostMapping(path = "/add")
     @PreAuthorize("#user.getPlayerId() == principal.getUserSecurityInfo().getId()")
     public ResponseEntity<?> register(@P("user") @Valid @RequestBody MatchRequest request)
     {
-        matchService.register(
+        MatchDTO match = matchService.register(
             request.getPlayerId(),
             request.getDurationInMilis(),
             request.getScore(),
@@ -50,10 +50,10 @@ public class MatchController
             request.getDestroyedTargets()
         );
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(match);
     }
 
-    @GetMapping(path = "/get/user/{userId}")
+    @GetMapping(path = "/player/{userId}")
     public ResponseEntity<?> getMatches(@PathVariable String userId, Pageable pageable)
     {
         Page<MatchDTO> matches = matchService.getMatchesByUserId(Long.valueOf(userId), pageable);
@@ -64,7 +64,7 @@ public class MatchController
         return ResponseEntity.ok().body(matches);
     }
 
-    @GetMapping(path = "/get/{matchId}")
+    @GetMapping(path = "/{matchId}")
     public ResponseEntity<?> getMatch(@PathVariable String matchId)
     {
         MatchDTO match = matchService.getMatch(Long.valueOf(matchId));

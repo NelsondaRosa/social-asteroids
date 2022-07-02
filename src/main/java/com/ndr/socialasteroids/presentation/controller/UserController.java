@@ -70,7 +70,7 @@ public class UserController
         return ResponseEntity.ok().body(updatedUser);
     }
 
-    @GetMapping(path = "get/{userId}")
+    @GetMapping(path = "/{userId}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable String userId)
     {
         UserDTO user = userService.getById(Long.valueOf(userId));
@@ -78,7 +78,7 @@ public class UserController
         return ResponseEntity.ok().body(user);
     }
 
-    @GetMapping(path = "search/{query}")
+    @GetMapping(path = "/search/{query}")
     public ResponseEntity<?> searchByUsername(@PathVariable String query)
     {
         List<UserDTO> users = userService.searchByUsername(query);

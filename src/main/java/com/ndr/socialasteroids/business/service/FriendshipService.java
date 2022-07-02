@@ -100,7 +100,7 @@ public class FriendshipService
         return friendshipCollectionToDTOList(friendsList);
     }
 
-    public void unrequest(Long userId, Long friendId) throws IllegalArgumentException, DataInconsistencyException
+    public void undoRequest(Long userId, Long friendId) throws IllegalArgumentException, DataInconsistencyException
     {
         if (!relationExists(friendId, userId))
             throw new DataInconsistencyException("The invite doesn't exist");

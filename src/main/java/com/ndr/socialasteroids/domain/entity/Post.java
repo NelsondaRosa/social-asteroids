@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import lombok.Data;
-//TODO: editedOn
+//TODO: editedAt
 @Data @Entity @Table(name = "posts") @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Post
 {
@@ -40,6 +40,9 @@ public class Post
     @Column(name = "posted_at", nullable = false)
     private Instant postedAt;
 
+    @Column(name = "edited_at", nullable = false)
+    private Instant editedAt;
+
     @Column(name = "deleted", nullable = false)
     private Boolean deleted;
 
@@ -52,5 +55,16 @@ public class Post
         this.content = content;
         this.deleted = false;
         this.postedAt = Instant.now();
+        this.editedAt = this.postedAt;
+    }
+
+    public void setContent(String content)
+    {
+        if (this.content != null || this.content.length() > 0)
+        {
+            this.editedAt = Instant.now();
+        }
+
+        this.content = content;
     }
 }

@@ -29,7 +29,6 @@ public class UserService
     private final @NonNull RoleRepository roleRepository;
 
     public UserDTO createUser(String username, String email, String password)
-        throws NoSuchElementException, DuplicateValueException
     {
         if (userRepository.existsByUsername(username) || userRepository.existsByEmail(email))
         {

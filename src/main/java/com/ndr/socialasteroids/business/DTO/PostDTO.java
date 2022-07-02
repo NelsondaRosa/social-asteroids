@@ -21,12 +21,14 @@ public class PostDTO extends RepresentationModel<PostDTO>
     private Long id;
     private String content;
     private Instant postedAt;
+    private Instant editedAt;
     
     public PostDTO(Post post)
     {
         this.id = post.getId();
         this.content = post.getContent();
         this.postedAt = post.getPostedAt();
+        this.editedAt = post.getEditedAt();
 
         add(linkTo(methodOn(ForumController.class).getPost(id.toString())).withSelfRel());
         add(linkTo(methodOn(ForumController.class).getThread(post.getThreadId().toString())).withRel("thread"));

@@ -25,7 +25,7 @@ public class ThreadDTO extends RepresentationModel<ThreadDTO>
     private String authorName;
     private Instant createdAt;
     private Instant updatedAt;
-    private long postsCount;
+    private Long postsCount;
 
     public ThreadDTO(ForumThread thread)
     {
@@ -34,7 +34,7 @@ public class ThreadDTO extends RepresentationModel<ThreadDTO>
         this.createdAt = thread.getCreatedAt();
         this.updatedAt = thread.getUpdatedAt();
         this.authorName = thread.getAuthor().getUsername();
-        //TODO -- Get thread.postsCount in prod
+        //TODO Get thread.postsCount in prod
         //this.postsCount = thread.getPosts().size();
 
         Pageable pageable = PageRequest.ofSize(20);
@@ -53,7 +53,7 @@ public class ThreadDTO extends RepresentationModel<ThreadDTO>
         this.updatedAt = thread.getUpdatedAt();
         Pageable postsPage = PageRequest.ofSize(20);
         this.authorName = thread.getAuthor().getUsername();
-        //TODO -- Get thread.postsCount in prod
+        //TODO Get thread.postsCount in prod
         //this.postsCount = thread.getPosts().size();
 
         add(linkTo(methodOn(ForumController.class).getThread(id.toString())).withSelfRel());

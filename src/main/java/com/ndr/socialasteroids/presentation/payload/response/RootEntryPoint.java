@@ -28,7 +28,7 @@ public class RootEntryPoint extends RepresentationModel<RootEntryPoint>
         Link login = Link.of(buildBaseURL() + "/auth/login", "login");
         Link signup = Link.of(buildBaseURL() + "/auth/signup", "signup");
         Link searchUser = Link.of(buildBaseURL() + "/user/search/", "searchUser");
-        Link getUser = Link.of(buildBaseURL() + "/user/get/{userId}", "getUser");
+        Link getUser = Link.of(buildBaseURL() + "/user/{userId}", "getUser");
         
         add(login);
         add(signup);

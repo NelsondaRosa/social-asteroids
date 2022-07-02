@@ -40,7 +40,7 @@ public class ForumController
         return ResponseEntity.ok().body(threads);
     }
 
-    @PostMapping(path = "/create") @PreAuthorize("#thread.getAuthorId() == principal.getUserSecurityInfo().getId()")
+    @PostMapping(path = "/create-thread") @PreAuthorize("#thread.getAuthorId() == principal.getUserSecurityInfo().getId()")
     public ResponseEntity<?> createThread(@P("thread") @RequestBody CreateThreadRequest request)
     {
         ThreadDTO thread = forumService.createThread(request.getAuthorId(), request.getTitle());
@@ -48,7 +48,7 @@ public class ForumController
         return ResponseEntity.status(HttpStatus.CREATED).body(thread);
     }
 
-    @PostMapping(path = "/createPost") @PreAuthorize("post.getAuthorId == principal.getUserSecurityInfo().getId()")
+    @PostMapping(path = "/create-post") @PreAuthorize("post.getAuthorId == principal.getUserSecurityInfo().getId()")
     public ResponseEntity<?> createPost(@P("post") @RequestBody CreatePostRequest request)
     {
         PostDTO post = forumService.createPost(request.getAuthorId(), request.getThreadId(), request.getContent());
@@ -56,7 +56,7 @@ public class ForumController
         return ResponseEntity.status(HttpStatus.CREATED).body(post);
     }
 
-    @PutMapping(path = "/post/edit")
+    @PutMapping(path = "/edit-post")
     @PreAuthorize("post.getAuthorId() == principal.getUserSecurityInfo().getId()")
     public ResponseEntity<?> editPost(@P("post") @RequestBody EditPostRequest request)
     {
@@ -65,7 +65,7 @@ public class ForumController
         return ResponseEntity.ok().body(post);
     }
 
-    @DeleteMapping(path = "/thread/delete")
+    @DeleteMapping(path = "/delete-thread")
     @PreAuthorize("thread.getAuthorId() == principal.getUserSecurityInfo().getId()")
     public ResponseEntity<?> deleteThread(@P("thread") @RequestBody DeleteRequest request)
     {
@@ -74,7 +74,7 @@ public class ForumController
         return ResponseEntity.noContent().build();
     }
     
-    @DeleteMapping("path = /post/delete")
+    @DeleteMapping(path = "/delete-post")
     @PreAuthorize("post.getAuthorId() == principal.getUserSecurityInfo().getId()")
     public ResponseEntity<?> deletePost(@P("post") @RequestBody DeleteRequest request)
     {
@@ -83,7 +83,7 @@ public class ForumController
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping(path = "/thread/get/{threadId}")
+    @GetMapping(path = "/thread/{threadId}")
     public ResponseEntity<?> getThread(@PathVariable String threadId)
     {
         ThreadDTO thread = forumService.getThread(Long.valueOf(threadId));
@@ -91,7 +91,7 @@ public class ForumController
         return ResponseEntity.ok().body(thread);
     }
 
-    @GetMapping(path = "/thread/user/{auhtorId}")
+    @GetMapping(path = "/threads-author/{auhtorId}")
     public ResponseEntity<?> getThreadsByAuthor(@PathVariable String authorId, Pageable pageable)
     {
         Page<ThreadDTO> threads = forumService.getPagedThreadsByAuthor(Long.valueOf(authorId), pageable);
@@ -99,7 +99,7 @@ public class ForumController
         return ResponseEntity.ok().body(threads);
     }
 
-    @GetMapping(path = "/post/get/{postId}")
+    @GetMapping(path = "/post/{postId}")
     public ResponseEntity<?> getPost(@PathVariable String postId)
     {
         PostDTO post = forumService.getPost(Long.valueOf(postId));
@@ -107,7 +107,7 @@ public class ForumController
         return ResponseEntity.ok().body(post);
     }
 
-    @GetMapping(path = "/post/thread/{threadId}")
+    @GetMapping(path = "/posts-thread/{threadId}")
     public ResponseEntity<?> getPostsByThread(@PathVariable String threadId, Pageable pageable)
     {
         Page<PostDTO> posts = forumService.getPagedPostsByThread(Long.valueOf(threadId), pageable);
@@ -115,7 +115,7 @@ public class ForumController
         return ResponseEntity.ok().body(posts);
     }
 
-    @GetMapping(path="/post/user/{authorId}")
+    @GetMapping(path="/posts-author/{authorId}")
     public ResponseEntity<?> getPostsByAuthor(@PathVariable String onwerId, Pageable pageable)
     {
         Page<PostDTO> posts = forumService.getPagedPostsByAuthor(Long.valueOf(onwerId), pageable);

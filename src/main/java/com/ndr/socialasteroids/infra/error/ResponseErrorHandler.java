@@ -137,7 +137,7 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
     @ExceptionHandler(UsernameNotFoundException.class)
     protected ResponseEntity<ErrorDetails> handleUsernameNotFound(UsernameNotFoundException exception, WebRequest request)
     {
-        ErrorDetails error = new ErrorDetails(HttpStatus.NOT_FOUND, "Wrong login");
+        ErrorDetails error = new ErrorDetails(HttpStatus.NOT_FOUND, "Wrong login credentials");
 
         return buildResponse(error,exception);
     }
@@ -145,7 +145,7 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
     @ExceptionHandler(AuthenticationException.class)
     protected ResponseEntity<ErrorDetails> handleAuthentication(AuthenticationException exception, WebRequest request)
     {
-        ErrorDetails error = new ErrorDetails(HttpStatus.UNAUTHORIZED, "Unauthorized");
+        ErrorDetails error = new ErrorDetails(HttpStatus.UNAUTHORIZED, "Authentication failed");
 
         return buildResponse(error,exception);
     }

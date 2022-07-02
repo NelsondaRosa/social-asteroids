@@ -38,6 +38,7 @@ public class RefreshToken
     @Column
     private Instant expiryDate;
 
+    //TODO add user agent and IP address
     public RefreshToken(User  user, Long durationInSeconds)
     {
         this.user = user;
