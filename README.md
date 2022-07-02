@@ -376,3 +376,109 @@ With HATEOAS there is no need for the client to know the paths used by the serve
 			Post : post
 <hr/>
 
+#### Edit Post
+|Request URI|Method|
+|--|--|
+|api/forum/edit-post|POST|
+    Request:
+	    Payload:
+		    Long : postId,
+		    Long : threadId,
+		    String : content
+	------------------------------------------		
+	Response: 200 OK
+		Payload:
+			Post : post
+<hr/>
+
+#### Delete Thread
+|Request URI|Method|
+|--|--|
+|api/forum/delete-thread|DELETE|
+    Request:
+	    Payload:
+		    Long : authorId,
+		    Long : entityId,
+	------------------------------------------		
+	Response: 204 NO CONTENT
+<hr/>
+
+#### Delete Post
+|Request URI|Method|
+|--|--|
+|api/forum/delete-Post|DELETE|
+    Request:
+	    Payload:
+		    Long : authorId,
+		    Long : entityId,
+	------------------------------------------		
+	Response: 204 NO CONTENT
+<hr/>
+
+#### Get Thread
+|Request URI|Method|
+|--|--|
+|api/forum/thread/{id}|GET|
+    Request:
+	    Path Variable:
+		    Thread ID
+	------------------------------------------		
+	Response: 200 OK
+		Payload:
+			Thread : thread
+<hr/>
+
+
+#### Get Threads by Author
+|Request URI|Method|Details|
+|--|--|--|
+|api/forum/threads-author/{id}|GET|Pageable
+    Request:
+	    Path Variable:
+		    Author ID
+	------------------------------------------		
+	Response: 200 OK
+		Payload:
+			Page<Thread> : threads
+<hr/>
+
+#### Get Post
+|Request URI|Method|
+|--|--|
+|api/forum/post/{id}|GET|
+    Request:
+	    Path Variable:
+		    Post ID
+	------------------------------------------		
+	Response: 200 OK
+		Payload:
+			Post : post
+<hr/>
+
+#### Get Posts by Thread
+|Request URI|Method|Details
+|--|--|--|
+|api/forum/posts-thread/{id}|GET|Pageable
+    Request:
+	    Path Variable:
+		    Thread ID
+	------------------------------------------		
+	Response: 200 OK
+		Payload:
+			Page<Post> : post
+<hr/>
+
+#### Get Posts by Author
+|Request URI|Method|Details
+|--|--|--|
+|api/forum/posts-author/{id}|GET|Pageable
+    Request:
+	    Path Variable:
+		    Author ID
+	------------------------------------------		
+	Response: 200 OK
+		Payload:
+			Page<Post> : post
+<hr/>
+
+
