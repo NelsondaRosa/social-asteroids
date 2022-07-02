@@ -4,6 +4,37 @@ Social Asteroids is a place to play the classic Asteroids game while you share y
 
 The purpose of the project is to serve as a portfolio to demonstrate my capabilities with the Spring ecosystem in Java. **DDD** architecture concepts are implemented, as well as the criteria of a **REST** application. I also want it to serve as a reference for those who need content for the technologies used.
 
+##### Table of Contents  
+- [Running](#running)
+ - [Architecture](#architecture)   
+ - [Endpoints](#endpoints)
+ - [Errors](#errors)
+ - [Tests](#tests)
+
+<a name="running"/>
+
+## Running
+
+To run the application you need to have installed on your machine:
+
+ - [Maven](https://maven.apache.org/download.cgi)
+ - [Java JDK 11](https://www.oracle.com/br/java/technologies/javase/jdk11-archive-downloads.html) or any [OpenJDK 11](https://www.openlogic.com/openjdk-downloads) version
+ 
+To run, clone or download the project from this page. Go to your root page and run the command
+
+    mvn spring-boot:run
+
+#### Frontend
+There is a template frontend application for functional testing (don't expect to find anything pretty there) under development:
+[Social Asteroids Frontend](https://github.com/nelsondrp/social-asteroids-frontend)
+
+To run the frontend, install [NodeJS](https://nodejs.org/en/download/) and [Nodemon](https://www.npmjs.com/package/nodemon). 
+In the root folder of the project run the following commands
+
+    npm init
+    nodemon index.js
+
+<a name="architecture"/>
 
 ## Architecture
 
@@ -43,6 +74,8 @@ With the Refresh Token, if the user's JWT is spoofed, the attacker will have a s
 Just as JWT is important to keep the server stateless, HATEOAS is an important feature for decoupling the backend from the frontend.
 
 With HATEOAS there is no need for the client to know the paths used by the server to request resources beyond the Entry Point. Every resource will return with it the information needed to access related resources.
+
+<a name="endpoints"/>
 
 ## Endpoints
 #### Response Entities:
@@ -95,6 +128,22 @@ With HATEOAS there is no need for the client to know the paths used by the serve
 	    Hypermedia Link, Thread : thread - api/forum/thread/{id}
 	    Hypermedia Link, User : author - api/user/{id}
 	    
+<hr/>
+
+## Home
+|Request URI|Method|
+|--|--|
+|api/home|GET|
+    Response: 200 OK
+	    Payload:
+			Hypermedia Link, login : api/auth/login
+		    Hypermedia Link, signup : api/auth/signup
+		    Hypermedia Link, searchUser : api/user/search
+		    Hypermedia Link, getUser : api/user
+		    Hypermedia Link, logout : api/auth/logout
+		    Hypermedia Link, activeUser : api/user/active
+		    Hypermedia Link, threads : api/forum
+		    Hypermedia Link, matches : api/match
 <hr/>
 
 ## Authentication
@@ -481,6 +530,8 @@ With HATEOAS there is no need for the client to know the paths used by the serve
 			Page<Post> : post
 <hr/>
 
+<a name="errors"/>
+
 ## Errors
 #### Data Inconsistency
 Happens when there is an attempt to create data that generates inconsistency in the database
@@ -576,3 +627,9 @@ Happens when a problem not handled by the backend application occurs.
 	Response: 500 INTERNAL SERVER ERROR
 			Payload:
 				message : Unexpected error
+
+<a name="tests"/>
+
+## Tests
+
+### Work in progress...
