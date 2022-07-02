@@ -102,32 +102,32 @@ With HATEOAS there is no need for the client to know the paths used by the serve
 |Request URI|Method|
 |--|--|
 |api/auth/signup|POST|
-    Request 
+    Request:
 	    Payload:
 	    	String : username,
 	    	String : email,
 	    	String : password
     ------------------------------------------		 
     Response: 201 CREATED
-	    Payload -
-		    User 
+	    Payload:
+		    User : user
 <hr/>
 
 #### Login
 |Request URI|Method|
 |--|--|
 |api/auth/login|POST|
-    Request 
+    Request:
 	    Payload:
 	    	String : username,
 	    	String : password
     ------------------------------------------		 
     Response: 200 OK
-	    Headers -
+	    Headers:
 		    Cookie : auth,
 		    Cookie : refresh-token
-		Payload -
-		    User 
+		Payload:
+		    User : user
 <hr/>
 
 #### Logout
@@ -135,7 +135,7 @@ With HATEOAS there is no need for the client to know the paths used by the serve
 |--|--|
 |api/auth/logout|GET|
     Response: 200 OK
-	    Headers -
+	    Headers:
 		    Cookie : auth,
 		    Cookie : refresh-token
 <hr/>
@@ -147,7 +147,7 @@ With HATEOAS there is no need for the client to know the paths used by the serve
 |api/user/active|GET|
     Response: 200 OK
 	    Payload:
-		    User
+		    User : user
 	------------------------------------------	    
 	Response: 204 NO CONTENT
 <hr/>
@@ -156,56 +156,56 @@ With HATEOAS there is no need for the client to know the paths used by the serve
 |Request URI|Method|
 |--|--|
 |api/user/update|POST|
-    Request 
+    Request:
 	    Payload:
 	    	Long  : id,
 	    	String : username,
 	    	String : email
 	------------------------------------------	     	
     Response: 200 OK
-		Payload -
-		    User 
+		Payload:
+		    User : user
 <hr/>
 
 #### Update Password
 |Request URI|Method|
 |--|--|
 |api/user/update-password|POST|
-    Request 
+    Request:
 	    Payload:
 	    	Long  : id,
 	    	String : actualPassword,
 	    	String : newPassword
 	------------------------------------------		     
     Response: 200 OK
-		Payload -
-		    User
+		Payload:
+		    User : user
 <hr/>
 
 #### Get User
 |Request URI|Method|
 |--|--|
 |api/user/{id}|GET|
-    Request 
+    Request:
 	    Path variable:
 			User ID
 	------------------------------------------		     
     Response: 200 OK
-		Payload -
-		    User
+		Payload:
+		    User : user
 <hr/>
 
 #### Search
 |Request URI|Method|
 |--|--|
 |api/user/{search}|GET|
-    Request 
+    Request:
 	    Path variable:
 			Search Query
 	------------------------------------------		     
     Response: 200 OK
-		Payload -
-		    List<User>
+		Payload:
+		    List<User> : users
     ------------------------------------------	    
 	Response: 204 NO CONTENT
 <hr/>
@@ -215,7 +215,7 @@ With HATEOAS there is no need for the client to know the paths used by the serve
 |Request URI|Method|
 |--|--|
 |api/match/add|POST|
-    Request 
+    Request:
 	    Payload:
 		    Long : durationInMilis,
 		    Long : score,
@@ -225,33 +225,33 @@ With HATEOAS there is no need for the client to know the paths used by the serve
 	------------------------------------------		     
     Response: 201 CREATED
 	    Payload:
-		    Match		    
+		    Match : match    
 <hr/>
 
 #### Get Matches by Player
 |Request URI|Method|Details|
 |--|--|--|
 |api/match/player/{id}|GET|Pageable|
-    Request
+    Request:
 	    Path Variable:
 		    User ID
 	------------------------------------------		     
     Response: 200 OK
 	    Payload:
-		    Page<Match>
+		    Page<Match> : matches
 <hr/>
 
 #### Get Match
 |Request URI|Method|
 |--|--|
 |api/match/{id}|GET
-    Request
+    Request:
 	    Path Variable:
 		    Match ID
 	------------------------------------------		     
     Response: 200 OK
 	    Payload:
-		    Match
+		    Match : match
 <hr/>
 
 ## Friendship
@@ -259,7 +259,7 @@ With HATEOAS there is no need for the client to know the paths used by the serve
 |Request URI|Method|
 |--|--|
 |api/friend/send-invite|POST|
-    Request 
+    Request:
 	    Payload:
 		    Long : userId,
 		    Long: friendId
@@ -271,7 +271,7 @@ With HATEOAS there is no need for the client to know the paths used by the serve
 |Request URI|Method|
 |--|--|
 |api/friend/answer-invite|POST|
-    Request 
+    Request:
 	    Payload:
 		    Long : userId,
 		    Long: friendId,
@@ -280,5 +280,99 @@ With HATEOAS there is no need for the client to know the paths used by the serve
     Response: 201 CREATED
 	    Payload:
 		    User : inviter
+<hr/>
+
+#### Unfriend
+|Request URI|Method|
+|--|--|
+|api/friend/unfriend|DELETE|
+    Request:
+	    Payload:
+		    Long : userId,
+		    Long: friendId
+	------------------------------------------		     
+    Response: 204 NO CONTENT
+<hr/>
+    
+ #### Undo Request
+|Request URI|Method|
+|--|--|
+|api/friend/undo-request|DELETE|
+    Request:
+	    Payload:
+		    Long : userId,
+		    Long: friendId
+	------------------------------------------		     
+    Response: 204 NO CONTENT
+<hr/>
+
+ #### Get Friends
+|Request URI|Method|
+|--|--|
+|api/friend/{id}|GET|
+    Request:
+	    Path Variable:
+		    User ID
+	------------------------------------------		
+	Response: 200 OK
+		Payload:
+			List<Friendship> : friends
+	------------------------------------------		     
+    Response: 204 NO CONTENT
+<hr/>
+
+#### Get Invites
+|Request URI|Method|
+|--|--|
+|api/friend/invites/{id}|GET|
+    Request:
+	    Path Variable:
+		    User ID
+	------------------------------------------		
+	Response: 200 OK
+		Payload:
+			List<Friendship> : friendInvites
+	------------------------------------------		     
+    Response: 204 NO CONTENT
+<hr/>
+
+## Forum
+#### Get threads
+|Request URI|Method|Details|
+|--|--|--|
+|api/forum|GET|Pageable|
+    Response: 200 OK
+	    Payload:
+		    Page<Thread> : threads
+<hr/>
+
+#### Create Thread
+|Request URI|Method|
+|--|--|
+|api/forum/create-thread|POST|
+    Request:
+	    Payload:
+		    Long : authorId,
+		    String : title
+	------------------------------------------		
+	Response: 201 CREATED
+		Payload:
+			Thread : thread
+<hr/>
+
+
+#### Create Post
+|Request URI|Method|
+|--|--|
+|api/forum/create-post|POST|
+    Request:
+	    Payload:
+		    Long : authorId,
+		    Long : threadId,
+		    String : content
+	------------------------------------------		
+	Response: 201 CREATED
+		Payload:
+			Post : post
 <hr/>
 
