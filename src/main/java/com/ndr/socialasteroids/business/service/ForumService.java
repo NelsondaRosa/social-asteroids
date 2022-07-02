@@ -89,7 +89,6 @@ public class ForumService
         postRepository.deleteById(postId);
     }
 
-    //TODO Test findByUserId
     public Page<ThreadDTO> getPagedThreadsByAuthor(Long authorId, Pageable pageable)
     {
         User author = userService.getEntityById(authorId);
