@@ -17,7 +17,7 @@ import com.ndr.socialasteroids.infra.data.repository.PostRespository;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-//Change all find to get if not throwing custom exception
+
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ForumService
