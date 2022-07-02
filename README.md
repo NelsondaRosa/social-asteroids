@@ -136,7 +136,7 @@ With HATEOAS there is no need for the client to know the paths used by the serve
 |api/home|GET|
     Response: 200 OK
 	    Payload:
-			Hypermedia Link, login : api/auth/login
+	    	    Hypermedia Link, login : api/auth/login
 		    Hypermedia Link, signup : api/auth/signup
 		    Hypermedia Link, searchUser : api/user/search
 		    Hypermedia Link, getUser : api/user
