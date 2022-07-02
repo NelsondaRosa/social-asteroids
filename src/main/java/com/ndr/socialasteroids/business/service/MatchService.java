@@ -51,7 +51,6 @@ public class MatchService
                         .map(match -> new MatchDTO(match));
     }
 
-    //TODO make pageable
     public Page<MatchDTO> getPaged(Pageable pageable)
     {
         return matchRepository.findPagedByOrderByScoreDesc(pageable)

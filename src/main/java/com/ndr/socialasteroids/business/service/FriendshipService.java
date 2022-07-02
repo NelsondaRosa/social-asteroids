@@ -21,7 +21,7 @@ import com.ndr.socialasteroids.infra.error.exception.InexistentDataException;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-
+//TODO implement paged
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class FriendshipService
