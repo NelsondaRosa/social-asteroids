@@ -20,8 +20,9 @@ To run the application you need to have installed on your machine:
  - [Maven](https://maven.apache.org/download.cgi)
  - [Java JDK 11](https://www.oracle.com/br/java/technologies/javase/jdk11-archive-downloads.html) or any [OpenJDK 11](https://www.openlogic.com/openjdk-downloads) version
  
-To run, clone or download the project from this page. Go to your root page and run the command
+To run, clone or download the project from this page. Go to your root page and run the commands
 
+    mvn dependency:resolve
     mvn spring-boot:run
 
 #### Frontend
