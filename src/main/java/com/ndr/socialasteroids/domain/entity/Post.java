@@ -40,7 +40,7 @@ public class Post
     @Column(name = "posted_at", nullable = false)
     private Instant postedAt;
 
-    @Column(name = "edited_at", nullable = false)
+    @Column(name = "edited_at")
     private Instant editedAt;
 
     @Column(name = "deleted", nullable = false)
