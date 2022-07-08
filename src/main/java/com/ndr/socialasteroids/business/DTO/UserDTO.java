@@ -32,9 +32,9 @@ public class UserDTO extends RepresentationModel<UserDTO>
         this.email = user.getEmail();
         Pageable pageable = PageRequest.ofSize(20);
         //Self - matches - friends - threads - forums
-        add(linkTo(methodOn(UserController.class).getUserById(this.id.toString())).withSelfRel());
-        add(linkTo(methodOn(MatchController.class).getMatches(this.id.toString(), pageable)).withRel("matches"));
-        add(linkTo(methodOn(FriendshipController.class).getFriends(this.id.toString())).withRel("friends"));
+        add(linkTo(methodOn(UserController.class).getUserById(this.id)).withSelfRel());
+        add(linkTo(methodOn(MatchController.class).getMatches(this.id, pageable)).withRel("matches"));
+        add(linkTo(methodOn(FriendshipController.class).getFriends(this.id)).withRel("friends"));
         add(linkTo(methodOn(ForumController.class).getThreadsByAuthor(this.id.toString(), pageable)).withRel("threads"));
         add(linkTo(methodOn(ForumController.class).getPostsByAuthor(this.id.toString(), pageable)).withRel("posts"));
     }

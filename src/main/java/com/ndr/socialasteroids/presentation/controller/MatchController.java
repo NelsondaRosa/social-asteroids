@@ -54,9 +54,9 @@ public class MatchController
     }
 
     @GetMapping(path = "/player/{userId}")
-    public ResponseEntity<?> getMatches(@PathVariable String userId, Pageable pageable)
+    public ResponseEntity<?> getMatches(@PathVariable Long userId, Pageable pageable)
     {
-        Page<MatchDTO> matches = matchService.getMatchesByUserId(Long.valueOf(userId), pageable);
+        Page<MatchDTO> matches = matchService.getMatchesByUserId(userId, pageable);
 
         if(matches.isEmpty())
             return ResponseEntity.noContent().build();

@@ -34,14 +34,13 @@ public class ThreadDTO extends RepresentationModel<ThreadDTO>
         this.createdAt = thread.getCreatedAt();
         this.updatedAt = thread.getUpdatedAt();
         this.authorName = thread.getAuthor().getUsername();
-        //TODO Get thread.postsCount in prod
-        //this.postsCount = thread.getPosts().size();
+        this.postsCount = thread.getPostsCount();
 
         Pageable pageable = PageRequest.ofSize(20);
 
         add(linkTo(methodOn(ForumController.class).getThread(id.toString())).withSelfRel());
         add(linkTo(methodOn(ForumController.class).getPostsByThread(id.toString(), pageable)).withRel("posts"));
-        add(linkTo(methodOn(UserController.class).getUserById(thread.getAuthorId().toString())).withRel("author"));
+        add(linkTo(methodOn(UserController.class).getUserById(thread.getAuthorId())).withRel("author"));
         add(linkTo(methodOn(ForumController.class).getPaged(pageable)).withRel("threads"));
     }
 
@@ -54,11 +53,11 @@ public class ThreadDTO extends RepresentationModel<ThreadDTO>
         Pageable postsPage = PageRequest.ofSize(20);
         this.authorName = thread.getAuthor().getUsername();
         //TODO Get thread.postsCount in prod
-        //this.postsCount = thread.getPosts().size();
+        this.postsCount = thread.getPostsCount();
 
         add(linkTo(methodOn(ForumController.class).getThread(id.toString())).withSelfRel());
         add(linkTo(methodOn(ForumController.class).getPostsByThread(id.toString(), postsPage)).withRel("posts"));
-        add(linkTo(methodOn(UserController.class).getUserById(thread.getAuthorId().toString())).withRel("author"));
+        add(linkTo(methodOn(UserController.class).getUserById(thread.getAuthorId())).withRel("author"));
         add(linkTo(methodOn(ForumController.class).getPaged(pageable)).withRel("threads"));
     }
     

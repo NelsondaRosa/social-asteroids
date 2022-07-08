@@ -91,7 +91,7 @@ public class ForumController
         return ResponseEntity.ok().body(thread);
     }
 
-    @GetMapping(path = "/threads-author/{auhtorId}")
+    @GetMapping(path = "/threads-author/{authorId}")
     public ResponseEntity<?> getThreadsByAuthor(@PathVariable String authorId, Pageable pageable)
     {
         Page<ThreadDTO> threads = forumService.getPagedThreadsByAuthor(Long.valueOf(authorId), pageable);
@@ -116,9 +116,9 @@ public class ForumController
     }
 
     @GetMapping(path="/posts-author/{authorId}")
-    public ResponseEntity<?> getPostsByAuthor(@PathVariable String onwerId, Pageable pageable)
+    public ResponseEntity<?> getPostsByAuthor(@PathVariable String authorId, Pageable pageable)
     {
-        Page<PostDTO> posts = forumService.getPagedPostsByAuthor(Long.valueOf(onwerId), pageable);
+        Page<PostDTO> posts = forumService.getPagedPostsByAuthor(Long.valueOf(authorId), pageable);
 
         return ResponseEntity.ok().body(posts);
     }

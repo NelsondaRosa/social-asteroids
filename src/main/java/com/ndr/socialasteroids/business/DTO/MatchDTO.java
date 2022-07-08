@@ -33,6 +33,6 @@ public class MatchDTO extends RepresentationModel<MatchDTO>
         this.destroyedTargets = match.getAmmoSpent();
         //Self - player
         add(linkTo(methodOn(MatchController.class).getMatch(match.getId().toString())).withSelfRel());
-        add(linkTo(methodOn(UserController.class).getUserById(match.getPlayerId().toString())).withRel("player"));
+        add(linkTo(methodOn(UserController.class).getUserById(match.getPlayerId())).withRel("player"));
     }
 }

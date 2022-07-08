@@ -69,10 +69,10 @@ public class FriendshipController
     }
 
     @GetMapping(path = "/{userId}")
-    @PreAuthorize("Long.valueOf(#userId) == principal.getUserSecurityInfo().getId()")
-    public ResponseEntity<?> getFriends(@P("userId") @PathVariable String userId)
+    @PreAuthorize("#userId == principal.getUserSecurityInfo().getId()")
+    public ResponseEntity<?> getFriends(@P("userId") @PathVariable Long userId)
     {
-        List<FriendshipDTO> friends = friendshipService.getFriends(Long.valueOf(userId));
+        List<FriendshipDTO> friends = friendshipService.getFriends(userId);
 
         if(friends.size() <= 0)
             return ResponseEntity.noContent().build();
@@ -81,8 +81,8 @@ public class FriendshipController
     }
 
     @GetMapping(path = "/invites/{userId}")
-    @PreAuthorize("Long.valueOf(#userId) == principal.getUserSecurityInfo().getId()")
-    public ResponseEntity<?> getFriendInvites(@P("userId") @PathVariable String userId)
+    @PreAuthorize("#userId == principal.getUserSecurityInfo().getId()")
+    public ResponseEntity<?> getFriendInvites(@P("userId") @PathVariable Long userId)
     {
         List<FriendshipDTO> friendInvites = friendshipService.getInvites(Long.valueOf(userId));
 

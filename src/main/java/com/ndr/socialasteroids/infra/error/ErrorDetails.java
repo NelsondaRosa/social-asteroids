@@ -37,4 +37,10 @@ public class ErrorDetails
         this(status);
         this.message = message;
     }
+
+    public ErrorDetails(HttpStatus status, Exception exception)
+    {
+        this(status);
+        exception.printStackTrace();
+    }
 }

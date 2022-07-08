@@ -2,9 +2,9 @@ insert into roles(name) values ('ROLE_USER'), ('ROLE_ADMIN');
 
 INSERT INTO users (username,email,password)
 VALUES
+('user','user@email.com','$2a$10$XnkEymYLL0tOx0nFnZuRpuXvZgPXAUe/SVNMBZi9Aeho8OxSfwDz2'),
 ('frostbean','frostbean@email.com','$2a$10$XnkEymYLL0tOx0nFnZuRpuXvZgPXAUe/SVNMBZi9Aeho8OxSfwDz2'),
 ('testmean','bean@email.com','$2a$10$XnkEymYLL0tOx0nFnZuRpuXvZgPXAUe/SVNMBZi9Aeho8OxSfwDz2'),
-('user','user@email.com','$2a$10$XnkEymYLL0tOx0nFnZuRpuXvZgPXAUe/SVNMBZi9Aeho8OxSfwDz2'),
 ('client','client@email.com','$2a$10$XnkEymYLL0tOx0nFnZuRpuXvZgPXAUe/SVNMBZi9Aeho8OxSfwDz2'),
 ('señor','señor@email.com','$2a$10$XnkEymYLL0tOx0nFnZuRpuXvZgPXAUe/SVNMBZi9Aeho8OxSfwDz2'),
 ('Hamish','donec.porttitor@yahoo.edu','$2a$10$XnkEymYLL0tOx0nFnZuRpuXvZgPXAUe/SVNMBZi9Aeho8OxSfwDz2'),
@@ -47,6 +47,19 @@ VALUES
 ('Nichole','mi.fringilla@hotmail.edu','$2a$10$XnkEymYLL0tOx0nFnZuRpuXvZgPXAUe/SVNMBZi9Aeho8OxSfwDz2'),
 ('Danielle','non.justo@outlook.couk','$2a$10$XnkEymYLL0tOx0nFnZuRpuXvZgPXAUe/SVNMBZi9Aeho8OxSfwDz2'),
 ('Otto','risus.quisque@google.com','$2a$10$XnkEymYLL0tOx0nFnZuRpuXvZgPXAUe/SVNMBZi9Aeho8OxSfwDz2');
+
+INSERT INTO friendship(user_id, friend_id, accepted)
+VALUES
+(1,2,TRUE),
+(2,1,TRUE),
+(1,3,FALSE),
+(4,1,FALSE),
+(5,1,FALSE),
+(6,1,FALSE),
+(7,1,TRUE),
+(1,7,TRUE),
+(1,8,TRUE),
+(8,1,TRUE);
 
 INSERT INTO matches (match_on,duration,score,ammo_spent,destroyed_targets,player_id)
 VALUES

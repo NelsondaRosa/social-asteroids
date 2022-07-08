@@ -130,7 +130,8 @@ public class ResponseErrorHandler extends ResponseEntityExceptionHandler
     protected ResponseEntity<ErrorDetails> handleAccessDenied(AccessDeniedException exception, WebRequest request)
     {
         ErrorDetails error = new ErrorDetails(HttpStatus.UNAUTHORIZED, "Access denied for this operation");
-
+        //TODO
+        exception.printStackTrace();
         return buildResponse(error,exception);
     }
     

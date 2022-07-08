@@ -38,6 +38,7 @@ public class UserDetailsImpl implements UserDetails
             
         return new UserDetailsImpl(new UserSecurityInfo(user), authorities);    
     }
+    
 
     @Override
     public String getUsername()

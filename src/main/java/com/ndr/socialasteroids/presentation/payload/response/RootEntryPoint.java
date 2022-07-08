@@ -27,6 +27,7 @@ public class RootEntryPoint extends RepresentationModel<RootEntryPoint>
         Pageable pageable = PageRequest.ofSize(20);
         Link login = Link.of(buildBaseURL() + "/auth/login", "login");
         Link signup = Link.of(buildBaseURL() + "/auth/signup", "signup");
+        Link addMatch = Link.of(buildBaseURL() + "/match/add", "addMatch");
         Link searchUser = Link.of(buildBaseURL() + "/user/search/", "searchUser");
         Link getUser = Link.of(buildBaseURL() + "/user/{userId}", "getUser");
         
@@ -34,6 +35,7 @@ public class RootEntryPoint extends RepresentationModel<RootEntryPoint>
         add(signup);
         add(getUser);
         add(searchUser);
+        add(addMatch);
         add(linkTo(methodOn(AuthController.class).logout()).withRel("logout"));
         add(linkTo(methodOn(UserController.class).getActiveUser()).withRel("activeUser"));
         add(linkTo(methodOn(ForumController.class).getPaged(pageable)).withRel("threads"));
