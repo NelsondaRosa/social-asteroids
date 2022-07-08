@@ -9,7 +9,6 @@ The purpose of the project is to serve as a portfolio to demonstrate my capabili
  - [Architecture](#architecture)   
  - [Endpoints](#endpoints)
  - [Errors](#errors)
- - [Tests](#tests)
 
 <a name="running"/>
 
@@ -628,9 +627,3 @@ Happens when a problem not handled by the backend application occurs.
 	Response: 500 INTERNAL SERVER ERROR
 			Payload:
 				message : Unexpected error
-
-<a name="tests"/>
-
-## Tests
-
-### Work in progress...
